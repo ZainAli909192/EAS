@@ -1,0 +1,47 @@
+@startuml
+' Increase font size for better readability when inserted in Word
+skinparam defaultFontSize 16
+skinparam rectangle {
+  BorderColor Black
+  BackgroundColor LightYellow
+}
+skinparam actor {
+  BackgroundColor LightBlue
+  BorderColor Black
+}
+
+actor User
+
+' Define Processes as rectangles
+rectangle "Login Process" as LoginProcess
+rectangle "Membership Management" as MembershipMgmt
+rectangle "Employee Management" as EmployeeMgmt
+rectangle "Employee Actions" as EmployeeActions
+rectangle "Access Control" as AccessControl
+database "System Database" as Database
+
+' Data Flow from User to Login
+User --> LoginProcess : Submit Credentials
+
+' Decision flows from Login Process based on role
+LoginProcess --> MembershipMgmt : If Admin\n(provide membership data)
+LoginProcess --> EmployeeMgmt : If Company Admin\n(provide employee data)
+LoginProcess --> EmployeeActions : If Employee\n(provide attendance/leave data)
+LoginProcess --> AccessControl : Else\n(deny access)
+
+' Membership Management flows
+MembershipMgmt --> Database : Retrieve/Update Membership Info
+MembershipMgmt --> MembershipMgmt : Process:\nAdd / Update / Delete / View\n(Manage Membership)
+
+' Employee Management flows
+EmployeeMgmt --> Database : Retrieve/Update Employee Data
+EmployeeMgmt --> EmployeeMgmt : Process:\nAdd / Update / Remove / Search\nManage Schedules\nApprove/Reject Leave\nGenerate Reports
+
+' Employee Actions flows
+EmployeeActions --> Database : Record Attendance & Leave Requests
+EmployeeActions --> EmployeeActions : Process:\nMark Attendance\nRequest Adjustment / Leave\n(Include Sick Leave with Medical Doc)
+
+' Access Control sends result back to Login Process or directly to User
+AccessControl --> User : Return Access Denied
+
+@enduml

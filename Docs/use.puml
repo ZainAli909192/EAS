@@ -1,0 +1,64 @@
+@startuml
+
+left to right direction
+
+actor "Membership Manager" as Admin
+actor "Company Admin (Manager)" as Manager
+actor "Employee" as Employee
+
+rectangle "Employee Attendance Management System" {
+
+    Admin --> (Login) 
+    Manager --> (Login)
+    Employee --> (Login)
+
+    (Login) --> (Manage Membership) : <<include>>
+    (Login) --> (Manage Employees) : <<include>>
+    (Login) --> (Mark Attendance) : <<include>>
+    (Login) --> (Request Attendance Adjustment) : <<include>>
+    (Login) --> (Request Leave) : <<include>>
+    (Login) --> (Generate Reports) : <<include>>
+    (Login) --> (Login Failure) : <<extend>>
+
+    Admin --> (Manage Membership)
+
+    (Manage Membership) --> (Add New Member)
+    (Manage Membership) --> (Update Member Details) 
+    (Manage Membership) --> (Delete Membership) 
+    (Manage Membership) --> (View Members) 
+
+    (Update Member Details) --> (Change Company Info)
+    (Update Member Details) --> (Upgrade/Downgrade Package)
+    (Update Member Details) --> (Reset Password)
+    
+    (Delete Membership) 
+    
+    (View Members) --> (List Registered Companies)
+    (View Members) --> (View Company Details)
+
+    Manager --> (Manage Employees)
+
+    (Manage Employees) --> (Add Employee)
+    (Manage Employees) --> (Update/Remove Employee)
+    (Manage Employees) --> (View Employee Records)
+    (Manage Employees) --> (Search Employee Record)
+    (Manage Employees) --> (Manage Schedules)
+    (Manage Employees) --> (Approve/Reject Leave)
+    (Manage Employees) --> (Assign Roles)
+    
+    Employee --> (Mark Attendance)
+    Employee --> (Request Attendance Adjustment)
+    Employee --> (Request Leave)
+    
+    (Mark Attendance) --> (Clock-in/Clock-out,Capture Picture)
+    (Mark Attendance) --> (Record Attendance Type)
+
+    (Request Leave) --> (Provide Leave Reason)
+    (Request Leave) --> (Attach Medical Document)
+    
+    Manager --> (Generate Reports)
+    (Generate Reports) --> (Export as CSV, PDF)
+
+}
+
+@enduml
