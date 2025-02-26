@@ -1,0 +1,24 @@
+/* Form Row Layout */
+.form-row {
+    display: flex;
+    gap: 20px; /* Space between input fields */
+    margin-bottom: 1.5rem;
+  }
+  
+  .form-row .input-group {
+    flex: 1; /* Each input group takes equal space */
+  }
+  
+ 
+  /* Center the Signup Button */
+  .form-row:has(.login-button) {
+    justify-content: center;
+  }
+  
+  /* Responsive Design for Rows */
+  @media (max-width: 600px) {
+    .form-row {
+      flex-direction: column; /* Stack input fields vertically on small screens */
+      gap: 10px;
+    }
+  }

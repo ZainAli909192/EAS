@@ -1,0 +1,125 @@
+/* General Styles */
+:root{
+  --primary-color:#2c3e50;
+  --secondory-color:#EDE8F5;
+  --secondory-color:#34495e;
+  --secondory-color:hsl(213, 28%, 41%);
+  /* --secondory-color:#7499c2; */
+  --text-color:hsl(80, 50%, 60%); 
+  --secondory-color:hsl(80, 50%, 39%);
+
+}
+header{
+  width: 104vw;
+}
+  /* Main Content */
+  main {
+    flex: 1;
+
+    gap: 3rem;
+    padding: 2rem;
+    background-color: #fff;
+    margin: 1rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  #clock-in-out h2,
+  #attendance-summary h2 {
+    font-size: 1.5rem;
+    color: #333;
+    margin-bottom: 1rem;
+  }
+  
+  #clock-in-out button {
+    padding: 0.8rem 1.5rem;
+    margin-right: 1rem;
+    background-color: var(--secondory-color);
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+  }
+  
+  #clock-in-out button:hover {
+    background-color: var(--text-color);
+  }
+  
+  #camera-preview {
+    margin-top: 1rem;
+    width: 100%;
+    max-width: 400px;
+    height: 300px;
+    background-color: #ddd;
+    border-radius: 10px;
+  }
+  
+  #attendance-summary table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  #attendance-summary th,
+  #attendance-summary td {
+    padding: 0.8rem;
+    border: 1px solid #ddd;
+    text-align: left;
+  }
+  
+  #attendance-summary th {
+    background-color: #f4f4f9;
+    color: #333;
+  }
+  
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    body {
+      flex-direction: column;
+    }
+    
+    main {
+      margin: 1rem 0;
+      height: 80vh;
+    width: 140vw;
+    }
+  }
+  #camera-preview {
+    margin-top: 1rem;
+    width: 100%;
+    max-width: 300px;
+    height: 300px;
+    background-color: #ddd;
+    border-radius: 10px;
+    overflow: hidden;
+    position: absolute;
+    display: none;
+  }
+  
+  #camera-feed {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  #capture-btn {
+    margin-top: 1rem;
+    padding: 0.8rem 1.5rem;
+    background-color: #28a745;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+  }
+  
+  #capture-btn:hover {
+    background-color: #218838;
+  }
+  
+  #captured-photo {
+    margin-top: 1rem;
+    max-width: 100px;
+    border-radius: 10px;
+  }
