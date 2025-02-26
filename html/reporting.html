@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Generate and export attendance and employee reports in the Employee Management System.">
+  <meta name="keywords" content="reporting, attendance reports, employee reports, export reports">
+  <meta name="author" content="Your Company Name">
+  <title>Reporting - Employee Management System</title>
+  <link rel="stylesheet" href="../css/reporting.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+  <header>
+    <h1>Reporting</h1>
+    <nav>
+      <ul>
+        <li><a href="dashboard.html">Dashboard</a></li>
+        <li><a href="employee-management.html">Employee Management</a></li>
+        <li><a href="attendance.html">Attendance</a></li>
+      </ul>
+    </nav>
+  </header>
+  <main>
+    <section id="attendance-reports">
+      <h2>Attendance Reports</h2>
+      <form id="attendance-report-form">
+        <label for="date-range">Date Range:</label>
+        <input type="date" id="start-date" name="start-date" required>
+        <input type="date" id="end-date" name="end-date" required>
+        <label for="department">Department:</label>
+        <select id="department" name="department">
+          <option value="all">All Departments</option>
+          <option value="hr">HR</option>
+          <option value="it">IT</option>
+          <option value="sales">Sales</option>
+        </select>
+        <button type="submit">Generate Report</button>
+      </form>
+      <div id="report-results">
+        <!-- Report results will be displayed here -->
+      </div>
+    </section>
+    <section id="export-reports">
+      <h2>Export Reports</h2>
+      <button id="export-csv">Export as CSV</button>
+      <button id="export-excel">Export as Excel</button>
+      <button id="export-pdf">Export as PDF</button>
+    </section>
+  </main>
+  <script src="js/reporting.js"></script>
+</body>
+</html>

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Attendance Management System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+            scroll-behavior: smooth;
+        }
+        
+        body {
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        
+        /* Header & Navigation */
+        header {
+            background: #333;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            font-size: 24px;
+        }
+
+        nav {
+            display: flex;
+            justify-content: center;
+            background: #444;
+            padding: 10px;
+            position: sticky;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            margin: 0 10px;
+            background: #555;
+            border-radius: 5px;
+            transition: 0.3s;
+        }
+
+        nav a:hover {
+            background: #777;
+        }
+
+        /* Sections */
+        section {
+            padding: 60px;
+            text-align: center;
+        }
+
+        #home {
+            background: url('background.jpg') no-repeat center center/cover;
+            color: white;
+            height: 80vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #about, #services {
+            background: white;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            margin: 20px;
+            border-radius: 10px;
+        }
+
+        #services ul {
+            list-style: none;
+            padding: 20px;
+        }
+
+        #services ul li {
+            font-size: 18px;
+            padding: 10px;
+        }
+
+        /* Footer */
+        footer {
+            background: #222;
+            color: white;
+            text-align: center;
+            padding: 15px;
+            margin-top: 30px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <header>Employee Attendance Management System</header>
+
+    <nav>
+        <a href="#home">Home</a>
+        <a href="#about">About</a>
+        <a href="#services">Services</a>
+    </nav>
+
+    <section id="home">
+        <h1>Welcome to Our Employee Attendance System</h1>
+        <p>Manage employee attendance efficiently and seamlessly.</p>
+    </section>
+
+    <section id="about">
+        <h2>About Us</h2>
+        <p>Our Employee Attendance Management System helps organizations track employee attendance, leave management, and reporting efficiently. Our goal is to improve workforce management through an easy-to-use system.</p>
+    </section>
+
+    <section id="services">
+        <h2>Our Services</h2>
+        <ul>
+            <li>Real-time Attendance Tracking</li>
+            <li>Leave Management System</li>
+            <li>Detailed Reporting & Analytics</li>
+            <li>Integration with Payroll</li>
+            <li>Employee Self-Service Portal</li>
+        </ul>
+    </section>
+
+    <footer>
+        &copy; 2025 Employee Attendance Management System | All Rights Reserved
+    </footer>
+
+</body>
+</html>

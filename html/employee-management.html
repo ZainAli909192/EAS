@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Manage employees in the Employee Management System. Add, update, and deactivate employee records.">
+  <meta name="keywords" content="employee management, add employee, update employee, deactivate employee">
+  <meta name="author" content="Your Company Name">
+  <title>Employee Management - Employee Management System</title>
+  <!-- <link rel="stylesheet" href="../css/navbar.css"> -->
+  <link rel="stylesheet" href="../css/employee-management.css">
+  <link rel="stylesheet" href="../css/styles.css">
+  <script src="./navbar.js" defer></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+ <style>
+ * {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+.item {
+    width: 35px;
+    color: rgb(176, 125, 125);
+    background-color: white;
+    height: 2px;
+    margin-bottom: 0.4rem;
+}
+
+header {
+    position: relative;
+}
+
+.burger {
+    position: absolute;
+    display: none;
+    right: 6%;
+    margin-top: 1rem;
+    flex-direction: column;
+    cursor: pointer;
+}
+
+@media (max-width: 768px) {
+    header h1 {
+        margin-top: 0.7rem;
+        margin-bottom: 0rem;
+    }
+
+    /* Initially hidden, using opacity & transform instead of display:none */
+    header nav {
+        position: absolute;
+        top: 4.4rem; /* Adjust based on your design */
+        left: 0;
+        width: 100%;
+        height:60vh;
+        background-color: var(--primary-color);
+        color: white;
+        opacity: 0; 
+        transform: translateY(-20px);
+        transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+        pointer-events: none; /* Prevents clicks when hidden */
+    }
+
+    header nav ul {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 1rem 0;
+      }
+      nav ul li {
+        width: 100%;
+      }
+      
+      nav ul li a {
+      margin-left: 3rem;
+        /* background-color: red; */
+        /* Aligns text inside */
+        text-align: left;
+        width: auto; /* Makes sure it doesn't take full width */
+        display: inline-block; /* Prevents full width expansion */
+        padding: 10px 15px; /* Adds spacing */
+    
+      }
+
+    header nav ul li {
+        margin: 1rem 0;
+        margin-left: -5rem;
+    }
+
+    header {
+        width: 102vw;
+    }
+
+    .burger {
+        display: flex;
+    }
+
+    /* When active, smoothly show nav */
+    header nav.active {
+      margin-top: -1rem; 
+        opacity: 1;
+        transform: translateY(0);
+        pointer-events: all; /* Allow interaction when visible */
+    }
+    
+}
+
+
+ </style>
+  <header>
+    <div class="burger" id="burger">
+     <div class="item"></div>
+     <div class="item"></div>
+     <div class="item"></div> 
+    </div>
+    <h1>Dashboard</h1>
+    <nav>
+      <ul>
+        <li><a href="employee-management.html">Manage Employees</a></li>
+        <li><a href="attendance.html">Attendance</a></li>
+        <li><a href="leave-management.html">Leave Management</a></li>
+        <li><a href="reporting.html">Reports</a></li>
+        <li><a href="profile.html">Profile</a></li>
+      </ul>
+    </nav>
+  </header>
+  <main>
+  
+    <section id="employee-list">
+      <h2>Employee List</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>ID</th>
+            <th>Department</th>
+            <th>Designation</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="employee-table-body">
+          <!-- Rows will be populated dynamically -->
+      
+        </tbody>
+      </table>
+    </section>
+  </main>
+  <script src="../js/script.js"></script>
+</body>
+</html>

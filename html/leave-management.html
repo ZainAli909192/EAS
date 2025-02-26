@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Manage employee leave requests and approvals in the Employee Management System.">
+  <meta name="keywords" content="leave management, apply leave, leave approval, leave calendar">
+  <meta name="author" content="Your Company Name">
+  <title>Leave Management - Employee Management System</title>
+  <!-- <link rel="stylesheet" href="../css/leave-management.css"> -->
+  <link rel="stylesheet" href="../css/employee-management.css">
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>  
+  <header>
+    <h1>Leave management</h1>
+    <nav>
+      <!-- this section will switch for different user types.
+        like from first or second, one will show at a time-->
+      <ul>
+        <li><a href="employee-management.html">Manage Employees</a></li>
+        <li><a href="attendance.html">Attendance</a></li>
+        <li><a href="leave-management.html">Leave Management</a></li>
+        <li><a href="reporting.html">Reports</a></li>
+        <li><a href="profile.html">Profile</a></li>
+      </ul>
+
+      <ul>
+        <li><a href="attendance.html">Mark Attendance</a></li>
+        <li><a href="leave-management.html">Apply Leave</a></li>
+        <li><a href="profile.html">Update Profile</a></li>
+      </ul>
+    
+    </nav>
+  </header>
+  <main>
+    <section id="apply-leave">
+      <h2>Apply Leave</h2>
+      <form id="leave-form">
+        <!-- Leave Type and Start Date -->
+        <div class="form-row">
+          <div class="form-group">
+            <label for="leave-type">Leave Type:</label>
+            <select id="leave-type" name="leave-type" required>
+              <option value="sick">Sick Leave</option>
+              <option value="vacation">Vacation</option>
+              <option value="personal">Personal Leave</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="start-date">Start Date:</label>
+            <input type="date" id="start-date" name="start-date" required>
+          </div>
+        </div>
+    
+        <!-- End Date and Reason -->
+        <div class="form-row">
+          <div class="form-group">
+            <label for="end-date">End Date:</label>
+            <input type="date" id="end-date" name="end-date" required>
+          </div>
+          <div class="form-group">
+            <label for="reason">Reason:</label>
+            <textarea id="reason" name="reason" required></textarea>
+          </div>
+        </div>
+    
+        <!-- Upload Document -->
+        <div class="form-row">
+          <div class="form-group">
+            <label for="document">Upload Document (if sick):</label>
+            <input type="file" id="document" name="document">
+          </div>
+          <div class="form-group">
+            <!-- Empty div for spacing -->
+          </div>
+        </div>
+    
+        <!-- Submit Button -->
+        <div class="form-row">
+          <div class="form-group">
+            <button type="submit">Submit</button>
+          </div>
+        </div>
+      </form>
+    </section>
+  
+  </main>
+  <script src="js/leave-management.js"></script>
+</body>
+</html>
