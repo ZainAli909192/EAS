@@ -46,6 +46,7 @@
     color: rgb(246, 242, 242);
     border: 1px solid;
     border-radius: 5px;
+    border-radius: 2rem;
     font-size: 1rem;
     cursor: pointer;
     width: 100%; 
@@ -100,20 +101,18 @@
     border-radius: 5px;
     font-size: 0.9rem; 
     gap: 20rem;
-    background-color: red;
-  resize: none;
+    resize: none;
 }
 select, button{
   padding: 10px;
-  width: 200px;
-
+  display: inline-block;
+  width: 350px; 
 }
-
-  
-  
-  
-
-  
+select:active,
+select:focus,
+select:focus-visible {
+  background-color: red !important;
+}
   /* Responsive Design */
   @media (max-width: 768px) {
     .form-row {
@@ -140,7 +139,7 @@ select, button{
     padding: 1rem; /* Add padding for better spacing */
     
   }
-  main{
+  main{ 
     flex-direction: column;
   }
 
@@ -150,7 +149,6 @@ select, button{
   }
 
   .form-group input {
-background-color:red;
     width: 100%; /* Full width for inputs */
     padding: 0.8rem; /* Increase padding for better touch interaction */
     font-size: 1rem; /* Slightly larger font for readability */
@@ -167,7 +165,11 @@ background-color:red;
 
   #employee-list th,
   #employee-list td {
+    font-size: 0.6rem;
     padding: 0.5rem; /* Reduce padding for compact layout */
+  }
+  table{
+    width:90vw;
   }
 }
 
@@ -220,7 +222,7 @@ background-color:red;
   }
 
   #add-employee-form button {
-    width: 50%; /* Original width */
+    /* width: 50%; Original width */
   }
 
   #employee-list table {
@@ -231,4 +233,33 @@ background-color:red;
   #employee-list td {
     padding: 0.8rem; /* Original padding */
   }
+}
+table button{
+  width: auto;
+  border-radius: 2rem;
+}
+button:nth-child(1){
+  background-color: var(--secondory-color);
+  outline: none;
+  border: none;
+  color: white;
+}
+button:nth-child(2){
+  background-color: var(--primary-color);
+  outline: none;
+  border: none;
+  color: white;
+}
+
+#employee-list {
+  margin-left: 1rem;
+  /* width: 100%; */
+  /* overflow-x: scroll;  */
+  /* Allow scrolling only inside the table container */
+}
+
+#employee-list table {
+  width: 100%;
+  /* overflow-x: scroll; */
+  /* min-width: 600px; Prevent the table from becoming too small */
 }

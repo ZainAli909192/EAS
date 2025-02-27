@@ -15,6 +15,7 @@
       padding: 0;
       display: flex;
       min-height: 100vh;
+      background-color: white;
     }
     
     /* Sidebar (Left Navbar) */
@@ -34,7 +35,7 @@
   
   header h1 {
       font-weight: bold;
-      font-size: 1.4rem;
+      font-size: 1rem;
       margin-bottom: 2rem;
       margin-top: 2rem;
     }
@@ -66,59 +67,14 @@
     /* Main Content */
     main {
       display: flex;
-      flex-direction: column;
+      flex-direction: row;
       flex: 1/2;
       padding: 2rem;
       margin: 1rem;
       border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      /* box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); */
     }
 
-    
-  /* Responsive Design */
-  @media (max-width: 768px) {
-    body {
-      flex-direction: column;
-    }
-  
-    header {
-      width: 100%;
-      padding: 1rem 0;
-    }
-  
-    nav ul {
-      display: flex;
-      justify-content: space-around;
-    }
-  
-    nav ul li {
-      margin-bottom: 0;
-    }
-  
-    main {
-      margin: 1rem 0;
-    }
-  }
-
-  
-  
-  /* Responsive Design for sidebar */
-  @media (max-width: 768px) {
-    #sidebar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: var(--primary-color);
-      transform: translateX(-100%);
-      transition: transform 0.3s ease-in-out;
-    }
-  
-    #sidebar.show {
-      transform: translateX(0);
-    }
-  }
   
   #hamburger {
     position: absolute;
@@ -126,33 +82,6 @@
     left: 1rem;
     cursor: pointer;
     display: none;
-  }
-  
-  @media (max-width: 768px) {
-    #hamburger {
-      display: block;
-    }
-  
-    #sidebar {
-      flex-direction: column;
-      align-items: flex-start;
-      padding: 1rem;
-    }
-  
-    #sidebar.show {
-      animation: slideIn 0.5s ease-in-out forwards;
-    }
-  
-    @keyframes slideIn {
-      from {
-        transform: translateX(-100%);
-        opacity: 0;
-      }
-      to {
-        transform: translateX(0);
-        opacity: 1;
-      }
-    }
   }
   
   
@@ -185,66 +114,115 @@ header {
 }
 
 @media (max-width: 768px) {
-    header h1 {
-        margin-top: 0.7rem;
-        margin-bottom: 1rem;
-    }
+  /* General Styles */
+  table{
+    margin-left: -1rem;;
+  }
+  body {
+    flex-direction: column;
+  }
 
-    /* Initially hidden, using opacity & transform instead of display:none */
-    header nav {
-        position: absolute;
-        top: 4.4rem; /* Adjust based on your design */
-        left: 0;
-        width: 100%;
-        height:60vh;
-        background-color: var(--primary-color);
-        color: white;
-        opacity: 0; 
-        transform: translateY(-20px);
-        transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
-        pointer-events: none; /* Prevents clicks when hidden */
-    }
+  /* Header Styles */
+  header {
+    width: 100vw;
+    padding: 1rem 0;
+  }
 
-    header nav ul {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        padding: 1rem 0;
-      }
-      nav ul li {
-        width: 100%;
-      }
-      
-      nav ul li a {
-      margin-left: 3rem;
-        /* background-color: red; */
-        /* Aligns text inside */
-        text-align: left;
-        width: auto; /* Makes sure it doesn't take full width */
-        display: inline-block; /* Prevents full width expansion */
-        padding: 10px 15px; /* Adds spacing */
-    
-      }
+  header h1 {
+    margin-top: 1.2rem;
+    margin-bottom: 2rem;
+    font-size: 0.8rem;
+  }
 
-    header nav ul li {
-        margin: 1rem 0;
-        margin-left: -5rem;
-    }
+  /* Navigation Styles */
+  header nav {
+    position: absolute;
+    top: 4.4rem; /* Adjust based on your design */
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background-color: var(--primary-color);
+    color: white;
+    opacity: 0;
+    transform: translateY(-20px);
+    transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+    pointer-events: none; /* Prevents clicks when hidden */
+  }
 
-    header {
-        width: 140vw;
-    }
+  header nav ul {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem 0;
+  }
 
-    .burger {
-        display: flex;
-    }
+  nav ul li {
+    width: 100%;
+    margin: 1rem 0;
+    margin-left: -5rem;
+  }
 
-    /* When active, smoothly show nav */
-    header nav.active {
-      margin-top: -1rem; 
-        opacity: 1;
-        transform: translateY(0);
-        pointer-events: all; /* Allow interaction when visible */
-    }
-    
+  nav ul li a {
+    margin-left: 3rem;
+    text-align: left;
+    width: auto; /* Makes sure it doesn't take full width */
+    display: inline-block; /* Prevents full width expansion */
+    padding: 10px 15px; /* Adds spacing */
+  }
+
+  /* Burger Menu Styles */
+  .burger {
+    display: flex;
+  }
+
+  /* Active Navigation Styles */
+  header nav.active {
+    margin-top: -1rem;
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: all; /* Allow interaction when visible */
+  }
+
+  /* Main Content Styles */
+  main {
+    width: 90vw;
+    margin: 1rem 0;
+  }
+main h2{
+  font-size: 0.6rem; 
+}
+  /* Table Styles */
+   table {
+    display: block;
+    margin-left: -2.9rem;
+    max-width: 150vw;
+  }
+  main{
+    width: 100%;
+  }
+
+  /* Button Styles */
+  button {
+    margin-top: 0.4rem;
+  }
+}
+
+table{
+  display: block;
+  padding: 10px;
+}
+
+#add-employee-form button {
+  padding: 0.8rem 1.5rem;
+  /* background-color: var(--primary-color); */
+  box-shadow: 2px 2px 5px rgb(137, 122, 122);
+  outline: none;
+  background-color: var(--secondory-color);
+  color: rgb(246, 242, 242);
+  border: 1px solid;
+  border-radius: 5px;
+  border-radius: 2rem;
+  font-size: 1rem;
+  cursor: pointer;
+  width: 100%; 
 }

@@ -8,11 +8,18 @@
   <meta name="author" content="Your Company Name">
   <title>Profile - Employee Management System</title>
   <link rel="stylesheet" href="../css/profile.css">
+  <link rel="stylesheet" href="../css/styles.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
+<script src="../js/script.js" defer></script>
 <body>
   <header>
-    <h1>Profile</h1>
+    <div class="burger" id="burger">
+      <div class="item"></div>
+      <div class="item"></div>
+      <div class="item"></div> 
+     </div>
+    <h1>Apply leave</h1>
     <nav>
       <!-- this section will switch for different user types.
         like from first or second, one will show at a time-->
@@ -22,11 +29,9 @@
         <li><a href="leave-management.html">Leave Management</a></li>
         <li><a href="reporting.html">Reports</a></li>
         <li><a href="profile.html">Profile</a></li>
-      </ul>
-
-      <ul>
+     
         <li><a href="attendance.html">Mark Attendance</a></li>
-        <li><a href="leave-management.html">Apply Leave</a></li>
+        <li><a href="apply-leave.html">Apply Leave</a></li>
         <li><a href="profile.html">Update Profile</a></li>
       </ul>
     
@@ -56,7 +61,7 @@
             <input type="text" id="job-timing" name="job-timing" required>
           </div>
         </div>
-        <button type="submit">Save Changes</button>
+        <button type="submit">Save  Changes</button>
       </form>
     </section>
   </main>

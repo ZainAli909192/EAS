@@ -5,12 +5,8 @@
   --secondory-color:#34495e;
   --secondory-color:hsl(213, 28%, 41%);
   /* --secondory-color:#7499c2; */
-  --text-color:hsl(80, 50%, 60%); 
+  --text-color:hsl(80, 50%, 36%); 
   --secondory-color:hsl(80, 50%, 39%);
-
-}
-header{
-  width: 104vw;
 }
   /* Main Content */
   main {
@@ -18,7 +14,6 @@ header{
 
     gap: 3rem;
     padding: 2rem;
-    background-color: #fff;
     margin: 1rem;
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
@@ -26,6 +21,8 @@ header{
   
   #clock-in-out h2,
   #attendance-summary h2 {
+    margin-top: 1rem;
+
     font-size: 1.5rem;
     color: #333;
     margin-bottom: 1rem;
@@ -40,10 +37,12 @@ header{
     border-radius: 5px;
     font-size: 1rem;
     cursor: pointer;
+    border-radius: 2rem; 
+    box-shadow: 0px 4px 4px rgb(94, 88, 88);
   }
-  
+   
   #clock-in-out button:hover {
-    background-color: var(--text-color);
+    background-color: var(--primary-color);
   }
   
   #camera-preview {
@@ -57,6 +56,7 @@ header{
   
   #attendance-summary table {
     width: 100%;
+    
     border-collapse: collapse;
   }
   
@@ -79,11 +79,6 @@ header{
       flex-direction: column;
     }
     
-    main {
-      margin: 1rem 0;
-      height: 80vh;
-    width: 140vw;
-    }
   }
   #camera-preview {
     margin-top: 1rem;

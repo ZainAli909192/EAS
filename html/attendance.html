@@ -9,29 +9,38 @@
   <title>Attendance Tracking - Employee Management System</title>
   <link rel="stylesheet" href="../css/attendance.css">
   <link rel="stylesheet" href="../css/styles.css">
-  <script src="../js/script.js" defer></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
+<script src="../js/script.js" defer></script>
 <body>
-
-<header>
-  <div class="burger" id="burger">
-   <div class="item"></div>
-   <div class="item"></div>
-   <div class="item"></div> 
-  </div>
-  <h1>Dashboard</h1>
-  <nav>
-    <ul>
-      <li><a href="employee-management.html">Manage Employees</a></li>
-      <li><a href="attendance.html">Attendance</a></li>
-      <li><a href="leave-management.html">Leave Management</a></li>
-      <li><a href="reporting.html">Reports</a></li>
-      <li><a href="profile.html">Profile</a></li>
-    </ul>
-  </nav>
-</header>
-  <main>
+  
+  <header>
+    <div class="burger" id="burger">
+      <div class="item"></div>
+      <div class="item"></div>
+      <div class="item"></div> 
+     </div>
+    <h1>Mark Attandance</h1>
+    <nav>
+      <!-- this section will switch for different user types.
+        like from first or second, one will show at a time-->
+      <ul>
+        <li><a href="employee-management.html">Manage Employees</a></li>
+        <li><a href="attendance.html">Attendance</a></li>
+        <li><a href="leave-management.html">Leave Management</a></li>
+        <li><a href="reporting.html">Reports</a></li>
+        <li><a href="profile.html">Profile</a></li>
+      </ul>
+  
+      <ul>
+        <li><a href="attendance.html">Mark Attendance</a></li>
+        <li><a href="apply-leave.html">Apply Leave</a></li>
+        <li><a href="profile.html">Update Profile</a></li>
+      </ul>
+    
+    </nav>
+  </header>
+  <main style="display: block;">
     <section id="clock-in-out">
       <h2>Mark attandance Clock-In/Clock-Out</h2>
       <button id="clock-in-btn">Clock In</button>
@@ -64,8 +73,8 @@
             <td>3</td>
             <td>
               <img id="captured-photo" alt="Captured Photo" style="display: none;">
-
             </td>
+            <td>Absent</td>
            </tr>
         </tbody>
       </table>

@@ -7,26 +7,43 @@
   <meta name="keywords" content="reporting, attendance reports, employee reports, export reports">
   <meta name="author" content="Your Company Name">
   <title>Reporting - Employee Management System</title>
+  <link rel="stylesheet" href="../css/styles.css">
   <link rel="stylesheet" href="../css/reporting.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
+<script src="../js/script.js" defer></script>
 <body>
   <header>
-    <h1>Reporting</h1>
+    <div class="burger" id="burger">
+      <div class="item"></div>
+      <div class="item"></div>
+      <div class="item"></div> 
+     </div>
+    <h1>Reports</h1>
     <nav>
+      <!-- this section will switch for different user types.
+        like from first or second, one will show at a time-->
       <ul>
-        <li><a href="dashboard.html">Dashboard</a></li>
-        <li><a href="employee-management.html">Employee Management</a></li>
+        <li><a href="employee-management.html">Manage Employees</a></li>
         <li><a href="attendance.html">Attendance</a></li>
+        <li><a href="leave-management.html">Leave Management</a></li>
+        <li><a href="reporting.html">Reports</a></li>
+        <li><a href="profile.html">Profile</a></li>
+    
+        <li><a href="attendance.html">Mark Attendance</a></li>
+        <li><a href="apply-leave.html">Apply Leave</a></li>
+        <li><a href="profile.html">Update Profile</a></li>
       </ul>
+    
     </nav>
   </header>
   <main>
     <section id="attendance-reports">
       <h2>Attendance Reports</h2>
       <form id="attendance-report-form">
-        <label for="date-range">Date Range:</label>
+        <label for="date-range">From date:</label>
         <input type="date" id="start-date" name="start-date" required>
+        <label for="date-range">To date:</label>
         <input type="date" id="end-date" name="end-date" required>
         <label for="department">Department:</label>
         <select id="department" name="department">
@@ -35,7 +52,8 @@
           <option value="it">IT</option>
           <option value="sales">Sales</option>
         </select>
-        <button type="submit">Generate Report</button>
+<br>
+          <button type="submit">Generate Report</button>
       </form>
       <div id="report-results">
         <!-- Report results will be displayed here -->
@@ -44,7 +62,7 @@
     <section id="export-reports">
       <h2>Export Reports</h2>
       <button id="export-csv">Export as CSV</button>
-      <button id="export-excel">Export as Excel</button>
+      <!-- <button id="export-excel">Export as Excel</button> -->
       <button id="export-pdf">Export as PDF</button>
     </section>
   </main>

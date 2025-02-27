@@ -1,11 +1,21 @@
+
 /* General Styles */
+:root{
+  --primary-color:#2c3e50;
+  --secondory-color:#EDE8F5;
+  --secondory-color:#34495e;
+  --secondory-color:hsl(213, 28%, 41%);
+  /* --secondory-color:#7499c2; */
+  --text-color:hsl(80, 50%, 60%); 
+  --secondory-color:hsl(80, 50%, 39%);
+
+}
 body {
     font-family: 'Arial', sans-serif;
     margin: 0;
     padding: 0;
     display: flex;
     min-height: 100vh;
-    background-color: #f4f4f9;
   }
   
   /* Sidebar (Left Navbar) */
@@ -52,66 +62,68 @@ body {
   main {
     flex: 1;
     padding: 2rem;
-    background-color: #fff;
     margin: 1rem;
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    width: 90%;
+    display: block;
   }
-  
   #attendance-reports h2,
   #export-reports h2 {
     font-size: 1.5rem;
     color: #333;
     margin-bottom: 1rem;
   }
-  
   #attendance-report-form label {
     display: block;
     margin-bottom: 0.5rem;
     color: #555;
   }
-  
   #attendance-report-form input,
   #attendance-report-form select {
-    width: 100%;
+    width: 50%;
     padding: 0.8rem;
     margin-bottom: 1rem;
     border: 1px solid #ddd;
     border-radius: 5px;
     font-size: 1rem;
   }
-  
   #attendance-report-form button {
-    padding: 0.8rem 1.5rem;
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    font-size: 1rem;
-    cursor: pointer;
-  }
+   padding: 0.8rem 1.5rem;
+   box-shadow: 2px 2px 5px rgb(137, 122, 122);
+   outline: none;
+   background-color: var(--secondory-color);
+   color: rgb(246, 242, 242);
+   border: 1px solid;
+   border-radius: 2rem;
+   font-size: 1rem;
+   cursor: pointer;
+   width: auto; 
+}
   
   #attendance-report-form button:hover {
-    background-color: #0056b3;
+    background-color: var(--primary-color);
   }
   
   #report-results {
     margin-top: 2rem;
   }
   
+ 
   #export-reports button {
     padding: 0.8rem 1.5rem;
     margin-right: 1rem;
-    background-color: #28a745;
+    background-color: var(--primary-color);
     color: #fff;
     border: none;
     border-radius: 5px;
     font-size: 1rem;
     cursor: pointer;
+    border-radius: 2rem;
   }
   
   #export-reports button:hover {
-    background-color: #218838;
+    background-color: var(--secondory-color);
   }
   
   /* Footer */
@@ -128,7 +140,21 @@ body {
     body {
       flex-direction: column;
     }
-  
+    main{
+      margin-top: -0.7rem;
+      display: flex;
+      width: 99vw;
+      margin-left: 0.2rem;
+      flex-direction: column;
+    }
+    input,select{
+      width: 90% !important;
+    }
+    #export-reports  {
+
+      display: flex;
+      flex-direction: column;
+    }
     header {
       width: 100%;
       padding: 1rem 0;
