@@ -41,15 +41,17 @@
     background-color: var(--secondory-color);
     color: #fff;
     border: none;
-    border-radius: 5px;
+    box-shadow: 0px 4px 8px rgb(85, 83, 83);
+    border-radius: 2rem;
     font-size: 1rem;
     cursor: pointer;
     margin-top: 1rem;
     width: auto;
   }
   
-  #profile-form button:hover {
-    background-color: var(--text-color);
+  #profile-form button:hover { 
+    background-color: hsl(80, 50%, 36%);
+    /* background-color: red; */ 
   }
   
   /* Footer */
