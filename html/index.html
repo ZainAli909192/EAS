@@ -1,135 +1,221 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Employee Attendance Management System</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: Arial, sans-serif;
-            scroll-behavior: smooth;
-        }
-        
-        body {
-            background-color: #f4f4f4;
-            color: #333;
-        }
-        
-        /* Header & Navigation */
-        header {
-            background: #333;
-            color: white;
-            text-align: center;
-            padding: 20px;
-            font-size: 24px;
-        }
-
-        nav {
-            display: flex;
-            justify-content: center;
-            background: #444;
-            padding: 10px;
-            position: sticky;
-            top: 0;
-            width: 100%;
-            z-index: 1000;
-        }
-
-        nav a {
-            color: white;
-            text-decoration: none;
-            padding: 10px 20px;
-            margin: 0 10px;
-            background: #555;
-            border-radius: 5px;
-            transition: 0.3s;
-        }
-
-        nav a:hover {
-            background: #777;
-        }
-
-        /* Sections */
-        section {
-            padding: 60px;
-            text-align: center;
-        }
-
-        #home {
-            background: url('background.jpg') no-repeat center center/cover;
-            color: white;
-            height: 80vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
-
-        #about, #services {
-            background: white;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-            margin: 20px;
-            border-radius: 10px;
-        }
-
-        #services ul {
-            list-style: none;
-            padding: 20px;
-        }
-
-        #services ul li {
-            font-size: 18px;
-            padding: 10px;
-        }
-
-        /* Footer */
-        footer {
-            background: #222;
-            color: white;
-            text-align: center;
-            padding: 15px;
-            margin-top: 30px;
-        }
-
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Membership Management System</title>
+  <link rel="stylesheet" href="../css/index.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="navbar-logo">
+      <img src="../img/logo.jpg" alt="Logo">
+    </div>
+    <ul class="navbar-links">
+      <li><a href="#features"> Home</a></li>
+      <li><a href="#features"> About us</a></li>
+      <li><a href="#features"> Features</a></li>
+      <li><a href="#contact"> Contact</a></li>
+    </ul>
+    <a href="./login.html" class="navbar-button">
+      <button class="btn-primary"><i class="fas fa-sign-in-alt"></i> Login</button>
+    </a>
+    <div class="navbar-toggle">
+      <div class="bar"></div>
+      <div class="bar"></div>
+      <div class="bar"></div>
+    </div>
+  </nav>
 
-    <header>Employee Attendance Management System</header>
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-content">
+      <h1>Welcome to the Employees Management System</h1>
+      <p>Efficiently manage your employees, attendance, and leave requests with our all-in-one solution.</p>
+      <div class="hero-buttons">
+        <a href="./register.html" class="btn-primary">Get Started</a>
+        <a href="#features" class="btn-primary">Learn More</a>
+      </div>
+    </div>   
+    <div class="hero-image">
+      <img src="https://img.freepik.com/free-photo/businessman-using-application-contact-with-his-colleagues_1134-644.jpg?ga=GA1.1.572590152.1728395548&semt=ais_hybrid" alt="Membership Management">
+    </div>
+    <!-- Curvy Background SVG -->
+    
+    <div class="curvy-bg">
+      <svg viewBox="0 0 1440 160" xmlns="http://www.w3.org/2000/svg">
+        <path
+          fill="var(--primary-color)"
+          fill-opacity="1"
+          d="M0,80L48,74.6C96,69,192,58,288,64C384,70,480,90,576,90.6C672,90,768,70,864,64C960,58,1056,70,1152,74.6C1248,80,1344,80,1392,80L1440,80L1440,160L1392,160C1344,160,1248,160,1152,160C1056,160,960,160,864,160C768,160,672,160,576,160C480,160,384,160,288,160C192,160,96,160,48,160L0,160Z"
+        ></path>
+      </svg>
+    </div> 
+  </section>
+  
+  <!-- Hero Section 2 -->
+  <section class="hero hero2">
+    <div class="hero-image">
+      <img src="https://img.freepik.com/premium-vector/video-call-conference-working-from-home-colleagues-different-nationalities-ages-talk_976307-2922.jpg?ga=GA1.1.572590152.1728395548&semt=ais_hybrid" alt="Membership Management">
+    </div>
 
-    <nav>
-        <a href="#home">Home</a>
-        <a href="#about">About</a>
-        <a href="#services">Services</a>
-    </nav>
+    <div class="hero-content">
+      <h2>Transform Your Business with Our All-in-One Solution</h2>
+      <p>Streamline your employee management, attendance tracking, and leave requests with our cutting-edge platform. Say goodbye to tedious paperwork and hello to increased productivity!</p>
+      <div class="curvy-bg">
+        <svg viewBox="0 0 1440 160" xmlns="http://www.w3.org/2000/svg">
+          <path
+            fill="var(--primary-color)"
+            fill-opacity="1"
+            d="M0,80L48,74.6C96,69,192,58,288,64C384,70,480,90,576,90.6C672,90,768,70,864,64C960,58,1056,70,1152,74.6C1248,80,1344,80,1392,80L1440,80L1440,160L1392,160C1344,160,1248,160,1152,160C1056,160,960,160,864,160C768,160,672,160,576,160C480,160,384,160,288,160C192,160,96,160,48,160L0,160Z"
+          ></path>
+        </svg>
+      </div> 
+    </div>   
+    <!-- Curvy Background SVG -->
+ 
+  </section>
 
-    <section id="home">
-        <h1>Welcome to Our Employee Attendance System</h1>
-        <p>Manage employee attendance efficiently and seamlessly.</p>
-    </section>
+    <!-- About Section -->
+    <section class="about">
+      <div class="about-content">
+          <h2>About <span style="color: var(--accent-color)">System</span></h2>
 
-    <section id="about">
-        <h2>About Us</h2>
-        <p>Our Employee Attendance Management System helps organizations track employee attendance, leave management, and reporting efficiently. Our goal is to improve workforce management through an easy-to-use system.</p>
-    </section>
+          <div class="main-box">
 
-    <section id="services">
-        <h2>Our Services</h2>
-        <ul>
-            <li>Real-time Attendance Tracking</li>
-            <li>Leave Management System</li>
-            <li>Detailed Reporting & Analytics</li>
-            <li>Integration with Payroll</li>
-            <li>Employee Self-Service Portal</li>
-        </ul>
-    </section>
+            <p class="brief">
+              It's a  solution designed to streamline attendance tracking, 
+            leave management, and employee scheduling for businesses of all sizes. 
+            With features like real-time clock-in/clock-out tracking, 
+            automated attendance calculations. This EAS ensures accurate and efficient
+             workforce management. The system also provides detailed reporting and analytics, 
+             enabling managers to make data-driven decisions.
+          </p>  
+        </div>
+      </div>
+  </section>
 
+<!-- Features Section -->
+<section id="features" class="features">
+  
+  <h2>Key Features</h2>
+    
+    <div class="features-grid">
+      <!-- Feature 1: Admin Role -->
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="fas fa-user-shield"></i>
+        </div>
+        <h3>Admin Role</h3>
+        <p>Manage company memberships, add/update/delete members, and assign subscription packages.</p>
+      </div>
+  
+      <!-- Feature 2: Employee Management -->
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="fas fa-users"></i>
+        </div>
+        <h3>Employee Management</h3>
+        <p>Add, update, and remove employees. Manage schedules, roles, and attendance.</p>
+      </div>
+  
+      <!-- Feature 3: Attendance Tracking -->
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="fas fa-clock"></i>
+        </div>
+        <h3>Attendance Tracking</h3>
+        <p>Track employee clock-in/clock-out times with photo verification and attendance adjustments.</p>
+      </div>
+  
+      <!-- Feature 4: Leave Management -->
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="fas fa-calendar-check"></i>
+        </div>
+        <h3>Leave Management</h3>
+        <p>Handle employee leave requests, approvals, and rejections with ease.</p>
+      </div>
+  
+      <!-- Feature 5: Reporting -->
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="fas fa-chart-line"></i>
+        </div>
+        <h3>Reporting</h3>
+        <p>Generate and export attendance reports in CSV, Excel, and PDF formats.</p>
+      </div>  
+    </div>
+     
+  </section>
+
+  <!-- About Section -->
+  <!-- <section id="about" class="about">
+    <h2>About the System</h2>
+    <p>
+      Our Membership Management System is designed to streamline the management of company memberships, employees, attendance, and leave requests. Whether you're an admin managing multiple companies or a company admin managing employees, our system provides the tools you need to stay organized and efficient.
+    </p>
+  </section> -->
+
+    <!-- Footer Section -->
     <footer>
-        &copy; 2025 Employee Attendance Management System | All Rights Reserved
+        <div class="footer-container">
+            <!-- Features Section -->
+            <div class="footer-column">
+                <img  src="../img/logo.jpg" alt="">
+                <ul>
+
+               <li>
+
+                 <a href="./">&copy; All rights reserved</a>
+               </li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>Features</h3>
+                <ul>
+                    <li><a href="#">Attendance Tracking</a></li>
+                    <li><a href="#">Leave Management</a></li>
+                    <li><a href="#">Employee Management</a></li>
+                    <li><a href="#">Reporting</a></li>
+                </ul>
+            </div>
+
+            <!-- Quick Links Section -->
+            <div class="footer-column">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#">Services</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </div>
+
+            <!-- Contact Form -->
+            <div class="footer-column">
+                <h3>Contact Us</h3>
+                <form>
+                    <input type="text" placeholder="Your Name" required>
+                    <input type="email" placeholder="Your Email" required>
+                    <textarea placeholder="Your Message" required></textarea>
+                    <button type="submit">Send</button>
+                </form>
+            </div>
+        </div>
     </footer>
 
+  <!-- Scripts -->
+  <script>
+    // Toggle mobile menu
+    const toggleButton = document.querySelector('.navbar-toggle');
+    const navbarLinks = document.querySelector('.navbar-links');
+
+    toggleButton.addEventListener('click', () => {
+      navbarLinks.classList.toggle('active');
+    });
+  </script>
 </body>
 </html>
