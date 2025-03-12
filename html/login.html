@@ -15,21 +15,51 @@
         <h2>Welcome Back</h2>
         <p>Please log in to your account</p>
       </div>
-      <form id="login-form"  method="post">
+      <form id="login-form" method="post">
+     
         <div class="input-group">
           <label for="id">ID</label>
-          <input type="text" id="id" name="id" placeholder="Enter your ID" required>
+          <input
+            type="text"
+            id="id"
+            name="id"
+            placeholder="Enter your ID"
+            required
+          />
         </div>
         <div class="input-group">
           <label for="password">Password</label>
-          <input type="password" id="password" name="password" placeholder="Enter your password" required>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            placeholder="Enter your password"
+            required
+          />
         </div>
-        <button type="button" class="login-button" onclick="window.location.href='./employee-management.html'">Log In</button>
+        <div class="input-group">
+          <label for="role">Role</label>
+          <select id="role" name="role">
+            <option value="employee">Employee</option>
+            <option value="company_manager">Company / Manager</option>
+            <option value="admin">Admin / Manager</option>
+          </select>
+        </div>
+        <button
+          type="button"
+          class="login-button"
+          onclick="window.location.href='./employee-management.html'"
+        >
+          Log In
+        </button>
       </form>
       <div class="login-footer">
-        <p>Don't have an account? <a href="./signup.html">Sign Up</a></p>
-        <p><a href="./forgot-password.html">Forgot Password?</a></p>
-      
+        <p>
+          Don't have an account? <a href="./signup.html">Sign Up</a>
+        </p>
+        <p>
+          <a href="./forgot-password.html">Forgot Password?</a>
+        </p>
       </div>
     </div>
   </div>

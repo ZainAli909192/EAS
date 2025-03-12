@@ -4,8 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Membership Management System</title>
+  <link rel="stylesheet" href="../css/contact.css">
   <link rel="stylesheet" href="../css/index.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<script src="../js/script.js" defer></script>
 </head>
 <body>
   <!-- Navbar -->
@@ -15,9 +17,9 @@
     </div>
     <ul class="navbar-links">
       <li><a href="#features"> Home</a></li>
-      <li><a href="#features"> About us</a></li>
+      <li><a href="./about.html"> About us</a></li>
       <li><a href="#features"> Features</a></li>
-      <li><a href="#contact"> Contact</a></li>
+      <li><span class="open-popup-btn"> Contact</span></li>
     </ul>
     <a href="./login.html" class="navbar-button">
       <button class="btn-primary"><i class="fas fa-sign-in-alt"></i> Login</button>
@@ -28,13 +30,42 @@
       <div class="bar"></div>
     </div>
   </nav>
-
+  <div class="popup-overlay">
+    <div class="popup-form">
+      <button class="close-popup-btn"><i class="fas fa-times"></i></button>
+      <h2>Contact Us</h2>
+      <form id="contact-form">
+        <div class="form-group">
+          <label for="name">Name</label>
+          <input type="text" id="name" name="name" required>
+        </div>
+        <div class="form-group">
+          <label for="number">Phone Number</label>
+          <input type="tel" id="number" name="number" required>
+        </div>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" required>
+        </div>
+        <div class="form-group">
+          <label for="message">Message</label>
+          <textarea id="message" name="message" rows="4" required></textarea>
+        </div>
+        <button type="submit" class="btn-primary">Send Message</button>
+      </form>
+    </div>
+  </div>
   <!-- Hero Section -->
-  <section class="hero">
+  <section class="hero ">
+    <div class="random-dot"></div> <!-- Add this element -->
+
     <div class="hero-content">
-      <h1>Welcome to the Employees Management System</h1>
-      <p>Efficiently manage your employees, attendance, and leave requests with our all-in-one solution.</p>
-      <div class="hero-buttons">
+      <div class="typing-container">
+        <h1 class="typing-effect">
+          Save Time and Money with Automated Attendance Tracking
+          <span class="circle-cursor"></span>
+        </h1>
+      </div>      <p>Our system streamlines attendance management, freeing up your HR team and reducing costly errors.</p> <div class="hero-buttons">
         <a href="./register.html" class="btn-primary">Get Started</a>
         <a href="#features" class="btn-primary">Learn More</a>
       </div>
@@ -62,9 +93,9 @@
     </div>
 
     <div class="hero-content">
-      <h2>Transform Your Business with Our All-in-One Solution</h2>
-      <p>Streamline your employee management, attendance tracking, and leave requests with our cutting-edge platform. Say goodbye to tedious paperwork and hello to increased productivity!</p>
-      <div class="curvy-bg">
+      <h2>Accurate Attendance, Simplified</h2>
+      <p>Ensure accurate time tracking, eliminate errors, and gain a clear view of employee attendance with our reliable system.</p>
+        <div class="curvy-bg">
         <svg viewBox="0 0 1440 160" xmlns="http://www.w3.org/2000/svg">
           <path
             fill="var(--primary-color)"
@@ -216,6 +247,6 @@
     toggleButton.addEventListener('click', () => {
       navbarLinks.classList.toggle('active');
     });
-  </script>
+  </script> 
 </body>
 </html>

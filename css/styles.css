@@ -155,7 +155,6 @@ header {
     align-items: center;
     padding: 1rem 0;
   }
-
   nav ul li {
     width: 100%;
     margin: 1rem 0;
@@ -177,10 +176,15 @@ header {
 
   /* Active Navigation Styles */
   header nav.active {
-    margin-top: -1rem;
+    margin-top: 4rem;
     opacity: 1;
     transform: translateY(0);
     pointer-events: all; /* Allow interaction when visible */
+  background-color: red;
+  }
+  .navbar-links{
+    margin-top: 4rem;
+    background-color: red;
   }
 
   /* Main Content Styles */

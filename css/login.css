@@ -72,13 +72,14 @@
     color: white;
   }
   
-  .input-group input {
+  .input-group input, select {
     width: 100%;
     padding: 0.8rem;
     border: 1px solid #ddd;
     border-radius: 8px;
     font-size: 1rem;
     transition: border-color 0.3s ease;
+    cursor: pointer;
   }
   
   .input-group input:focus {

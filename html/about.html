@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Membership Management System</title>
+  <link rel="stylesheet" href="../css/contact.css">
+  <link rel="stylesheet" href="../css/index.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<script src="../js/script.js" defer></script>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="navbar-logo">
+      <img src="../img/logo.jpg" alt="Logo">
+    </div>
+    <ul class="navbar-links">
+      <li><a href="./"> Home</a></li>
+      <li><a href="./about.html"> About us</a></li>
+      <li><a href="./.#features"> Features</a></li>
+      <li><span class="open-popup-btn"> Contact</span></li>
+    </ul>
+    <a href="./login.html" class="navbar-button">
+      <button class="btn-primary"><i class="fas fa-sign-in-alt"></i> Login</button>
+    </a>
+    <div class="navbar-toggle">
+      <div class="bar"></div>
+      <div class="bar"></div>
+      <div class="bar"></div>
+    </div>
+  </nav>
+  <div class="popup-overlay">
+    <div class="popup-form">
+      <button class="close-popup-btn"><i class="fas fa-times"></i></button>
+      <h2>Contact Us</h2>
+      <form id="contact-form">
+        <div class="form-group">
+          <label for="name">Name</label>
+          <input type="text" id="name" name="name" required>
+        </div>
+        <div class="form-group">
+          <label for="number">Phone Number</label>
+          <input type="tel" id="number" name="number" required>
+        </div>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" required>
+        </div>
+        <div class="form-group">
+          <label for="message">Message</label>
+          <textarea id="message" name="message" rows="4" required></textarea>
+        </div>
+        <button type="submit" class="btn-primary">Send Message</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Hero Section -->
+  <section class="hero mainhero">
+    <div class="random-dot"></div> <!-- Add this element -->
+
+    <div class="hero-content">
+        <h1>About Our Employee Attendance Management System</h1>
+
+        <p>
+          Our mission is to make employee attendance tracking effortless and efficient for businesses of all sizes. We provide a user-friendly platform that simplifies time tracking, automates leave management, and provides insightful reports to help you optimize your workforce.
+        </p>
+        
+        <p>
+          Learn more about how our system can improve accuracy, reduce errors, and save you valuable time and resources.
+        </p> <div class="hero-buttons">
+        <a href="./register.html" class="btn-primary">Get Started</a>
+        <a href="#features" class="btn-primary">Learn More</a>
+      </div>
+    </div>   
+    <div class="hero-image">
+      <img src="https://img.freepik.com/premium-photo/businessman-black-suit-present-financial-data-laptop-camera-entity_31965-166021.jpg?ga=GA1.1.572590152.1728395548" alt="Membership Management">
+    </div>
+    <!-- Curvy Background SVG -->
+  
+  </section>
+  
+  <!-- Hero Section 2 -->
+  <section class="hero hero2 hero3" id="hero2">
+    <div class="hero-image">
+      <img src="https://img.freepik.com/free-photo/young-businessman-going-through-paperwork-using-laptop-while-working-home_637285-5991.jpg?ga=GA1.1.572590152.1728395548" alt="Membership Management">
+    </div>
+
+    <div class="hero-content">
+        <h2>Tired of outdated attendance systems?</h2>
+        <p>We understand the frustration of managing employee attendance with clunky spreadsheets or unreliable manual processes. Our system is designed to automate those tedious tasks, freeing up your time and resources so you can focus on what truly matters – your employees and your business.</p>   </div>   
+ 
+  </section>
+  <!-- footer  -->
+  <footer>
+    <div class="footer-container">
+        <!-- Features Section -->
+        <div class="footer-column">
+            <img  src="../img/logo.jpg" alt="">
+            <ul>
+
+           <li>
+
+             <a href="./">&copy; All rights reserved</a>
+           </li>
+            </ul>
+        </div>
+        <div class="footer-column">
+            <h3>Features</h3>
+            <ul>
+                <li><a href="#">Attendance Tracking</a></li>
+                <li><a href="#">Leave Management</a></li>
+                <li><a href="#">Employee Management</a></li>
+                <li><a href="#">Reporting</a></li>
+            </ul>
+        </div>
+
+        <!-- Quick Links Section -->
+        <div class="footer-column">
+            <h3>Quick Links</h3>
+            <ul>
+                <li><a href="#">Home</a></li>
+                <li><a href="#">About Us</a></li>
+                <li><a href="#">Services</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+        </div>
+
+        <!-- Contact Form -->
+        <div class="footer-column">
+            <h3>Contact Us</h3>
+            <form>
+                <input type="text" placeholder="Your Name" required>
+                <input type="email" placeholder="Your Email" required>
+                <textarea placeholder="Your Message" required></textarea>
+                <button type="submit">Send</button>
+            </form>
+        </div>
+    </div>
+</footer>
+
+</body>
+</html>
