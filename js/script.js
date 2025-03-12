@@ -96,8 +96,15 @@ const type = () => {
   if (index < text.length) {
     heading.textContent += text.charAt(index);
     index++;
-    setTimeout(type, 40); // Adjust typing speed
+    setTimeout(type, 50); // Adjust typing speed
   }
 };
 
-type();
+setTimeout(type, 1000) ;
+
+document.addEventListener('DOMContentLoaded', function() {
+  // Wait for 3 seconds, then add the 'loaded' class to the body
+  setTimeout(function() {
+    document.body.classList.add('loaded');
+  }, 1500); // 3000 milliseconds = 3 seconds
+});
