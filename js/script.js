@@ -33,3 +33,71 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 });
+// random circle showing in hero
+setInterval(function () {
+    const randomDot = document.querySelector(".random-dot");
+    const x = Math.floor(Math.random() * (window.innerWidth * 0.5));
+    const y = Math.floor(Math.random() * (window.innerHeight * 0.6));
+  
+    // Update the position and opacity
+    randomDot.style.top = `${y}px`;
+    randomDot.style.left = `${x}px`;
+    randomDot.style.opacity = Math.random() > 0.2 ? 1 : 0;
+  }, 2000);
+
+//   contact js
+// DOM Elements
+const openPopupBtn = document.querySelector(".open-popup-btn");
+const popupOverlay = document.querySelector(".popup-overlay");
+const closePopupBtn = document.querySelector(".close-popup-btn");
+const contactForm = document.getElementById("contact-form");
+
+// Open Popup
+openPopupBtn.addEventListener("click", () => {
+  popupOverlay.classList.add("active");
+});
+
+// Close Popup
+closePopupBtn.addEventListener("click", () => {
+  popupOverlay.classList.remove("active");
+});
+
+// Close Popup when clicking outside the form
+popupOverlay.addEventListener("click", (e) => {
+  if (e.target === popupOverlay) {
+    popupOverlay.classList.remove("active");
+  }
+});
+
+// Close Popup on Escape key press
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && popupOverlay.classList.contains("active")) {
+    popupOverlay.classList.remove("active");
+  }
+});
+
+// Handle Form Submission
+contactForm.addEventListener("submit", (e) => {
+  e.preventDefault();
+  const formData = new FormData(contactForm);
+  const data = Object.fromEntries(formData);
+  alert("Message sent successfully!");
+  popupOverlay.classList.remove("active");
+  contactForm.reset();
+});
+
+
+const heading = document.querySelector('.typing-effect');
+const text = heading.textContent;
+heading.textContent = ''; // Clear the text initially
+
+let index = 0;
+const type = () => {
+  if (index < text.length) {
+    heading.textContent += text.charAt(index);
+    index++;
+    setTimeout(type, 100); // Adjust typing speed
+  }
+};
+
+type();
