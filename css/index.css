@@ -75,44 +75,7 @@
   }
   
   /* Hero Section */
-  .typing-container {
-    max-width: 500px; /* Adjust as needed */
-    overflow: hidden;
-  }
   
-  .typing-effect {
-    /* Remove white-space: nowrap; */
-    position: relative; 
-    /* ... other styles ... */
-    animation:
-      typing 5s steps(42, end), /* Adjust steps based on character count */
-      blink-circle 0.75s 1;
-  }
-  @keyframes typing {
-    from {
-      width: 0;
-    }
-    to {
-      width: 100%; /* Or a specific width in px/em */
-    }
-  }
-  
-  .circle-cursor {
-    position: absolute;
-    right: 0;
-    top: 50%; /* Adjust vertical position */
-    width: 10px; /* Size of the circle */
-    height: 10px;
-    border-radius: 50%;
-    background-color: yellow; /* Color of the circle */
-    animation: blink-circle 0.75s 3;
-  }
-  
-  @keyframes blink-circle {
-    50% {
-      opacity: 0;
-    }
-  }
   .hero {
     display: flex;
     justify-content: space-between;
