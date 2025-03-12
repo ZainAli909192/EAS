@@ -82,7 +82,7 @@
   
   .typing-effect {
     /* Remove white-space: nowrap; */
-    position: relative;
+    position: relative; 
     /* ... other styles ... */
     animation:
       typing 5s steps(42, end), /* Adjust steps based on character count */
