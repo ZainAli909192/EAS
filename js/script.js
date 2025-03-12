@@ -96,7 +96,7 @@ const type = () => {
   if (index < text.length) {
     heading.textContent += text.charAt(index);
     index++;
-    setTimeout(type, 100); // Adjust typing speed
+    setTimeout(type, 40); // Adjust typing speed
   }
 };
 
