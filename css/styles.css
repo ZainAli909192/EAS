@@ -97,11 +97,13 @@
     background-color: white;
     height: 2px;
     margin-bottom: 0.4rem;
+    
 }
 
 header {
     position: relative;
     /* width: 140vw;  */
+    height: 100vh;
 }
 
 .burger {
@@ -112,9 +114,20 @@ header {
     flex-direction: column;
     cursor: pointer;
 }
+header img{
+  height: 60px;
+  width: 60px;
+  margin-top: -2rem;
+  margin-bottom: -1rem;
+  border-radius: 50%;
+  border: 1px solid white;
 
+}
 @media (max-width: 768px) {
   /* General Styles */
+  header{
+    height: auto;
+  }
   table{
     margin-left: -1rem;;
   }
@@ -137,7 +150,7 @@ header {
   /* Navigation Styles */
   header nav {
     position: absolute;
-    top: 4.4rem; /* Adjust based on your design */
+    top: 4rem; /* Adjust based on your design */
     left: 0;
     width: 100%;
     height: 100vh;
@@ -176,15 +189,13 @@ header {
 
   /* Active Navigation Styles */
   header nav.active {
-    margin-top: 4rem;
+    margin-top: 2rem;
     opacity: 1;
     transform: translateY(0);
     pointer-events: all; /* Allow interaction when visible */
-  background-color: red;
   }
   .navbar-links{
     margin-top: 4rem;
-    background-color: red;
   }
 
   /* Main Content Styles */
@@ -245,6 +256,7 @@ table button:hover {
 }
 
 #add-employee-form {
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  padding: 10px;
 }
 

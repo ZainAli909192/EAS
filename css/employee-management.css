@@ -108,12 +108,13 @@
 select, button{
   padding: 10px;
   display: inline-block;
-  width: 350px; 
+  /* width: 200px;  */
 }
 select:active,
 select:focus,
 select:focus-visible {
-  background-color: red !important;
+  color: white;
+  background-color: var(--secondory-color) !important;
 }
   /* Responsive Design */
   @media (max-width: 768px) {

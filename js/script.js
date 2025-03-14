@@ -13,7 +13,8 @@ document.addEventListener("DOMContentLoaded", function () {
         // } else {
         //     mainContent.style.marginLeft = "0";
         // }
-    });
+
+      });
 
     // Close Sidebar if Clicking Outside
     document.addEventListener("click", function (event) {
@@ -31,8 +32,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 mainContent.style.marginLeft = "0";
             }
         });
-    });
+
+      });
 });
+
 // random circle showing in hero
 setInterval(function () {
     const randomDot = document.querySelector(".random-dot");
@@ -47,6 +50,7 @@ setInterval(function () {
 
 //   contact js
 // DOM Elements
+if(document.querySelector(".open-popup-btn")){
 const openPopupBtn = document.querySelector(".open-popup-btn");
 const popupOverlay = document.querySelector(".popup-overlay");
 const closePopupBtn = document.querySelector(".close-popup-btn");
@@ -85,26 +89,93 @@ contactForm.addEventListener("submit", (e) => {
   popupOverlay.classList.remove("active");
   contactForm.reset();
 });
+} 
 
+if(document.querySelector('.typing-effect')){
 
-const heading = document.querySelector('.typing-effect');
-const text = heading.textContent;
-heading.textContent = ''; // Clear the text initially
-
-let index = 0;
-const type = () => {
-  if (index < text.length) {
-    heading.textContent += text.charAt(index);
-    index++;
-    setTimeout(type, 50); // Adjust typing speed
-  }
-};
-
-setTimeout(type, 1000) ;
+  const heading = document.querySelector('.typing-effect');
+  const text = heading.textContent;
+  heading.textContent = ''; // Clear the text initially
+  
+  let index = 0;
+  const type = () => {
+    if (index < text.length) {
+      heading.textContent += text.charAt(index);
+      index++;
+      setTimeout(type, 50); // Adjust typing speed
+    }
+  };
+  
+  setTimeout(type, 1000) ;
+}
 
 document.addEventListener('DOMContentLoaded', function() {
   // Wait for 3 seconds, then add the 'loaded' class to the body
-  setTimeout(function() {
+  setTimeout(function() { 
     document.body.classList.add('loaded');
   }, 1500); // 3000 milliseconds = 3 seconds
 });
+// loader file include code 
+const loading=async ()=>{
+  const loaderFile=await fetch("./loader.html");
+  const data= await loaderFile.text();
+  document.getElementById('loader-placeholder').innerHTML =  data;
+}
+loading()
+
+// const sidenav=async ()=>{
+//   const loaderFile=await fetch("./sidenav.html");
+//   const data= await loaderFile.text();
+//   document.getElementById('sidenav-placeholder').innerHTML =  data;
+// }
+// sidenav()
+
+const sidenav = async () => {
+  try {
+    // Fetch the sidenav content
+    const loaderFile = await fetch("./sidenav.html");
+    const data = await loaderFile.text();
+
+    // Insert the sidenav content into the placeholder
+    document.getElementById('sidenav-placeholder').innerHTML = data;
+
+    // Attach event listeners after the sidenav is loaded
+    attachSidenavEventListeners();
+  } catch (error) {
+    console.error("Error loading sidenav:", error);
+  }
+};
+
+// Function to attach event listeners for the sidenav
+const attachSidenavEventListeners = () => {
+  const sidebar = document.querySelector("header");
+  const navbar = document.querySelector("header nav");
+  const hamburger = document.getElementById("burger");
+  const mainContent = document.querySelector("main");
+
+  // Toggle Sidebar on Click
+  if (hamburger) {
+    hamburger.addEventListener("click", function () {
+      navbar.classList.toggle("active");
+    });
+  }
+
+  // Close Sidebar if Clicking Outside
+  document.addEventListener("click", function (event) {
+    if (!sidebar.contains(event.target) && !hamburger.contains(event.target)) {
+      navbar.classList.remove("active");
+    }
+  });
+
+  // Close Sidebar When Clicking a Menu Item (on mobile)
+  document.querySelectorAll("nav ul li a").forEach(link => {
+    link.addEventListener("click", function () {
+      if (window.innerWidth <= 768) {
+        navbar.classList.remove("active");
+      }
+    });
+  });
+};
+
+// Load the sidenav
+sidenav();

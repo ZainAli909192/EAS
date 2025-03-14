@@ -26,7 +26,7 @@
     background: rgba(46, 44, 44, 0.5); /* Adjust opacity as needed */
     z-index: -1;
     rotate: 20deg; 
-    clip-path: polygon(25% 0%, 100% 0, 100% 50%, 0 100%, 0 100%, 0 0);
+    /* clip-path: polygon(25% 0%, 100% 0, 100% 50%, 0 100%, 0 100%, 0 0); */
   }
   
   .login-container {
