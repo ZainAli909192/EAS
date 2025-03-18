@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", function () {
         //     mainContent.style.marginLeft = "0";
         // }
 
-      });
+      }); 
 
     // Close Sidebar if Clicking Outside
     document.addEventListener("click", function (event) {
@@ -179,3 +179,64 @@ const attachSidenavEventListeners = () => {
 
 // Load the sidenav
 sidenav();
+
+const navbar = async () => {
+  try {
+    // Fetch the navbar content
+    const navbarFile = await fetch("./navbar.html");
+    const data = await navbarFile.text();
+
+    // Insert the navbar content into the placeholder
+    document.getElementById('navbar-placeholder').innerHTML = data;
+
+    // Attach event listeners after the navbar is loaded
+    attachNavbarEventListeners();
+  } catch (error) {
+    console.error("Error loading navbar:", error);
+  }
+};
+
+// Function to attach event listeners for the navbar
+const attachNavbarEventListeners = () => {
+  // Toggle mobile menu
+  const toggleButton = document.querySelector('.navbar-toggle');
+  const navbarLinks = document.querySelector('.navbar-links');
+
+  if (toggleButton && navbarLinks) {
+    toggleButton.addEventListener('click', () => {
+      navbarLinks.classList.toggle('active');
+    });
+  }
+
+  // Open Popup
+  const openPopupBtn = document.querySelector(".open-popup-btn");
+  const popupOverlay = document.querySelector(".popup-overlay");
+  const closePopupBtn = document.querySelector(".close-popup-btn");
+
+  if (openPopupBtn && popupOverlay && closePopupBtn) {
+    openPopupBtn.addEventListener("click", () => {
+      popupOverlay.classList.add("active");
+    });
+
+    closePopupBtn.addEventListener("click", () => {
+      popupOverlay.classList.remove("active");
+    });
+
+    // Close Popup when clicking outside the form
+    popupOverlay.addEventListener("click", (e) => {
+      if (e.target === popupOverlay) {
+        popupOverlay.classList.remove("active");
+      }
+    });
+
+    // Close Popup on Escape key press
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && popupOverlay.classList.contains("active")) {
+        popupOverlay.classList.remove("active");
+      }
+    });
+  }
+};
+
+// Load the navbar
+navbar();
