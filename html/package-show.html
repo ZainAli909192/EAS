@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Employees Attendance Management System</title>
+  <link rel="stylesheet" href="../css/contact.css">
+  <link rel="stylesheet" href="../css/index.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<script src="../js/script.js" defer></script>
+</head>
+  
+<body>
+
+  <div id="loader-placeholder"></div>
+  <div id="navbar-placeholder"></div>
+ 
+   
+  <!-- Hero Section -->
+  <section class="hero ">
+    <div class="random-dot"></div> <!-- Add this element -->
+
+    <div class="hero-content">
+      <div class="typing-container">
+        <h1 class="typing-effect">
+          Save Time and Money with Automated Attendance Tracking
+          <span class="circle-cursor"></span>
+        </h1>
+      </div>      <p>Our system streamlines attendance management, freeing up your HR team and reducing costly errors.</p> <div class="hero-buttons">
+        <a href="./login.html" class="btn-primary">Get Started</a>
+        <a href="#features" class="btn-primary">Learn More</a>
+      </div>
+    </div>   
+    <div class="hero-image">
+      <img src="https://img.freepik.com/free-photo/businessman-using-application-contact-with-his-colleagues_1134-644.jpg?ga=GA1.1.572590152.1728395548&semt=ais_hybrid" alt="Membership Management">
+    </div>
+    <!-- Curvy Background SVG -->
+    
+    <div class="curvy-bg">
+      <svg viewBox="0 0 1440 160" xmlns="http://www.w3.org/2000/svg">
+        <path
+          fill="var(--primary-color)"
+          fill-opacity="1"
+          d="M0,80L48,74.6C96,69,192,58,288,64C384,70,480,90,576,90.6C672,90,768,70,864,64C960,58,1056,70,1152,74.6C1248,80,1344,80,1392,80L1440,80L1440,160L1392,160C1344,160,1248,160,1152,160C1056,160,960,160,864,160C768,160,672,160,576,160C480,160,384,160,288,160C192,160,96,160,48,160L0,160Z"
+        ></path>
+      </svg>
+    </div> 
+  </section>
+
+<!-- Features Section -->
+     <section id="features" class="features">
+  
+  <h2>Key Features</h2>
+    
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="fas fa-box"></i> <!-- Icon for packages -->
+        </div>
+        <h3>Starter Package</h3>
+        <p>$49/month</p>
+        <p>1 - 10 Employees</p>
+      </div>
+      
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="fas fa-box"></i> <!-- Icon for packages -->
+        </div>
+        <h3>Small Business Package</h3>
+        <p>$99/month</p>
+        <p>1 - 50 Employees</p>
+      </div>
+      
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="fas fa-box"></i> <!-- Icon for packages -->
+        </div>
+        <h3>Medium Business Package</h3>
+        <p>$199/month</p>
+        <p>1 - 100 Employees</p>
+      </div>
+      
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="fas fa-box"></i> <!-- Icon for packages -->
+        </div>
+        <h3>Enterprise Package</h3>
+        <p>$499/month</p>
+        <p>1 - 250 Employees</p>
+      </div>
+     
+    </div>
+     
+      </section>
+
+    <!-- Footer Section -->
+    <footer>
+        <div class="footer-container">
+            <!-- Features Section -->
+            <div class="footer-column">
+                <img  src="../img/logo.jpg" alt="">
+                <ul>
+
+               <li>
+
+                 <a href="./">&copy; All rights reserved</a>
+               </li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>Features</h3>
+                <ul>
+                    <li><a href="#">Attendance Tracking</a></li>
+                    <li><a href="#">Leave Management</a></li>
+                    <li><a href="#">Employee Management</a></li>
+                    <li><a href="#">Reporting</a></li>
+                </ul>
+            </div>
+
+            <!-- Quick Links Section -->
+            <div class="footer-column">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#">Services</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </div>
+
+            <!-- Contact Form -->
+            <div class="footer-column">
+                <h3>Contact Us</h3>
+                <form>
+                    <input type="text" placeholder="Your Name" required>
+                    <input type="email" placeholder="Your Email" required>
+                    <textarea placeholder="Your Message" required></textarea>
+                    <button type="submit">Send</button>
+                </form>
+            </div>
+        </div>
+    </footer>
+
+  <!-- contact form popup code  -->
+  <div class="popup-overlay">
+    <div class="popup-form">
+      <button class="close-popup-btn"><i class="fas fa-times"></i></button>
+      <h2>Contact Us</h2>
+      <form id="contact-form">
+        <div class="form-group">
+          <label for="name">Name</label>
+          <input type="text" id="name" name="name" required>
+        </div>
+        <div class="form-group">
+          <label for="number">Phone Number</label>
+          <input type="tel" id="number" name="number" required>
+        </div>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" required>
+        </div>
+        <div class="form-group">
+          <label for="message">Message</label>
+          <textarea id="message" name="message" rows="4" required></textarea>
+        </div>
+        <button type="submit" class="btn-primary">Send Message</button>
+      </form>
+    </div>
+  </div>
+
+</body>
+</html>
