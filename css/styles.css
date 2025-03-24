@@ -89,6 +89,7 @@ main::after {
   flex-direction: column;
   align-items: center;
   color: var(--text-color);
+  
   }
   
   header h1 {
@@ -96,6 +97,7 @@ main::after {
       font-size: 1rem;
       margin-bottom: 2rem;
       margin-top: 2rem;
+
     }
     
     nav ul {
@@ -185,6 +187,9 @@ header img{
   /* General Styles */
   header{
     height: auto;
+  }
+  header nav{
+    z-index: 10;
   }
   header img{
     margin-top: -20px;
