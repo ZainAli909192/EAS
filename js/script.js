@@ -240,3 +240,38 @@ const attachNavbarEventListeners = () => {
 
 // Load the navbar
 navbar();
+
+// new section in mark attendance added 
+// attendance.js
+
+document.addEventListener("DOMContentLoaded", function () {
+  // Example: Populate calendar
+  const calendar = document.getElementById('calendar');
+  const daysInMonth = 31;
+  let calendarHTML = '<div class="calendar-grid">';
+
+  for (let i = 1; i <= daysInMonth; i++) {
+    calendarHTML += `<div class="calendar-day">${i}</div>`;
+  }
+
+  calendarHTML += '</div>';
+  calendar.innerHTML = calendarHTML;
+
+  // Example: Highlight present and absent days
+  const presentDays = [1, 2, 3, 10, 15, 20];
+  const absentDays = [5, 12, 25];
+
+  presentDays.forEach(day => {
+    const dayElement = calendar.querySelector(`.calendar-day:nth-child(${day})`);
+    if (dayElement) {
+      dayElement.classList.add('present');
+    }
+  });
+
+  absentDays.forEach(day => {
+    const dayElement = calendar.querySelector(`.calendar-day:nth-child(${day})`);
+    if (dayElement) {
+      dayElement.classList.add('absent');
+    }
+  });
+});
