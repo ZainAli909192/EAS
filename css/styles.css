@@ -9,14 +9,72 @@
     --secondory-color:hsl(80, 50%, 39%);
   
   }
-  body {
-      font-family: 'Arial', sans-serif;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      min-height: 100vh;
-      background-color: white;
-    }
+/* Body Styles */
+body {
+  font-family: 'Arial', sans-serif;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f5f7fa, #c3cfe2); /* Soft gradient background */
+  position: relative;
+  overflow: hidden;
+}
+
+/* Add a pseudo-element for a decorative overlay */
+body::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at 10% 20%, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0));
+  pointer-events: none; /* Ensure it doesn't block interactions */
+  z-index: 1;
+}
+
+/* Main Container */
+main {
+  position: relative;
+  z-index: 2; /* Ensure content is above the pseudo-element */
+  width: 90%;
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: rgba(255, 255, 255, 0.9); /* Semi-transparent white background */
+  border-radius: 15px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px); /* Blur effect for a frosted glass look */
+  border: 1px solid rgba(255, 255, 255, 0.2); /* Subtle border */
+}
+
+/* Add a decorative pseudo-element for main */
+main::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  width: calc(100% + 20px);
+  height: calc(100% + 20px);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0));
+  border-radius: 20px;
+  z-index: -1; /* Place it behind the main content */
+}
+
+/* Add another pseudo-element for a shadow effect */
+main::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0));
+  border-radius: 15px;
+  z-index: -1; /* Place it behind the main content */
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
     
     /* Sidebar (Left Navbar) */
     header {
@@ -127,6 +185,9 @@ header img{
   /* General Styles */
   header{
     height: auto;
+  }
+  header img{
+    margin-top: -20px;
   }
   table{
     margin-left: -1rem;;
