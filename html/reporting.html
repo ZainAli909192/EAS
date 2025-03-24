@@ -10,32 +10,45 @@
   <link rel="stylesheet" href="../css/styles.css">
   <link rel="stylesheet" href="../css/reporting.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <!-- Include Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="../js/reporting.js" defer></script>
+  <script src="../js/script.js" defer></script>
+
 </head>
-<script src="../js/script.js" defer></script>
 <body>
   <div id="loader-placeholder"></div>
   <div id="sidenav-placeholder"></div>
 
   <main>
     <section id="attendance-reports">
-      <h2>Attendance Reports</h2>
-      <form id="attendance-report-form">
-        <label for="date-range">From date:</label>
-        <input type="date" id="start-date" name="start-date" required>
-        <label for="date-range">To date:</label>
-        <input type="date" id="end-date" name="end-date" required>
-        <label for="department">Department:</label>
-        <select id="department" name="department">
-          <option value="all">All Departments</option>
-          <option value="hr">HR</option>
-          <option value="it">IT</option>
-          <option value="sales">Sales</option>
-        </select>
-<br>
-          <button type="submit">Generate Report</button>
-      </form>
-      <div id="report-results">
-        <!-- Report results will be displayed here -->
+      <div class="attendance-container">
+        <div class="attendance-form">
+          <h2>Attendance Reports</h2>
+          <form id="attendance-report-form">
+            <label for="date-range">From date:</label>
+            <input type="date" id="start-date" name="start-date" required>
+            <label for="date-range">To date:</label>
+            <input type="date" id="end-date" name="end-date" required>
+            <label for="department">Department:</label>
+            <select id="department" name="department">
+              <option value="all">All Departments</option>
+              <option value="hr">HR</option>
+              <option value="it">IT</option>
+              <option value="sales">Sales</option>
+            </select>
+            <br>
+            <button type="submit">Generate Report</button>
+          </form>
+          <div id="report-results">
+            <!-- Report results will be displayed here -->
+          </div>
+        </div>
+        <!-- Graph Section -->
+        <div class="attendance-graph">
+          <h2>Attendance Trends</h2>
+          <canvas id="attendanceChart"></canvas>
+        </div>
       </div>
     </section>
     <section id="export-reports">
@@ -45,6 +58,5 @@
       <button id="export-pdf">Export as PDF</button>
     </section>
   </main>
-  <script src="js/reporting.js"></script>
 </body>
 </html>
