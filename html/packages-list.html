@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Manage employees in the Employee Management System. Add, update, and deactivate employee records.">
+  <meta name="keywords" content="employee management, add employee, update employee, deactivate employee">
+  <meta name="author" content="Your Company Name">
+  <title>Employee Management - Employee Management System</title>
+  <link rel="stylesheet" href="../css/employee-management.css">
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <script src="../js/script.js" defer></script>
+</head>
+<body>
+  <div id="loader-placeholder"></div>
+  <div id="sidenav-placeholder"></div>
+
+
+  <main>
+  
+    <section id="employee-list">
+      <button style="margin-bottom: 1rem;" onclick="window.location.href = './add-package.html'">
+        Add Package <i class="fas fa-plus"></i> </button>
+     
+      <h2>Packages List</h2>
+      <table style="width: 40%;">
+        <thead style="width: 50px; background:red;">
+          <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Number of employees</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="employee-table-body">
+          <tr>
+            <td>1</td>
+            <td>Starter Package</td>
+            <td>$49/month</td>
+            <td>1-10 employees</td>
+            <td style="display: flex; gap: 5px;">
+              <button onclick="window.location.href = './update-membership.html'">Edit</button>
+              <button>Delete</button>
+            </td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td>Small Business</td>
+            <td>$99/month</td>
+            <td>11-50 employees</td>
+            <td style="display: flex; gap: 5px;">
+              <button onclick="window.location.href = './update-membership.html'">Edit</button>
+              <button>Delete</button>
+            </td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td>Medium Business</td>
+            <td>$199/month</td>
+            <td>51-100 employees</td>
+            <td style="display: flex; gap: 5px;">
+              <button onclick="window.location.href = './update-membership.html'">Edit</button>
+              <button>Delete</button>
+            </td>
+          </tr>
+          <tr>
+            <td>4</td>
+            <td>Enterprise</td>
+            <td>$499/month</td>
+            <td>101-250 employees</td>
+            <td style="display: flex; gap: 5px;">
+              <button onclick="window.location.href = './update-membership.html'">Edit</button>
+              <button>Delete</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+  
+  </main>
+
+</body>
+</html>
