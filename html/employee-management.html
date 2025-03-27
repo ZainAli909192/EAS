@@ -22,14 +22,16 @@
     <section id="employee-list">
       <button style="margin-bottom: 1rem;" onclick="window.location.href = './add-employee.html'">Add new Employee <i class="fas fa-plus"></i> </button>
      
-      <h2>Employee List</h2>
-      <table style="width: 40%;">
-        <thead style="width: 50px; background:red;">
+      <h2>Employees List</h2>
+      <table >
+        <thead style="width: 100%; ">
           <tr>
             <th>Id</th>
             <th>Name</th>
             <th>Department</th>
             <th>Designation</th>
+            <th>Job in timing</th>
+            <th>Job out timing</th>
             <th>Action</th>
           </tr>
         </thead>
@@ -40,20 +42,30 @@
         <td>Ali</td>
         <td>IT</td>
         <td>Backend developer</td>
-        <td style="display: flex;"><button>Edit</button> <button>Delete</button></td>
+        <td>9:00 AM</td>
+        <td>5:00 PM</td>
+        <td style="display: flex;">
+          <button onclick="window.location.href = './update-employee.html'">Edit</button> <button>Delete</button>
+        </td>
       </tr>
       <tr>
         <td>2</td>
         <td>Kashif</td>
         <td>IT</td>
         <td>Frontend developer</td>
-        <td style="display: flex;"><button>Edit</button> <button>Delete</button></td>
+        <td>9:00 AM</td>
+        <td>5:00 PM</td>
+        <td style="display: flex;">
+          <button onclick="window.location.href = './update-employee.html'">Edit</button> <button>Delete</button>
+        </td>
       </tr>
       <tr>
         <td>3</td>
         <td>Usman</td>
         <td>Labour</td>
         <td>Sweeper</td>
+        <td>9:00 AM</td>
+        <td>5:00 PM</td>
         <td style="display: flex;">
           <button onclick="window.location.href = './update-employee.html'">Edit</button> <button>Delete</button>
         </td>
@@ -63,7 +75,11 @@
         <td>Huzaifa</td>
         <td>HR</td>
         <td>Manager</td>
-        <td style="display: flex;"><button>Edit</button> <button>Delete</button></td>
+        <td>9:00 AM</td>
+        <td>5:00 PM</td>
+        <td style="display: flex;">
+          <button onclick="window.location.href = './update-employee.html'">Edit</button> <button>Delete</button>
+        </td>
       </tr>
       
         </tbody>
