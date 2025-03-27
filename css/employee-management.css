@@ -28,8 +28,8 @@
     width: 100%;
     padding: 0.8rem;
     outline: none;
-    border: 1px solid #ddd;
-    border-radius: 5px;
+    border: 1px solid var(--secondory-color);
+    border-radius: 5px; 
     font-size: 1rem;
   }
   #add-employee-form input:focus {
@@ -167,7 +167,7 @@ select:focus-visible {
 
   #employee-list th,
   #employee-list td {
-    font-size: 0.6rem;
+    font-size: 0.5rem;
     padding: 0.5rem; /* Reduce padding for compact layout */
   }
   table{
@@ -209,7 +209,7 @@ select:focus-visible {
 /* Desktops (1024px and above) */
 @media (min-width: 1024px) {
   #add-employee-form {
-    width: 70%; /* Original width */
+    width: 98%; /* Original width */
     transform: translateX(20%); /* Original transform */
     margin-left: 2rem; /* Original margin */
   }

@@ -200,6 +200,9 @@ header img{
   body {
     flex-direction: column;
   }
+#add-employee-form{
+  width: 83vw;
+}
 
   /* Header Styles */
   header {
@@ -285,6 +288,7 @@ main h2{
   /* Button Styles */
   button {
     margin-top: 0.4rem;
+    font-size: 0.6rem;
   }
 }
 
@@ -322,7 +326,9 @@ table button:hover {
 }
 
 #add-employee-form {
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
   padding: 10px;
 }
+
+
 

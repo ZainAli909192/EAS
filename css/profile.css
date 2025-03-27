@@ -9,6 +9,8 @@
   #profile-form {
     max-width: 600px;
     margin: 0 auto;
+    box-shadow: 4px 4px 8px rgb(202, 201, 201);
+    padding-bottom: 2rem;
   }
   
   #profile-form .form-row {
@@ -31,11 +33,11 @@
   #profile-form .form-group input {
     width: 80%;
     padding: 0.8rem;
-    border: 1px solid #ddd;
+    border: 1px solid var(--secondory-color);
     border-radius: 5px;
     font-size: 1rem;
   }
-  
+
   #profile-form button {
     padding: 0.8rem;
     background-color: var(--secondory-color);
@@ -98,4 +100,16 @@
     #profile-form .form-group {
       margin-bottom: 1rem;
     }
+  }
+  @media (max-width:580px){
+    #profile-form{
+      width: 100vw;
+      margin-top: 4rem;
+    }
+    main{
+      margin-top: 5rem; 
+    }
+  }
+  form i{
+    font-size: 0.8rem;
   }

@@ -42,10 +42,10 @@ body {
   }
   #attendance-report-form input,
   #attendance-report-form select {
-    width: 50%;
+    width: 90%;
     padding: 0.8rem;
     margin-bottom: 1rem;
-    border: 1px solid #ddd;
+    border: 1px solid #b6b3b3;
     border-radius: 5px;
     font-size: 1rem;
   }
@@ -101,6 +101,11 @@ body {
     body {
       flex-direction: column;
     }
+    
+  #attendance-report-form input,
+  #attendance-report-form select {
+    width: 70vw !important;
+  }
     main{
       margin-top: -0.7rem;
       display: flex;
@@ -124,6 +129,10 @@ body {
     nav ul {
       display: flex;
       justify-content: space-around;
+    }
+    .attendance-container {
+      display: flex;
+      flex-direction: column;
     }
   }  
 
