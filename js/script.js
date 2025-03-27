@@ -243,24 +243,23 @@ navbar();
 
 // new section in mark attendance added 
 // attendance.js
-
 document.addEventListener("DOMContentLoaded", function () {
   // Example: Populate calendar
   const calendar = document.getElementById('calendar');
   const daysInMonth = 31;
   let calendarHTML = '<div class="calendar-grid">';
-
+  
   for (let i = 1; i <= daysInMonth; i++) {
     calendarHTML += `<div class="calendar-day">${i}</div>`;
   }
-
+  
   calendarHTML += '</div>';
   calendar.innerHTML = calendarHTML;
-
+  
   // Example: Highlight present and absent days
   const presentDays = [1, 2, 3, 10, 15, 20];
   const absentDays = [5, 12, 25];
-
+  
   presentDays.forEach(day => {
     const dayElement = calendar.querySelector(`.calendar-day:nth-child(${day})`);
     if (dayElement) {
@@ -276,19 +275,49 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 });
 
-// slider js 
-var swiper = new Swiper(".mySwiper", {
-  slidesPerView: 1,
-  grabCursor: true,
-  loop: true,
-  pagination: {
-    el: ".swiper-pagination",
-    clickable: true,
-  },
-  navigation: {
-    nextEl: ".swiper-button-next",
-    prevEl: ".swiper-button-prev",
-  },
-});
+// counter js 
+// Counter Animation for Numbers
+if(document.querySelectorAll(".counter")){
 
-// new slider 
+  setTimeout(()=>{
+    
+    const counters = document.querySelectorAll(".counter");
+    const speed = 90; // Adjust speed as needed
+    let hasRun = false; // To ensure the counter only runs once
+    
+    const runCounter = () => {
+        counters.forEach(counter => {
+            const target = +counter.getAttribute("data-target");
+            const updateCount = () => {
+              const current = +counter.innerText;
+                const increment = Math.ceil(target / speed);
+                
+                if (current < target) {
+                    counter.innerText = current + increment;
+                    setTimeout(updateCount, 40);
+                } else {
+                  counter.innerText = target;
+                }
+              };
+  
+            updateCount();
+        });
+    };
+  
+    // Intersection Observer API
+    const section = document.querySelector(".custom-requirements-section");
+  
+    const observer = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting && !hasRun) {
+                hasRun = true; // Prevent running multiple times
+                runCounter();
+                observer.unobserve(entry.target); // Stop observing after animation runs
+            }
+          });
+        });
+        
+    observer.observe(section);
+    
+},1300);
+}
