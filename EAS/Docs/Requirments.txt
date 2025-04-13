@@ -1,0 +1,7 @@
+banda location track kar ky attendance lyni hay kay kab pohoncha hay.
+excel sheet banti jay gi. 
+HR manager can view and download attandance.
+officer aya , attendance py click sy time note, camera take pic at the spot, location real time store. 
+time,pic sheet per employ ready.
+admin and manager role check
+leave hay to upload kary ga doc of doctor.

@@ -1,0 +1,39 @@
+@startgantt
+title Employee Attendance Management System - Gantt Chart
+
+Project starts on 2025-02-20
+sunday are closed
+
+[Project Setup & Planning] lasts 1 days
+    [UI/UX Design] lasts 12 days and starts at [Project Setup & Planning]'s end
+    [Database Design] lasts 2 days and starts at [UI/UX Design]'s end
+    [Project Setup] lasts 1 day and starts at [Database Design]'s end
+
+[Front-End Development] lasts 30 days and starts at [Project Setup]'s end
+    [Member Company Manager Portal] lasts 8 days and starts at [Front-End Development]'s start
+    [Employee Portal] lasts 6 days and starts at [Member Company Manager Portal]'s end
+    [Membership Management Portal] lasts 5 days and starts at [Employee Portal]'s end
+    [UI/UX Polish] lasts 7 days and starts at [Membership Management Portal]'s end
+    [Accessibility Review] lasts 4 days and starts at [UI/UX Polish]'s end
+
+[Back-End Development] lasts 32 days and starts at [Member Company Manager Portal]'s end
+    [Authentication] lasts 5 days and starts at [Back-End Development]'s start
+    [Employee Management (Back-End)] lasts 7 days and starts at [Authentication]'s end
+    [Attendance Tracking (Back-End)] lasts 6 days and starts at [Employee Management (Back-End)]'s end
+    [Leave Management (Back-End)] lasts 6 days and starts at [Attendance Tracking (Back-End)]'s end
+    [Reporting (Back-End)] lasts 4 days and starts at [Leave Management (Back-End)]'s end
+    [API Integration] lasts 2 days and starts at [Reporting (Back-End)]'s end
+    [Performance Optimization] lasts 2 days and starts at [API Integration]'s end
+
+[Testing & QA] lasts 10 days  
+[Testing & QA] starts at [Front-End Development]'s end  
+[Testing & QA] starts at [Back-End Development]'s end  
+
+[Integration Testing] lasts 4 days and starts at [Testing & QA]'s start
+[Functional Testing] lasts 4 days and starts at [Integration Testing]'s end
+[UAT] lasts 2 days and starts at [Functional Testing]'s end
+
+[Deployment & Launch] lasts 1 day and starts at [Testing & QA]'s end
+[Deployment] lasts 1 day and starts at [Deployment & Launch]'s end
+
+@endgantt

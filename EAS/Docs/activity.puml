@@ -1,0 +1,74 @@
+@startuml
+start
+
+:User opens the system;
+:Login;
+
+if (Is Admin?) then (Yes)
+  :Manage Membership;
+  partition MembershipActions {
+    if (Action = Add New Member?) then (Yes)
+      :Enter Company Details;
+      :Assign Password;
+      :Assign Package;
+      :Activate Company Account;
+      :Send Login Credentials;
+    elseif (Action = Update Member Details?) then (Yes)
+      :Change Company Info;
+      :Upgrade/Downgrade Package;
+      :Reset Password;
+    elseif (Action = Delete Membership?) then (Yes)
+      :Revoke Access;
+    elseif (Action = View Members?) then (Yes)
+      :List Registered Companies;
+      :View Company Details;
+     elseif (Action = Logout?) 
+      
+    endif
+  }
+elseif (Is Company Admin?) then (Yes)
+  :Manage Employees;
+  partition EmployeeManagement {
+    if (Action = Add Employee?) then (Yes)
+      :Enter Employee Details;
+      :Assign Role;
+    elseif (Action = Update/Remove Employee?) then (Yes)
+      :Modify Employee Data;
+    elseif (Action = View Employee Records?) then (Yes)
+      :Fetch Employee Data;
+    elseif (Action = Search Employee Record?) then (Yes)
+      :Find Specific Employee;
+    elseif (Action = Manage Schedules?) then (Yes)
+      :Adjust Working Hours;
+    elseif (Action = Approve/Reject Leave?) then (Yes)
+      :Accept/Decline Leave Request;
+    elseif (Action = Generate Reports?) then (Yes)
+      :Export Reports (CSV, Excel, PDF);
+    elseif (Action = Logout?) 
+       
+    endif
+  }
+elseif (Is Employee?) then (Yes)
+  :Employee Actions;
+  partition EmployeeActions {
+    if (Action = Mark Attendance?) then (Yes)
+      :Clock-in/Clock-out;
+      :Capture Photo;
+      :Record Attendance Type;
+    elseif (Action = Request Attendance Adjustment?) then (Yes)
+      :Submit Adjustment Request;
+    elseif (Action = Request Leave?) then (Yes)
+      :Provide Leave Reason;
+      if (Sick Leave?) then (Yes)
+        :Attach Medical Document;
+      endif
+    elseif (Action = Logout?) 
+       
+    endif
+  }
+else
+  :Access Denied;
+endif
+
+stop
+@enduml

@@ -1,0 +1,74 @@
+@startuml
+' Increase font sizes for overall diagram elements
+skinparam defaultFontSize 20
+skinparam entityFontSize 20
+skinparam attributeFontSize 18
+
+entity "Admin" as A {
+  * admin_id : int <<PK>>
+  username : string
+  email : string
+  password : string
+  role : string
+}
+entity "User" as U {
+  * user_id : int <<PK>>
+  username : string
+  password : string
+  role : string
+  company_id : int <<FK>>
+}
+
+entity "Company" as C {
+  * company_id : int <<PK>>
+  company_name : string
+  number : string
+  email : string
+  password : string
+  packageID : int <<FK>>
+  status : string
+}
+
+entity "Package" as P {
+  * packageID : int <<PK>>
+  package_name : string
+  price : string
+  number_of_employees : int
+}
+
+entity "Employee" as E {
+  * employee_id : int <<PK>>
+  company_id : int <<FK>>
+  name : string
+  number : string
+  address: string
+  job_in_time: string
+  job_out_time: string
+  password: string
+  role : string
+}
+
+entity "Attendance" as A {
+  * attendance_id : int <<PK>>
+  employee_id : int <<FK>>
+  timestamp : datetime
+  attendance_type : string
+  photo : string
+}
+
+entity "LeaveRequest" as L {
+  * leave_request_id : int <<PK>>
+  employee_id : int <<FK>>
+  reason : string
+  is_sick_leave : int
+  medical_document_path : string
+  status : string
+}
+
+' Define relationships with explicit cardinality notation.
+C "1" ||-- "1..*" U : has
+C "1" ||-- "1..*" E : employs
+E "1" ||-- "1..*" A : records
+E "1" ||-- "1..*" L : submits
+
+@enduml

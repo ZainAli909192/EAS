@@ -1,0 +1,87 @@
+@startuml
+hide stereotypes
+
+entity Employee {
+    int employee_id PK
+    string Name
+    int Department_id FK
+    int Designation_id FK
+    string Password
+    string job_in_time
+    string job_out_time
+    int Number
+}
+
+entity Department {
+    int Department_id PK
+    string Department_name
+}
+
+entity Designation {
+    int Designation_id PK
+    string Designation_name
+}
+
+entity Schedule {
+    int schedule_id PK
+    int Employee_id FK
+    date Schedule_Date
+    time job_in_time
+    time job_out_time
+}
+
+entity Leave {
+    int Leave_id PK
+    int Employee_id FK
+    string Leave_type
+    date Start_date
+    date End_date
+    string Reason
+    string medical_document_path
+    string status
+}
+
+entity Attendance {
+    int Attendance_id PK
+    int Employee_id FK
+    date Date
+    time Time_in
+    time Time_out
+    string Photo
+    string Attendance_type
+}
+
+entity Member {
+    int Member_id PK
+    string Company_Name
+    string Email
+    string Password
+    int Number
+    int Package_id FK
+    date Membership_start_date
+    date Membership_end_date
+}
+
+entity Package {
+    int Package_id PK
+    string Package_name
+    int Price
+    int Number_of_employees
+}
+
+entity Admin {
+    int Admin_id PK
+    string Email
+    string Password
+}
+
+Employee ||--o{ Department : Belongs to  (1..*)
+Employee ||--o{ Designation : Has (1..*)
+Employee ||--o{ Schedule : Assigned to (1..*)
+Employee ||--o{ Leave : Requests (1..*)
+Employee ||--o{ Attendance : Records (1..*)
+Member ||--o{ Package : Subscribes to (1..*)
+Member ||--o{ Employee : Employs (1..*)
+Admin ||--o{ Member : Manage (1..*)
+
+@enduml

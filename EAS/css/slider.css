@@ -1,0 +1,132 @@
+
+.clients-feedback {
+    background-color: var(--primary-color);
+  
+    padding: 50px 20px;
+    text-align: center;
+    /* background: linear-gradient(120deg, white 60%, var(--primary-color)); */
+    color: white; 
+    /* background-color: var(--primary-color); */
+  }
+  
+  .clients-feedback h1 {
+    font-size: 2.1em;
+    margin-bottom: 20px;
+    color: white;  
+  }
+  
+  .clients-feedback h1 span {
+    color: var(--primary-color);
+    background: var(--primary-gradient); 
+    color: white;  
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: change-color 4s infinite ease-in-out;
+  }
+  
+  .feedback-slider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    color: rgb(7, 7, 7);
+  }
+  
+  .feedback-container {
+    display: flex;
+    transition: transform 0.5s ease;
+    width: 90%;
+  margin-top: 2%;
+  height:300px;
+  
+  }
+  
+  .feedback-item {
+    box-sizing: border-box;
+    padding: 20px;
+    text-align: left;
+    flex: 0 0 33.3333%;
+    max-width: 33.3333%;
+    height: 90%; 
+  
+    background-color: rgb(247, 244, 244);
+    /* background-color: rgb(225, 223, 223); */
+    border-radius: 8px;
+    /* background-color: red;  */
+    margin-left: 1rem;  
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 94% 94%, 0 93%, 0 0);
+  
+  }
+  
+  
+  .feedback-item img {
+    width: 60px; 
+    height: 60px;
+    border-radius: 50%;
+    margin-bottom: 10px;
+    margin-left: 30%;
+  }
+  
+  .feedback-content h3 {
+    font-size: 1.2em;
+    margin-top: 0;
+    margin-left: 23% !important;
+  }
+  
+  .feedback-content span {
+    display: block;
+    font-size: 0.9em;
+    margin-bottom: 5px;
+    margin-left: 35%;
+  }
+  
+  .stars {
+    color: #ffcc00;
+    margin-bottom: 10px;
+    margin-left: 35%;
+  }
+  
+  .slider-btn {
+    background-color: var(--primary-color);
+    border: none;
+    color: white;
+    font-size: 1em;
+    cursor: pointer;
+    padding: 5px;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1;
+    border-radius: 10%;
+  }
+  .feedback-content p{
+    margin-left: 10%;
+  }
+  .left-btn {
+    left: 0;
+  }
+  
+  .right-btn {
+    right: 0;
+  }
+  
+  @media (max-width: 768px) {
+    .feedback-item {
+      flex: 0 0 100%;
+      max-width: 100%;
+    }
+    .media{
+        bottom: -6%;
+    }
+  }
+  @media (max-width: 480) {
+    
+    .media{
+      
+        bottom: 3%; 
+        margin-top: 2rem;
+    }
+  }
+  

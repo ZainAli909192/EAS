@@ -1,0 +1,42 @@
+@startuml
+
+System_Boundary(c1, "Employee Attendance Management System") {
+  Rel(Employee_Portal, Attendance_Component, "Uses", "HTTPS")
+  Rel(Employee_Portal, Leave_Component, "Uses", "HTTPS")
+  Rel(Employee_Portal, Schedule_Component, "Uses", "HTTPS")
+  Rel(Employee_Portal, Report_Component, "Uses", "HTTPS")
+
+  Rel(Manager_Portal, Employee_Management_Component, "Uses", "HTTPS")
+  Rel(Manager_Portal, Attendance_Component, "Uses", "HTTPS")
+  Rel(Manager_Portal, Leave_Component, "Uses", "HTTPS")
+  Rel(Manager_Portal, Schedule_Component, "Uses", "HTTPS")
+  Rel(Manager_Portal, Report_Component, "Uses", "HTTPS")
+
+  Rel(Admin_Portal, Membership_Management_Component, "Uses", "HTTPS")
+  Rel(Admin_Portal, User_Management_Component, "Uses", "HTTPS")
+  Rel(Admin_Portal, Report_Component, "Uses", "HTTPS")
+
+  Container(Employee_Portal, "Employee Portal", "Web Application", "Provides employee self-service access")
+  Container(Manager_Portal, "Manager Portal", "Web Application", "Provides manager access to employee data")
+  Container(Admin_Portal, "Admin Portal", "Web Application", "Provides administrative access to manage memberships and users")
+
+  ContainerDb(Database, "Employee Attendance Database", "Relational Database", "Stores employee, attendance, leave, schedule, and membership data")
+
+  Container(Attendance_Component, "Attendance Component", "API", "Handles attendance tracking and recording")
+  Container(Leave_Component, "Leave Component", "API", "Handles leave requests and approvals")
+  Container(Schedule_Component, "Schedule Component", "API", "Handles employee scheduling")
+  Container(Report_Component, "Report Component", "API", "Generates various reports")
+  Container(Employee_Management_Component, "Employee Management Component", "API", "Handles employee data management")
+  Container(Membership_Management_Component, "Membership Management Component", "API", "Handles membership management")
+  Container(User_Management_Component, "User Management Component", "API", "Handles user account management")
+
+  Rel(Attendance_Component, Database, "Reads/Writes", "JDBC")
+  Rel(Leave_Component, Database, "Reads/Writes", "JDBC")
+  Rel(Schedule_Component, Database, "Reads/Writes", "JDBC")
+  Rel(Report_Component, Database, "Reads", "JDBC")
+  Rel(Employee_Management_Component, Database, "Reads/Writes", "JDBC")
+  Rel(Membership_Management_Component, Database, "Reads/Writes", "JDBC")
+  Rel(User_Management_Component, Database, "Reads/Writes", "JDBC")
+
+}
+@enduml

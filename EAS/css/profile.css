@@ -1,0 +1,115 @@
+
+  #update-profile h2 {
+    font-size: 1.5rem;
+    color: #333;
+    margin-bottom: 1.5rem;
+  }
+  
+  /* Profile Update Form */
+  #profile-form {
+    max-width: 600px;
+    margin: 0 auto;
+    box-shadow: 4px 4px 8px rgb(202, 201, 201);
+    padding-bottom: 2rem;
+  }
+  
+  #profile-form .form-row {
+    display: flex;
+    gap: 2rem; /* Space between two input fields */
+    margin-bottom: 1rem;
+  }
+  
+  #profile-form .form-group {
+    flex: 1; /* Each input field takes equal space */
+    display: flex;
+    flex-direction: column;
+  }
+  
+  #profile-form .form-group label {
+    margin-bottom: 0.5rem;
+    color: #555;
+  }
+  
+  #profile-form .form-group input {
+    width: 80%;
+    padding: 0.8rem;
+    border: 1px solid var(--secondory-color);
+    border-radius: 5px;
+    font-size: 1rem;
+  }
+
+  #profile-form button {
+    padding: 0.8rem;
+    background-color: var(--secondory-color);
+    color: #fff;
+    border: none;
+    box-shadow: 0px 4px 8px rgb(85, 83, 83);
+    border-radius: 2rem;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-top: 1rem;
+    width: auto;
+  }
+  
+  #profile-form button:hover { 
+    background-color: hsl(80, 50%, 36%);
+    /* background-color: red; */ 
+  }
+  
+  /* Footer */
+  footer {
+    text-align: center;
+    padding: 0.03rem; 
+    background-color: #2c3e50;
+    color: #fff;
+    margin-top: auto;
+    width: 100vw;
+    position: fixed;
+    bottom: 0;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    body {
+      flex-direction: column;
+    }
+  
+    header {
+      width: 100%;
+      padding: 1rem 0;
+    }
+  
+    nav ul {
+      display: flex;
+      justify-content: space-around;
+    }
+  
+    nav ul li {
+      margin-bottom: 0;
+    }
+  
+    main {
+      margin: 1rem 0;
+    }
+  
+    #profile-form .form-row {
+      flex-direction: column; /* Stack inputs vertically on small screens */
+      gap: 0;
+    }
+  
+    #profile-form .form-group {
+      margin-bottom: 1rem;
+    }
+  }
+  @media (max-width:580px){
+    #profile-form{
+      width: 100vw;
+      margin-top: 4rem;
+    }
+    main{
+      margin-top: 5rem; 
+    }
+  }
+  form i{
+    font-size: 0.8rem;
+  }

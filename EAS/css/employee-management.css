@@ -1,0 +1,329 @@
+  #add-employee-form{
+    margin-left: -1rem;
+    width: 70%;
+    transform: translateX(20%); 
+    margin-left: 2rem;
+    position:static;
+    top: 10;
+    right: 0;
+  }
+  #add-employee h2 {
+  text-align: center;
+}
+#add-employee h2,
+#employee-list h2 {
+    font-size: 1.4rem;
+    color: #333;
+    margin-bottom: 1rem;
+}
+
+#add-employee-form label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #555;
+    font-size: 0.88rem;
+  }
+  
+  #add-employee-form input {
+    width: 100%;
+    padding: 0.8rem;
+    outline: none;
+    border: 1px solid var(--secondory-color);
+    border-radius: 5px; 
+    font-size: 1rem;
+  }
+  #add-employee-form input:focus {
+    border: 1px solid var(--primary-color);
+  }
+  
+  #add-employee-form button {
+    padding: 0.8rem 1.5rem;
+    /* background-color: var(--primary-color); */
+    box-shadow: 2px 2px 5px rgb(137, 122, 122);
+    outline: none;
+    background-color: var(--secondory-color);
+    color: rgb(246, 242, 242);
+    border: 1px solid;
+    border-radius: 5px;
+    border-radius: 2rem;
+    font-size: 1rem;
+    cursor: pointer;
+    width: 100%; 
+  }
+    #add-employee-form button:hover {
+    background-color: var(--primary-color);
+    background-color:   hsl(80, 50%, 36%);
+    /* background-color: var(--primary-color); */
+    color: rgb(241, 238, 238);
+    border: 1px solid;
+  }
+  
+  #employee-list table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  #employee-list th,
+  #employee-list td {
+    padding: 0.8rem;
+    border: 1px solid #ddd;
+    text-align: left;
+  }
+  
+  #employee-list th { 
+    background-color: var(--primary-color);
+    border: none;
+    
+    color: white;
+  }
+  
+  /* Form Row Layout */
+.form-row {
+    display: flex;
+    gap: 3rem; /* Space between two input fields */
+    margin-bottom: 1rem;
+  }
+  
+  .form-group {
+    flex: 1; /* Each input field takes equal space */
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .form-group label {
+    margin-bottom: 0.5rem;
+    color: #555;
+  }
+  
+  .form-group input, select, textarea {
+    width: 95%; 
+    padding: 0.06rem;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 0.9rem; 
+    gap: 20rem;
+    resize: none;
+}
+select, button{
+  padding: 10px;
+  display: inline-block;
+  /* width: 200px;  */
+}
+select:active,
+select:focus,
+select:focus-visible {
+  color: white;
+  background-color: var(--secondory-color) !important;
+}
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .form-row {
+      flex-direction: column; /* Stack inputs vertically on small screens */
+      gap: 0;
+    }
+  
+    .form-group {
+      margin-bottom: 1rem;
+    }
+  }
+  form input:disabled {
+    border: 10px solid red; 
+    color: green;
+    /* background-color: var(--secondory-color); */
+  }
+
+  /* Mobile Devices (up to 767px) */
+@media (max-width: 767px) {
+  #add-employee-form {
+    width: 100%; /* Full width on small screens */
+    transform: none; /* Remove transform */
+    margin-left: 0; /* Reset margin */
+    padding: 1rem; /* Add padding for better spacing */
+    
+  }
+  main{ 
+    flex-direction: column;
+  }
+
+  .form-row {
+    flex-direction: column; /* Stack inputs vertically */
+    gap: 0; /* Remove gap between inputs */
+  }
+
+  .form-group input {
+    width: 100%; /* Full width for inputs */
+    padding: 0.8rem; /* Increase padding for better touch interaction */
+    font-size: 1rem; /* Slightly larger font for readability */
+  }
+
+  #add-employee-form button {
+    width: 100%; /* Full width for button */
+    margin-top: 1rem; /* Add margin for spacing */
+  }
+
+  #employee-list table {
+    font-size: 0.9rem; /* Reduce font size for better fit */
+  }
+
+  #employee-list th,
+  #employee-list td {
+    font-size: 0.5rem;
+    padding: 0.5rem; /* Reduce padding for compact layout */
+  }
+  table{
+    width:90vw;
+  }
+}
+
+/* Tablets (768px to 1023px) */
+@media (min-width: 768px) and (max-width: 1023px) {
+  #add-employee-form {
+    width: 90%; /* Slightly narrower form */
+    transform: translateX(5%); /* Adjust transform */
+    margin-left: 1rem; /* Reduce margin */
+  }
+
+  .form-row {
+    gap: 1.5rem; /* Reduce gap between inputs */
+  }
+
+  .form-group input {
+    width: 95%; /* Slightly narrower inputs */
+    padding: 0.6rem; /* Adjust padding */
+  }
+
+  #add-employee-form button {
+    width: 190%; /* Adjust button width */
+  }
+
+  #employee-list table {
+    font-size: 0.95rem; /* Slightly smaller font */
+  }
+
+  #employee-list th,
+  #employee-list td {
+    padding: 0.6rem; /* Adjust padding */
+  }
+}
+
+/* Desktops (1024px and above) */
+@media (min-width: 1024px) {
+  #add-employee-form {
+    width: 98%; /* Original width */
+    transform: translateX(20%); /* Original transform */
+    margin-left: 2rem; /* Original margin */
+  }
+
+  .form-row {
+    gap: 3rem; /* Original gap */
+  }
+
+  .form-group input {
+    width: 90%; /* Original width */
+    padding: 0.8rem; /* Original padding */
+  }
+
+  #add-employee-form button {
+    /* width: 50%; Original width */
+  }
+
+  #employee-list table {
+    font-size: 1rem; /* Original font size */
+  }
+
+  #employee-list th,
+  #employee-list td {
+    padding: 0.8rem; /* Original padding */
+  }
+}
+table button{
+  width: auto;
+  border-radius: 2rem;
+}
+button:nth-child(1){
+  background-color: var(--secondory-color);
+  outline: none;
+  border: none;
+  color: white;
+}
+button:nth-child(2){
+  background-color: var(--primary-color);
+  outline: none;
+  border: none;
+  color: white;
+}
+
+#employee-list {
+  margin-left: 1rem;
+  /* width: 100%; */
+  /* overflow-x: scroll;  */
+  /* Allow scrolling only inside the table container */
+}
+
+#employee-list table {
+  width: 100%;
+  /* overflow-x: scroll; */
+  /* min-width: 600px; Prevent the table from becoming too small */
+}
+button{
+  transition: 0.3s;
+  margin-left: 2px;
+box-shadow: 0px 2px 4px rgb(79, 76, 76);
+}
+button:hover{
+cursor: pointer;
+/* opacity: 0.8; */
+transform: scale(1.1);
+}
+
+.auto-generated-field {
+  padding: 0.5rem;
+  background: #f5f5f5;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  color: #666;
+  min-height: 38px; /* Match your other input heights */
+  display: flex;
+  align-items: center;
+}
+.success p{
+  display: none;
+  background-color: rgb(55, 117, 55);
+  color: white;
+  padding: 0.5rem;
+  border-radius: 4px;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  text-align: center;
+  animation: hide 5s ease-in-out 1;
+}
+@keyframes hide {
+  /* from { opacity: 1; }
+  to { opacity: 0; } */
+  from {display: block; }
+  to { display: none; }
+}
+
+
+/* // Add these animations to your CSS: */
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeOut {
+    from { opacity: 1; transform: translateY(0); }
+    to { opacity: 0; transform: translateY(-20px); }
+}
+
+#employee-list {
+  margin-left: 1rem;
+  max-height: 90vh; /* or whatever height works for your design */
+  overflow-y: auto; /* enables vertical scrolling */
+}
+
+#employee-list table {
+  width: 100%;
+}
+

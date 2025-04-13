@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Manage employees in the Employee Management System. Add, update, and deactivate employee records.">
+  <meta name="keywords" content="employee management, add employee, update employee, deactivate employee">
+  <meta name="author" content="Your Company Name">
+  <title>Employee Management - Employee Management System</title>
+  <link rel="stylesheet" href="../css/employee-management.css">
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <script src="../js/script.js" defer></script>
+</head>
+<body>
+
+  <div id="loader-placeholder"></div>
+  <div id="sidenav-placeholder"></div>
+  
+  <main>
+    <section id="add-employee">
+        <h2>Update Membership</h2>
+        <form id="add-employee-form" method="POST">
+          <div class="form-row">
+              <div class="form-group">
+                  <label for="id">ID:</label>
+                  <input type="text" id="id" name="id" disabled required>
+              </div>
+              <div class="form-group">
+                  <label for="company_name">Company Name:</label>
+                  <input type="text" id="company_name" name="company_name" required>
+              </div>
+          </div>
+          <div class="form-row">
+              <div class="form-group">
+                  <label for="email">Email:</label>
+                  <input type="email" id="email" name="email" required>
+              </div>
+              <div class="form-group">
+                  <label for="password">Password:</label>
+                  <input type="password" id="password" name="password" required>
+              </div>
+          </div>
+          <div class="form-row">
+              <div class="form-group">
+                  <label for="number">Phone Number:</label>
+                  <input type="tel" id="number" name="number" required>
+              </div>
+              <div class="form-group">
+                  <label for="package_id">Package:</label>
+                  <select name="package_id" id="package_id">
+                      <option value="">Select Package</option>
+                  </select>
+              </div>
+          </div>
+          <div class="form-row">
+              <div class="form-group">
+                  <label for="membership_start_date">Membership Start Date:</label>
+                  <input type="date" id="membership_start_date" name="membership_start_date" required>
+              </div>
+              <div class="form-group">
+                  <label for="membership_end_date">Membership End Date:</label>
+                  <input type="date" id="membership_end_date" name="membership_end_date" required>
+              </div>
+          </div>
+          <div class="form-row">
+              <div class="form-group">
+                  <button type="submit">Update</button>
+              </div>
+              <div class="form-group">
+                  <div></div>
+              </div>
+          </div>
+      </form>
+      
+      <script>
+          document.addEventListener('DOMContentLoaded', async () => {
+              const urlParams = new URLSearchParams(window.location.search);
+              const memberId = urlParams.get('Member_id');
+      
+              if (memberId) {
+                  try {
+                      const response = await fetch(`../api/routes/members.php?Member_id=${memberId}`);
+                      const data = await response.json();
+      
+                      if (data.status === 'success' && data.member) {
+                          const memberData = data.member;
+                          document.getElementById('id').value = memberData.Member_id;
+                          document.getElementById('company_name').value = memberData.Company_Name;
+                          document.getElementById('email').value = memberData.Email;
+                          document.getElementById('password').value = memberData.Password;
+                          document.getElementById('number').value = memberData.Number;
+                          document.getElementById('membership_start_date').value = memberData.Membership_start_date;
+                          document.getElementById('membership_end_date').value = memberData.Membership_end_date;
+      
+                          await populatePackages(memberData.Package_id);
+      
+                      } else {
+                          console.error('Error fetching member data:', data.message);
+                          alert('Member not found or error loading data.');
+                      }
+                  } catch (error) {
+                      console.error('Fetch error:', error);
+                      alert('An error occurred while fetching member data.');
+                  }
+              } else {
+                  alert('Member ID not provided in URL.');
+              }
+      
+              async function populatePackages(selectedPackageId) {
+                  const packageSelect = document.getElementById('package_id');
+                  try {
+                      const response = await fetch('../api/routes/packages.php');
+                      const data = await response.json();
+      
+                      if (data.status === 'success' && data.packages) {
+                          data.packages.forEach(package => {
+                              const option = document.createElement('option');
+                              option.value = package.Package_id;
+                              option.textContent = package.Package_name;
+                              if (package.Package_id == selectedPackageId) {
+                                  option.selected = true;
+                              }
+                              packageSelect.appendChild(option);
+                          });
+                      } else {
+                          console.error('Error fetching packages:', data.message);
+                      }
+                  } catch (error) {
+                      console.error('Error fetching packages:', error);
+                  }
+              }
+      
+              document.getElementById('add-employee-form').addEventListener('submit', async function(e) {
+                  e.preventDefault();
+      
+                  const memberId = document.getElementById('id').value;
+                  const companyName = document.getElementById('company_name').value;
+                  const email = document.getElementById('email').value;
+                  const password = document.getElementById('password').value;
+                  const number = document.getElementById('number').value;
+                  const packageId = document.getElementById('package_id').value;
+                  const membershipStartDate = document.getElementById('membership_start_date').value;
+                  const membershipEndDate = document.getElementById('membership_end_date').value;
+      
+                  try {
+                      const response = await fetch('../api/routes/members.php', {
+                          method: 'PUT',
+                          headers: {
+                              'Content-Type': 'application/json',
+                          },
+                          body: JSON.stringify({
+                              Member_id: memberId,
+                              Company_Name: companyName,
+                              Email: email,
+                              Password: password,
+                              Number: number,
+                              Package_id: packageId,
+                              Membership_start_date: membershipStartDate,
+                              Membership_end_date: membershipEndDate,
+                          }),
+                      });
+      
+                      const result = await response.json();
+      
+                      if (result.status === 'success') {
+                          alert('Member updated successfully!');
+                          window.location.href = './membership.html'
+                      } else {
+                          alert('Error updating member: ' + result.message);
+                      }
+                  } catch (error) {
+                      console.error('Update error:', error);
+                      alert('An error occurred while updating the member.');
+                  }
+              });
+          });
+      </script>
+      </section>
+
+  </main>
+
+
+</body>
+</html>
