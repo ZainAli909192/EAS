@@ -19,65 +19,127 @@
   
   <main>
     <section id="add-employee">
-        <h2>Add Membership</h2>
-        <form id="add-employee-form">
-            <div class="form-row">
-              <div class="form-group">
-                <label for="id">ID:</label>
-                <input type="text" id="id" name="id" disabled required>
-              </div>
-            <div class="form-group">
-              <label for="name">Company Name:</label>
-              <input type="text" id="name" name="name" required>
-            </div>
-          </div>
-          <div class="form-row">
-            <div class="form-group">
-              <label for="name">Email:</label>
-              <input type="text" id="name" name="name" required>
-            </div>
-            <div class="form-group">
-              <label for="id">Password:</label>
-              <input type="password" id="id" name="id" required>
-            </div>  
-          </div>
+      <h2>Add Membership</h2>
+      <form id="add-employee-form" method="POST">
         <div class="form-row">
             <div class="form-group">
-                <label for="name">Number of employees:</label>
-                <input type="text" id="name" name="packagename" required>
-              </div>
-            
-            <div class="form-group">
-              <label for="id">Price:</label>
-              <input type="number" id="id" name="Price" required>
+                <label for="company_name">Company Name:</label>
+                <input type="text" id="company_name" name="company_name" required>
             </div>
-          </div>
-         
-          <div class="form-row">
             <div class="form-group">
-              <label for="name">Package name:</label>
-              <select name="packagename" id="packagename">
-                <option value="">Select Package</option>
-                <option value="">Package 1</option>
-                <option value="">Package 2</option>
-                <option value="">Package 3</option>
-              </select>
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
             </div>
-          </div>
-          <div class="form-row">
-<div class="form-group">
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <div class="form-group">
+                <label for="number">Phone Number:</label>
+                <input type="tel" id="number" name="number" required>
+            </div>
+        </div>
+        <div class="form-row">
+           
+            <div class="form-group">
+                <label for="package_id">Package:</label>
+                <select name="package_id" id="package_id">
+                    <option value="">Select Package</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label for="membership_start_date">Membership Start Date:</label>
+                <input type="date" id="membership_start_date" name="membership_start_date" required>
+            </div>
+            <div class="form-group">
+                <label for="membership_end_date">Membership End Date:</label>
+                <input type="date" id="membership_end_date" name="membership_end_date" required>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <button type="submit">Add Company</button>
+            </div>
+        </div>
+    </form>
+    <div id="result-container" style="display:none; margin-top:20px; padding:15px; border-radius:5px;"></div>
     
-    <button type="submit">Add Company</button>
-</div>
-<div class="form-group">
-    <div></div>
-</div>
-            </div>
-        </form>
-      </section>
+ 
+      <div id="result-container" style="display:none; margin-top:20px; padding:15px; border-radius:5px;"></div>
+  </section>
+  
+
 
   </main>
+<!-- insert api call and packages show on load of page  -->
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+        // Function to populate the package dropdown
+        async function populatePackages() {
+            const packageSelect = document.getElementById('package_id');
+            try {
+                const response = await fetch('../api/routes/packages.php'); // Assuming your get packages endpoint is here
+                const data = await response.json();
 
+                if (data.status === 'success' && data.packages) {
+                    data.packages.forEach(package => {
+                        const option = document.createElement('option');
+                        option.value = package.Package_id;
+                        option.textContent = `${package.Package_name} ($${package.Price}/month - ${package.Number_of_employees} employees)`;
+                        packageSelect.appendChild(option);
+                    });
+                } else {
+                    console.error('Error fetching packages:', data.message);
+                }
+            } catch (error) {
+                console.error('Error fetching packages:', error);
+            }
+        }
+
+        // Call populatePackages on page load
+        await populatePackages();
+
+        const addMembershipForm = document.getElementById('add-employee-form');
+        const resultContainer = document.getElementById('result-container');
+
+        addMembershipForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const formData = new FormData(addMembershipForm);
+
+            try {
+                const response = await fetch('../api/routes/members.php', {
+                    method: 'POST',
+                    body: formData,
+                });
+
+                // const result = await response.text();
+                const result = await response.json();
+
+                resultContainer.style.display = 'block';
+                if (result.status == 'success') {
+                    resultContainer.className = 'success';
+                    resultContainer.innerHTML = `<p>${result.message}</p>`;
+                    window.location.href="./membership.html";
+                } else {
+                    resultContainer.className = 'error';
+                    resultContainer.innerHTML = `<p>Error: ${result.message}</p>`;
+                            // for debug 
+                    // resultContainer.innerHTML = `<p>Error: ${result}</p>`;
+                }
+            } catch (error) {
+                console.error('Error submitting form:', error);
+                resultContainer.style.display = 'block';
+                resultContainer.className = 'error';
+                resultContainer.innerHTML = `<p>An unexpected error occurred. Please try again.${error}</p>`;
+            }
+        });
+    });
+</script>
 
 </body>
 </html>

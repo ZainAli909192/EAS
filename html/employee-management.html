@@ -23,6 +23,88 @@
       <button style="margin-bottom: 1rem;" onclick="window.location.href = './add-employee.html'">Add new Employee <i class="fas fa-plus"></i> </button>
      
       <h2>Employees List</h2>
+      <script>
+
+        async function fetchEmployees() {
+          try {
+            const response = await fetch('../api/routes/employee.php', {
+              method: 'GET',
+              headers: {
+                    'Accept': 'application/json'
+                  }
+                });
+                
+                if (!response.ok) {
+                  throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            const result = await response.json();
+            // const result = await response.text();
+            // console.warn(result);
+            
+            
+            if (result.status === 'success') {
+                displayEmployees(result.data);
+              } else {
+                console.error('Error:', result.message);
+                showAlert(result.message, 'error');
+            }
+          } catch (error) {
+            console.error('Fetch error:', error);
+            showAlert('Failed to load employee data', 'error');
+        }
+      }
+      
+      function displayEmployees(employees) {
+        const tableBody = document.getElementById('employee-table-body');
+        tableBody.innerHTML = ''; // Clear existing table rows
+        let counter=1;
+        employees.forEach(employee => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+          <td>${counter}</td>
+                <td>${employee.name}</td>
+                <td>${employee.department}</td>
+                <td>${employee.designation}</td>
+                <td>${employee.job_in_time}</td>
+                <td>${employee.job_out_time}</td>
+                <td style="display: flex;">
+                  <button onclick="window.location.href = './update-employee.html?id=${employee.employee_id}'">Edit</button>
+                    <button onclick="deleteEmployee('${employee.employee_id}')">Delete</button>
+                </td>
+            `;
+            tableBody.appendChild(row);
+            counter++;
+        });
+      }
+    
+    function deleteEmployee(employeeId) {
+        if (confirm("Are you sure you want to delete this employee?")) {
+            fetch('../api/routes/employee.php', {
+              method: 'DELETE',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ employee_id: employeeId })
+              })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    alert("Employee deleted successfully.");
+                    fetchEmployees(); // Refresh the table
+                } else {
+                    alert("Failed to delete employee: " + data.message);
+                }
+            })
+            .catch(error => {
+                console.error("Error deleting employee:", error);
+                alert("An error occurred while deleting the employee.");
+            });
+        }
+    }
+    
+    document.addEventListener('DOMContentLoaded', fetchEmployees);
+              </script>
       <table >
         <thead style="width: 100%; ">
           <tr>
@@ -37,51 +119,7 @@
         </thead>
         <tbody id="employee-table-body">
           <!-- Rows will be populated dynamically -->
-      <tr>
-        <td>1</td>
-        <td>Ali</td>
-        <td>IT</td>
-        <td>Backend developer</td>
-        <td>9:00 AM</td>
-        <td>5:00 PM</td>
-        <td style="display: flex;">
-          <button onclick="window.location.href = './update-employee.html'">Edit</button> <button>Delete</button>
-        </td>
-      </tr>
-      <tr>
-        <td>2</td>
-        <td>Kashif</td>
-        <td>IT</td>
-        <td>Frontend developer</td>
-        <td>9:00 AM</td>
-        <td>5:00 PM</td>
-        <td style="display: flex;">
-          <button onclick="window.location.href = './update-employee.html'">Edit</button> <button>Delete</button>
-        </td>
-      </tr>
-      <tr>
-        <td>3</td>
-        <td>Usman</td>
-        <td>Labour</td>
-        <td>Sweeper</td>
-        <td>9:00 AM</td>
-        <td>5:00 PM</td>
-        <td style="display: flex;">
-          <button onclick="window.location.href = './update-employee.html'">Edit</button> <button>Delete</button>
-        </td>
-      </tr>
-      <tr>
-        <td>4</td>
-        <td>Huzaifa</td>
-        <td>HR</td>
-        <td>Manager</td>
-        <td>9:00 AM</td>
-        <td>5:00 PM</td>
-        <td style="display: flex;">
-          <button onclick="window.location.href = './update-employee.html'">Edit</button> <button>Delete</button>
-        </td>
-      </tr>
-      
+    
         </tbody>
       </table>
     </section>
