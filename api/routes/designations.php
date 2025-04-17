@@ -4,13 +4,8 @@ require_once './config.php';
 // Handle POST request for adding a new designation
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $data = json_decode(file_get_contents('php://input'), true);
-    $designationName = isset($data['name']) ? trim($data['name']) : '';
-
-    if (empty($designationName)) {
-        echo json_encode(['status' => 'error', 'message' => 'Designation name is required.']);
-        exit;
-    }
-
+    $designationName = isset($data['designation_name']) ? $data['designation_name'] : '';
+    
     $stm1 = $conn->prepare("SELECT MAX(Designation_id) FROM designation");
     $stm1->execute();
     $result = $stm1->get_result();
@@ -32,21 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     exit;
 }
 
-// Handle GET request for retrieving all designations
-elseif ($_SERVER['REQUEST_METHOD'] === 'GET') {
-    $designations = [];
-    $result = $conn->query("SELECT Designation_id, Designation_name FROM designation");
 
-    if ($result && $result->num_rows > 0) {
-        while ($row = $result->fetch_assoc()) {
-            $designations[] = $row;
-        }
-    }
-
-    echo json_encode(['status' => 'success', 'designations' => $designations]);
-    $conn->close();
-    exit;
-}
 
 // Handle GET request for retrieving a specific designation
 elseif ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['id'])) {
@@ -64,6 +45,22 @@ elseif ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['id'])) {
         echo json_encode(['status' => 'error', 'message' => 'Designation not found.']);
     }
     $stmt->close();
+    $conn->close();
+    exit;
+}
+
+// Handle GET request for retrieving all designations
+elseif ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    $designations = [];
+    $result = $conn->query("SELECT Designation_id, Designation_name FROM designation");
+
+    if ($result && $result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            $designations[] = $row;
+        }
+    }
+
+    echo json_encode(['status' => 'success', 'designations' => $designations]);
     $conn->close();
     exit;
 }

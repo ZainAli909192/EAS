@@ -143,6 +143,7 @@ else if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['id'])) {
     $conn->close();
     exit;
 }
+
 if (isset($_GET['lists']) && $_GET['lists'] === 'true') {
     // Fetch departments
     $departments = [];
@@ -169,25 +170,38 @@ if (isset($_GET['lists']) && $_GET['lists'] === 'true') {
 
 // For all records  
 else if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    // Start session and verify authentication
+    session_start();
+    
+    if (!isset($_SESSION['user_id']) || !isset($_SESSION['role'])) {
+        http_response_code(401);
+        echo json_encode(['status' => 'error', 'message' => 'Unauthorized']);
+        exit;
+    }
+
     try {
         // Query to get all employee data with department and designation names
-        $query = "SELECT 
-                    e.employee_id,
-                    e.Name,
-                    e.Number,
-                    d.Department_name,
-                    des.Designation_name,
-                    e.job_in_time,
-                    e.job_out_time,
-                    e.Member_id
-                  FROM employee e
-                  LEFT JOIN department d ON e.Department_id = d.Department_id
-                  LEFT JOIN designation des ON e.Designation_id = des.Designation_id
-                  ORDER BY e.employee_id
-                  
-                  ";
-
+        $query = "SELECT
+                e.employee_id,
+                e.Name,
+                e.Number,
+                d.Department_name,
+                des.Designation_name,
+                e.job_in_time,
+                e.job_out_time,
+                e.Member_id
+            FROM employee e
+            LEFT JOIN department d ON e.Department_id = d.Department_id
+            LEFT JOIN designation des ON e.Designation_id = des.Designation_id
+            WHERE e.Member_id = ?
+            ORDER BY e.employee_id";
+        
         $stmt = $conn->prepare($query);
+        
+        // Use the correct session variable (member_id instead of user_id if needed)
+        $memberId = $_SESSION['user_id']; // Or $_SESSION['member_id'] if different
+        $stmt->bind_param("i", $memberId); // Changed to "i" for integer
+        
         $stmt->execute();
         $result = $stmt->get_result();
 
@@ -212,7 +226,6 @@ else if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         ]);
 
     } catch (Exception $e) {
-        header('Content-Type: application/json');
         http_response_code(500);
         echo json_encode([
             'status' => 'error',
