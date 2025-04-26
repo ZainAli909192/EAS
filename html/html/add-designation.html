@@ -1,0 +1,137 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Manage employees in the Employee Management System. Add, update, and deactivate employee records.">
+  <meta name="keywords" content="employee management, add employee, update employee, deactivate employee">
+  <meta name="author" content="Your Company Name">
+  <title>Employee Management - Employee Management System</title>
+  <link rel="stylesheet" href="../css/employee-management.css">
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <script src="../js/script.js" defer></script>
+</head>
+<body>
+    <div id="loader-placeholder"></div>
+    <div id="sidenav-placeholder"></div>
+    
+  <main>
+    <section id="add-employee">
+        <h2>Add designation</h2>
+
+        <form id="add-employee-form" method="POST" >
+            <div class="form-row">
+                    
+                    <div class="form-group">
+                        <label for="name">Department Name:</label>
+                    <select name="department_name" id="department_name">
+                        <!-- Options will be populated by JavaScript -->
+                    </select>
+
+                    </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="id">ID:</label>
+                    <input type="text" id="id" name="id" 
+                        value="Auto-generated" 
+                        readonly 
+                        style="background: #f5f5f5; color: #666; cursor: not-allowed;">
+                </div>
+                    
+                    <div class="form-group">
+                        <label for="designation_name">Designation Name:</label>
+                        <input type="text" id="designation_name" name="designation_name" required 
+                            >
+                    </div>
+            </div>
+      
+            <div class="form-row">
+                <div class="form-group">
+                    <button type="submit">Add now <i class="fas fa-plus"></i></button>
+                </div>
+                <div class="form-group">
+                    <button onclick="window.location.href = './add-department.html'">Department <i class="fas fa-plus"></i></button>
+                </div>
+            </div>
+        </form>
+      </section>
+
+  </main>
+<script>
+
+document.addEventListener('DOMContentLoaded', async () => {
+    try {
+        // Fetch departments from your API endpoint
+        const response = await fetch('../api/routes/department.php');
+        const data = await response.json();
+
+        if (data.status === 'success' && data.departments) {
+            const departmentSelect = document.getElementById('department_name');
+            
+            // Clear any existing options (except the first placeholder if needed)
+            departmentSelect.innerHTML = '';
+            
+            // Add each department as an option
+            data.departments.forEach(department => {
+                const option = document.createElement('option');
+                option.value = department.Department_id; // or Department_name if you prefer
+                option.textContent = department.Department_name;
+                departmentSelect.appendChild(option);
+            });
+        } else {
+            console.error('Error loading departments:', data.message);
+            // Fallback to hardcoded options if API fails
+            const departmentSelect = document.getElementById('department_name');
+            departmentSelect.innerHTML = `
+                <option value="HR">HR</option>
+                <option value="IT">IT</option>
+            `;
+        }
+    } catch (error) {
+        console.error('Error fetching departments:', error);
+        // Fallback to hardcoded options if fetch fails
+        const departmentSelect = document.getElementById('department_name');
+        departmentSelect.innerHTML = `
+            <option value="HR">HR</option>
+            <option value="IT">IT</option>
+        `;
+    }
+});
+
+    document.getElementById('add-employee-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    const formData = {
+        designation_name: document.getElementById('designation_name').value
+    };
+
+    try {
+        const response = await fetch('../api/routes/designations.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+        });
+
+        const result = await response.json();
+        
+        if (result.status == 'success') {
+            alert(result.message);
+            window.location.href = "./designations-list.html";
+        } else {
+            alert("Designation creation error: " + (result.message || 'Unknown error'));
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('An error occurred. Please try again.');
+    }
+});
+</script>
+
+</body>
+</html>

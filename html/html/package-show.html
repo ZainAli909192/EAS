@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Employees Attendance Management System</title>
+  <link rel="stylesheet" href="../css/contact.css">
+  <link rel="stylesheet" href="../css/index.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<script src="../js/script.js" defer></script>
+</head>
+  
+<body>
+
+  <div id="loader-placeholder"></div>
+  <div id="navbar-placeholder"></div>
+ 
+
+
+<!-- Packages Section -->
+     <section id="features" class="features">
+  
+  <h2>We have following packages</h2>
+    
+     
+    <div class="features-grid" id="packages-container">
+      <!-- Packages will be loaded here dynamically -->
+    </div>
+    
+    <script>
+      async function loadPackages() {
+        try {
+          const response = await fetch('../api/routes/packages.php');
+          const data = await response.json();
+          // const data = await response.text();
+          // alert(data)
+          if (data.status !== 'success') {
+            throw new Error(data.message || 'Failed to load packages');
+          }
+    
+          const container = document.getElementById('packages-container');
+          container.innerHTML = ''; // Clear existing content
+          
+          data.packages.forEach(package => {
+            const packageCard = document.createElement('div');
+            packageCard.className = 'feature-card';
+            packageCard.innerHTML = `
+              <div class="feature-icon">
+                <i class="fas fa-box"></i>
+              </div>
+              <h3>${package.Package_name}</h3>
+              <p>$${package.Price}/month</p>
+              <p>1 - ${package.Number_of_employees} Employees</p>
+            `;
+            container.appendChild(packageCard);
+          });
+    
+        } catch (error) {
+          console.error('Error loading packages:', error);
+          document.getElementById('packages-container').innerHTML = `
+            <p class="error-message">
+              Unable to load packages at this time. Please try again later.<br>
+              Error: ${error.message}
+            </p>
+          `;
+        }
+      }
+    
+      // Call the async function
+      loadPackages();
+    </script>
+
+      </section>
+
+    <!-- Footer Section -->
+    <footer>
+        <div class="footer-container">
+            <!-- Features Section -->
+            <div class="footer-column">
+                <img  src="../img/logo.jpg" alt="">
+                <ul>
+
+               <li>
+
+                 <a href="./">&copy; All rights reserved</a>
+               </li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>Features</h3>
+                <ul>
+                    <li><a href="#">Attendance Tracking</a></li>
+                    <li><a href="#">Leave Management</a></li>
+                    <li><a href="#">Employee Management</a></li>
+                    <li><a href="#">Reporting</a></li>
+                </ul>
+            </div>
+
+            <!-- Quick Links Section -->
+            <div class="footer-column">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#">Services</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </div>
+
+            <!-- Contact Form -->
+            <div class="footer-column">
+                <h3>Contact Us</h3>
+                <form>
+                    <input type="text" placeholder="Your Name" required>
+                    <input type="email" placeholder="Your Email" required>
+                    <textarea placeholder="Your Message" required></textarea>
+                    <button type="submit">Send</button>
+                </form>
+            </div>
+        </div>
+    </footer>
+
+  <!-- contact form popup code  -->
+  <div class="popup-overlay">
+    <div class="popup-form">
+      <button class="close-popup-btn"><i class="fas fa-times"></i></button>
+      <h2>Contact Us</h2>
+      <form id="contact-form">
+        <div class="form-group">
+          <label for="name">Name</label>
+          <input type="text" id="name" name="name" required>
+        </div>
+        <div class="form-group">
+          <label for="number">Phone Number</label>
+          <input type="tel" id="number" name="number" required>
+        </div>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" required>
+        </div>
+        <div class="form-group">
+          <label for="message">Message</label>
+          <textarea id="message" name="message" rows="4" required></textarea>
+        </div>
+        <button type="submit" class="btn-primary">Send Message</button>
+      </form>
+    </div>
+  </div>
+
+</body>
+</html>

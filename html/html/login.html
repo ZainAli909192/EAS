@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login Page</title>
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="../css/login.css">
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+  <script src="../js/script.js" defer></script>
+
+</head>
+<body> 
+  <div id="loader-placeholder"></div>
+ 
+  <div class="login-container">
+    <div class="login-box">
+      <div class="login-header">
+        <h2>Welcome Back</h2>
+        <p>Please log in to your account</p>
+      </div>
+      <form id="login-form" method="post">
+     
+        <div class="input-group">
+          <label for="id">ID</label>
+          <input
+            type="text"
+            id="id"
+            name="id"
+            placeholder="Enter your ID"
+            required
+          />
+        </div>
+        <div class="input-group">
+          <label for="password">Password</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            placeholder="Enter your password"
+            required
+          />
+        </div>
+        <div class="input-group">
+          <label for="role">Role</label>
+          <select id="role" name="role">
+            <option value="employee">Employee</option>
+            <option value="member">Company / Manager</option>
+            <option value="admin">Admin / Manager</option>
+          </select>
+        </div>
+        <!-- <button
+          type="button"
+          class="login-button"
+          onclick="window.location.href='./employee-management.html'"
+        >
+          Log In
+        </button> -->
+        <button type="submit" class="login-button">Log In</button>
+
+      </form>
+      <div class="login-footer">
+        <!-- <p>
+          Don't have an account? <a href="./signup.html">Sign Up</a>
+        </p> -->
+        <p>
+          <a href="./forgot-password.html">Forgot Password?</a>
+        </p>
+      </div>
+    </div>
+  </div>
+
+
+<script>
+document.getElementById('login-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const formData = {
+        id: document.getElementById('id').value,
+        password: document.getElementById('password').value,
+        role: document.getElementById('role').value
+    };
+
+    try {
+        const response = await fetch('../api/routes/login.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+        });
+
+        const result = await response.json();
+        // const result = await response.text();
+        // console.warn(result);
+        
+
+        if (result.status === 'success') {
+            // Redirect based on role
+            // switch (formData.role) {
+            //     case 'employee':
+            //         window.location.href = 'employee-dashboard.html';
+            //         break;
+            //     case 'member':
+            //         window.location.href = 'company-dashboard.html';
+            //         break;
+            //     case 'admin':
+            //         window.location.href = 'admin-dashboard.html';
+            //         break;
+            // } 
+                    window.location.href = 'profile.html';
+        } else {
+            alert(result.message || 'Login failed'+result);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('An error occurred during login'+error);
+    }
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Manage employees in the Employee Management System. Add, update, and deactivate employee records.">
+  <meta name="keywords" content="employee management, add employee, update employee, deactivate employee">
+  <meta name="author" content="Your Company Name">
+  <title>Employee Management - Employee Management System</title>
+  <link rel="stylesheet" href="../css/employee-management.css">
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <script src="../js/script.js" defer></script>
+</head>
+<body>
+
+  <div id="loader-placeholder"></div>
+  <div id="sidenav-placeholder"></div>
+  
+  <main>
+    <section id="add-employee">
+      <h2>Update Packages</h2>
+      <form id="add-employee-form">
+          <div class="form-row">
+              <div class="form-group">
+                  <label for="id">ID:</label>
+                  <input type="text" id="id" name="id" disabled required>
+              </div>
+              <div class="form-group">
+                  <label for="name">Package Name:</label>
+                  <input type="text" id="package_name" name="package_name" required>
+              </div>
+          </div>
+          <div class="form-row">
+              <div class="form-group">
+                  <label for="price">Price:</label>
+                  <input type="text" id="price" name="price" required>
+              </div>
+              <div class="form-group">
+                  <label for="num_employees">Number of employees:</label>
+                  <input type="text" id="num_employees" name="num_employees" required>
+              </div>
+          </div>
+          <div class="form-row">
+              <div class="form-group">
+                  <button type="submit">Update <i class="fas far fa-edit"></i></button>
+              </div>
+              <div class="form-group">
+                  <div></div>
+              </div>
+          </div>
+      </form>
+  </section>
+  
+  <script>
+      document.addEventListener('DOMContentLoaded', async () => {
+          const urlParams = new URLSearchParams(window.location.search);
+          const packageId = urlParams.get('Package_id');
+  
+          if (packageId) {
+              try {
+                  const response = await fetch(`../api/routes/packages.php?id=${packageId}`);
+                  const data = await response.json();
+  
+                  if (data.status === 'success' && data.package) {
+                      const packageData = data.package;
+                      document.getElementById('id').value = packageData.Package_id;
+                      document.getElementById('package_name').value = packageData.Package_name;
+                      document.getElementById('price').value = packageData.Price;
+                      document.getElementById('num_employees').value = packageData.Number_of_employees;
+                  } else {
+                      console.error('Error fetching package data:', data.message);
+                      alert('Package not found or error loading data.');
+                  }
+              } catch (error) {
+                  console.error('Fetch error:', error);
+                  alert('An error occurred while fetching package data.');
+              }
+          } else {
+              alert('Package ID not provided in URL.');
+            window.location.href="./packages-list.html"
+          }
+  
+          document.getElementById('add-employee-form').addEventListener('submit', async function(e) {
+              e.preventDefault();
+  
+              const packageId = document.getElementById('id').value;
+              const packageName = document.getElementById('package_name').value;
+              const price = document.getElementById('price').value;
+              const numEmployees = document.getElementById('num_employees').value;
+  
+              try {
+                  const response = await fetch('../api/routes/packages.php', {
+                      method: 'PUT',
+                      headers: {
+                          'Content-Type': 'application/json',
+                      },
+                      body: JSON.stringify({
+                          package_id: packageId,
+                          package_name: packageName,
+                          price: price,
+                          num_employees: numEmployees,
+                      }),
+                  });
+  
+                  const result = await response.json();
+                  console.warn(result);
+  
+                  if (result.status == 'success') {
+                      alert('Package updated successfully!');
+                      window.location.href = './packages-list.html'
+                  } else {
+                      alert('Error updating package: ' + result.message);
+                  }
+              } catch (error) {
+                  console.error('Update error:', error);
+                  alert('An error occurred while updating the package.');
+              }
+          });
+      });
+  </script>
+
+  </main>
+
+
+</body>
+</html>

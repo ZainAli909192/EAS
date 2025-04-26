@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profile - Employee Management System</title>
+  <link rel="stylesheet" href="../css/profile.css">
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+  <div id="loader-placeholder"></div>
+  <div id="sidenav-placeholder"></div>
+
+  <main>
+    <section id="update-profile">
+      <h2>Update Profile</h2>
+      <form id="profile-form">
+        <!-- Common fields -->
+        <div class="form-row">
+          <div class="form-group">
+            <label for="id">ID: <i class="fas fa-key"></i></label>
+            <input type="text" id="id" name="id" readonly>
+          </div>
+        </div>
+
+        <!-- Dynamic fields will be inserted here -->
+        <div id="dynamic-fields"></div>
+
+        <button type="submit">Save Changes</button>
+      </form>
+    </section>
+  </main>
+
+  <script src="../js/profile.js"></script>
+  <script src="../js/script.js" defer></script>
+</body>
+</html>

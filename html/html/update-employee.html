@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Manage employees in the Employee Management System. Add, update, and deactivate employee records.">
+    <meta name="keywords" content="employee management, add employee, update employee, deactivate employee">
+    <meta name="author" content="Your Company Name">
+    <title>Employee Management - Employee Management System</title>
+    <link rel="stylesheet" href="../css/employee-management.css">
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="../js/script.js" defer></script>
+</head>
+<body>
+
+    <div id="loader-placeholder"></div>
+    <div id="sidenav-placeholder"></div>
+
+    <main>
+        <section id="add-employee">
+            <h2>Update Employee</h2>
+            <form id="add-employee-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="id">ID:</label>
+                        <input type="text" id="id" name="id" disabled required>
+                    </div>
+                    <div class="form-group">
+                        <label for="name">Name:</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="number">Number:</label>
+                        <input type="text" id="number" name="number" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="company">Company name:</label>
+                        <input type="text" id="company" readonly name="company_name" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                      <div class="form-group">
+                        <label for="department">Department:</label>
+                        <select id="department" name="department" required>
+                            </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="designation">Designation:</label>
+                        <select id="designation" name="designation" required>
+                            </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="job-in-timing">Job in timing:</label>
+                        <input type="time" id="job-in-timing" name="job-in-timing" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="job-out-timing">Job out timing:</label>
+                        <input type="time" id="job-out-timing" name="job-out-timing" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <button type="submit">Update</button>
+                    </div>
+                    <div class="form-group">
+                        <div></div>
+                    </div>
+                </div>
+            </form>
+        </section>
+    </main>
+
+    <!-- update  -->
+<script>
+    document.getElementById('add-employee-form').addEventListener('submit', async (event) => {
+        event.preventDefault(); // Prevent default form submission
+
+        const employeeId = document.getElementById('id').value;
+        const name = document.getElementById('name').value;
+        const number = document.getElementById('number').value;
+        const department = document.getElementById('department').value;
+        const designation = document.getElementById('designation').value;
+        const job_in_time = document.getElementById('job-in-timing').value;
+        const job_out_time = document.getElementById('job-out-timing').value;
+
+        const selectedDepartment = document.getElementById('department').options[document.getElementById('department').selectedIndex];
+const selectedDesignation = document.getElementById('designation').options[document.getElementById('designation').selectedIndex];
+
+let departmentId = null;
+let designationId = null;
+
+if (selectedDepartment) {
+    departmentId = selectedDepartment.dataset.id;
+}
+
+if (selectedDesignation) {
+    designationId = selectedDesignation.dataset.id;
+}
+
+         // Check for null/undefined
+    if (!departmentId || !designationId) {
+        // alert('Please select a department and designation.');
+        return; // Stop the request
+    }
+
+        try {
+
+          const requestBody = JSON.stringify({
+        employee_id: employeeId,
+        Name: name,
+        Number: number,
+        Department_id: departmentId,
+        Designation_id: designationId,
+        job_in_time: job_in_time,
+        job_out_time: job_out_time,
+    });
+
+    console.log("Request Body:", requestBody); // Inspect the data being sent
+
+    const response = await fetch('../api/routes/employee.php', {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: requestBody,
+    });
+
+            const data = await response.json();
+            console.warn(data);
+
+            if (data.status === 'success') {
+                alert('Employee updated successfully!');
+               window.location.href="./employee-management.html";
+                // Optionally, redirect or update the UI
+            } else {
+                alert('Failed to update employee: ' + data.message);
+            }
+        } catch (error) {
+            console.error('Error updating employee:', error);
+            alert('An error occurred while updating the employee.');
+        }
+    });
+</script>
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', async () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const employeeId = urlParams.get('id');
+
+      if (employeeId) {
+          try {
+              const response = await fetch(`../api/routes/employee.php?id=${employeeId}`);
+              const data = await response.json();
+
+              if (data.status === 'success') {
+                  const employee = data.data;
+                  const departments = data.departments;
+                  const designations = data.designations;
+
+                  document.getElementById('id').value = employee.employee_id;
+                  document.getElementById('name').value = employee.name;
+                  document.getElementById('number').value = employee.phone_number;
+                  document.getElementById('company').value = employee.company_name;
+
+                  // Populate departments dropdown
+                  const deptSelect = document.getElementById('department');
+                  departments.forEach(dept => {
+                      const option = document.createElement('option');
+                      option.value = dept.Department_name; // Keep name as the value
+                      option.textContent = dept.Department_name;
+                      option.dataset.id = dept.Department_id; // Store ID in data-id
+                      if (employee.department_id === dept.Department_id) {
+                          option.selected = true;
+                      }
+                      deptSelect.appendChild(option);
+                  });
+
+                  // Populate designations dropdown
+                  const desigSelect = document.getElementById('designation');
+                  designations.forEach(desig => {
+                      const option = document.createElement('option');
+                      option.value = desig.Designation_name; // Keep name as the value
+                      option.textContent = desig.Designation_name;
+                      option.dataset.id = desig.Designation_id; // Store ID in data-id
+                      if (employee.designation_id === desig.Designation_id) {
+                          option.selected = true;
+                      }
+                      desigSelect.appendChild(option);
+                  });
+
+                  document.getElementById('job-in-timing').value = employee.job_in_time;
+                  document.getElementById('job-out-timing').value = employee.job_out_time;
+
+              } else {
+                  alert('Employee not found');
+                  window.location.href = "./employee-management.html"
+              }
+          } catch (error) {
+              console.error('Error fetching employee:', error);
+              alert('Failed to load employee data.');
+          }
+      } else {
+          alert('Employee ID not provided.');
+      }
+  });
+</script>
+</body>
+</html>

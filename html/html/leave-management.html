@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Manage employees in the Employee Management System. Add, update, and deactivate employee records.">
+  <meta name="keywords" content="employee management, add employee, update employee, deactivate employee">
+  <meta name="author" content="Your Company Name">
+  <title>Employee Management - Employee Management System</title>
+  <!-- <link rel="stylesheet" href="../css/navbar.css"> -->
+  <link rel="stylesheet" href="../css/employee-management.css">
+  <link rel="stylesheet" href="../css/styles.css">
+  <script src="../js/script.js" defer></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+
+<body>
+  <div id="loader-placeholder"></div>
+  <div id="sidenav-placeholder"></div>
+
+  <main>
+    <section id="employee-list">
+      <h2>Employees leave requests</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Sr no.</th>
+            <th>Name</th>
+            <th>Leave type</th>
+            <th>Start date</th>
+            <th>End date</th>
+            <th>Leave reason</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="employee-table-body">
+          <!-- Rows will be populated dynamically -->
+        </tbody>
+      </table>
+    </section>
+  </main>
+
+  <script>
+  document.addEventListener('DOMContentLoaded', async () => {
+    try {
+          const response = await fetch('../api/routes/leaves.php');
+          const result = await response.json();
+          
+        //   const result = await response.text();
+        //   alert(result)
+
+          if (result.status === 'success') {
+              const tableBody = document.getElementById('employee-table-body');
+              tableBody.innerHTML = ''; // Clear existing rows
+              let i=1;
+              result.leaves.forEach(leave => {
+                  const row = document.createElement('tr');
+                  
+                  // Format dates (you can use a library like date-fns for better formatting)
+                  const formatDate = (dateString) => {
+                      const date = new Date(dateString);
+                      return date.toLocaleDateString('en-US', {
+                          year: 'numeric',
+                          month: '2-digit',
+                          day: '2-digit'
+                      }).replace(/\//g, '-');
+                  };
+                  
+                  row.innerHTML = `
+                      <td>${i}</td>
+                      <td>${leave.name}</td>
+                      <td>${leave.type}</td>
+                      <td>${formatDate(leave.start_date)}</td>
+                      <td>${formatDate(leave.end_date)}</td>
+                      <td>${leave.reason}</td>
+                      <td>${leave.status}</td>
+                      <td style="display: flex; gap: 5px;">
+                          <button ${leave.status === 'approved' ? 'disabled' : ''} onclick="handleLeaveAction(${leave.id}, 'approved')">Approve</button>
+                          <button ${leave.status === 'rejected' ? 'disabled' : ''} onclick="handleLeaveAction(${leave.id}, 'rejected')">Reject</button>
+                      </td>
+                  `;
+                  
+                  tableBody.appendChild(row);
+                  i++;
+              });
+          } else {
+              console.error('Error loading leaves:', result.message);
+              // alert('Failed to load leave requests');
+          }
+      } catch (error) {
+          console.error('Error:', error);
+          alert('An error occurred while loading leave requests');
+      }
+  });
+
+  async function handleLeaveAction(leaveId, action) {
+      if (!confirm(`Are you sure you want to ${action} this leave request?`)) {
+          return;
+      }
+      
+      try {
+          const response = await fetch('../api/routes/leaves.php', {
+              method: 'PUT',
+              headers: {
+                  'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                  leave_id: leaveId,
+                  action: action
+              })
+          });
+          
+          const result = await response.json();
+        //   const result = await response.text();
+        //   alert(result)
+          
+          if (result.status === 'success') {
+              alert(`Leave request ${action} successfully!`);
+              location.reload(); // Refresh the page to show updated status
+          } else {
+              alert(`Error: ${result.message}`);
+          }
+      } catch (error) {
+          console.error('Error:', error);
+          alert('An error occurred while processing your request');
+      }
+  }
+  
+
+</script>
+</body>
+
+</html>
+

@@ -1,0 +1,53 @@
+<html>
+<head>
+    <title></title>
+    <style>
+        .role-admin { display: none; }
+        .role-member { display: none; }
+        .role-employee { display: none; }
+        .role-all { display: block; }
+    </style>
+</head>
+<body>
+<header>
+    <div class="burger" id="burger">
+        <div class="item"></div>
+        <div class="item"></div>
+        <div class="item"></div> 
+    </div>
+    <h1> 
+        <img height="40px" width="40px" src="../img/logo.jpg" alt="">
+    </h1>
+    <nav>
+        <ul>
+            <!-- Admin only -->
+            <li class="role-admin"><a href="./membership.html">Membership</a></li>
+            <li class="role-admin"><a href="./packages-list.html">Packages</a></li>
+
+            <!-- Member only -->
+            <li class="role-member"><a href="./employee-management.html">Manage Employees</a></li>
+            <li class="role-member"><a href="./departments-list.html">Departments</a></li>
+            <li class="role-member"><a href="./designations-list.html">Designations</a></li>
+            <li class="role-member"><a href="./attendances.html">Employees Attendance</a></li>
+            <li class="role-member"><a href="./leave-management.html">Leave Management</a></li>
+            <li class="role-member"><a href="./reporting.html">Reports</a></li>
+
+            <!-- All users -->
+            <li class="role-all"><a href="./profile.html">Profile</a></li>
+            
+            <!-- Employees only -->
+            <li class="role-employee"><a href="./mark-attendance.html">Mark Attendance</a></li>
+            <li class="role-employee"><a href="./apply-leave.html">Apply Leave</a></li>
+            <li class="role-employee"><a href="./leave-history.html">Leave status</a></li>
+            
+            <!-- All users -->
+            <li class="role-all"><a href="./logout.html">Logout</a></li>
+        </ul>
+    </nav>
+</header>
+
+
+
+<script src="../js/script.js" defer></script>  
+</body>
+</html>

@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Manage employees in the Employee Management System. Add, update, and deactivate employee records.">
+  <meta name="keywords" content="employee management, add employee, update employee, deactivate employee">
+  <meta name="author" content="Your Company Name">
+  <title>Employee Management - Employee Management System</title>
+  <link rel="stylesheet" href="../css/employee-management.css">
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <script src="../js/script.js" defer></script>
+</head>
+<body>
+
+  <div id="loader-placeholder"></div>
+  <div id="sidenav-placeholder"></div>
+  
+  <main>
+    <section id="add-employee">
+        <h2>Add Employee</h2>
+        <!-- <?php if (!empty($errors)): ?>
+        <div class="error">
+            <?php foreach ($errors as $error): ?>
+                <p><?php echo htmlspecialchars($error); ?></p>
+            <?php endforeach; ?> -->
+        </div>
+    <!-- <?php endif; ?>
+    
+    <?php if (isset($success)): ?>
+        <div class="success">
+            <p><?php echo htmlspecialchars($success); ?></p>
+        </div>
+    <?php endif; ?> -->
+
+    <form id="add-employee-form" >
+        <div class="form-row">
+            <!-- <div class="form-group">
+                <label>ID:</label>
+                <div class="auto-id">Will be auto-generated</div>
+            </div> -->
+            <div class="form-group">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name"  
+                       >
+            </div>
+            <div class="form-group">
+                <label for="number">Number:</label>
+                <input type="text" id="number" name="number"  
+                       >
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email"  
+                       >
+            </div>
+            <div class="form-group">
+                <label for="pass">Password:</label>
+                <input type="password" id="password" name="password"  
+                       >
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label for="department">Department:</label>
+                <select id="department" name="department" required></select>
+            </div>
+            <div class="form-group">
+                <label for="designation">Designation:</label>
+                <select id="designation" name="designation" required></select>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label for="job_in_time">Job in time:</label>
+                <input type="time" id="job_in_time" name="job_in_time"  
+                       >
+            </div>
+            <div class="form-group">
+                <label for="job_out_time">Job out time:</label>
+                <input type="time" id="job_out_time" name="job_out_time"  
+                       >
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <button type="submit">Add Employee</button>
+            </div>
+        </div>
+    </form>
+      </section>
+
+  </main>
+
+<script>
+    document.getElementById('add-employee-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    // Show loading state
+    const submitBtn = this.querySelector('button[type="submit"]');
+    const originalBtnText = submitBtn.textContent;
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+
+    // Get form data
+    const formData = {
+        Name: document.getElementById('name').value.trim(),
+        Number: document.getElementById('number').value.trim(),
+        Password: document.getElementById('password').value.trim(),
+        Department_id: document.getElementById('department').value.trim(),
+        Designation_id: document.getElementById('designation').value.trim(),
+        job_in_time: document.getElementById('job_in_time').value,
+        job_out_time: document.getElementById('job_out_time').value,
+        Email: document.getElementById('email').value.trim(),
+
+    };
+
+    // Basic client-side validation
+    if (!formData.Name || !formData.Number || !formData.Department_id || !formData.Designation_id) {
+        showAlert('Please fill in all required fields', 'error');
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalBtnText;
+        return;
+    }
+
+    try {
+        const response = await fetch('../api/routes/employee.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest' // Helps identify AJAX requests
+            },
+            body: JSON.stringify(formData),
+            credentials: 'same-origin' // Include cookies if needed
+        });
+
+
+        // Check if response is OK (status 200-299)
+        // if (!response.ok) {
+        //     throw new Error(`HTTP error! status: ${response.message}`);
+        // }
+        const responseText = await response.text();
+        console.warn(responseText);
+
+        const result = JSON.parse(responseText);
+
+        if (result.status === 'success') {
+            showAlert(result.message, 'success');
+            this.reset();
+            
+            // Optional: Redirect or update UI
+            // window.location.href = '/employees';
+        } else {
+            showAlert(result.message || 'Operation failed', 'error');
+        }
+    } catch (error) {
+        console.error('Fetch error:', error);
+        showAlert('An error occurred while submitting the form. Please try again.'+error, 'error');
+    } finally {
+        // Reset button state
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalBtnText;
+    }
+});
+
+// Helper function to show alerts (replace with your preferred UI)
+function showAlert(message, type = 'info') {
+    // Remove any existing alerts
+    const existingAlert = document.querySelector('.ajax-alert');
+    if (existingAlert) existingAlert.remove();
+
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `ajax-alert alert-${type}`;
+  
+    alertDiv.innerHTML = `<i class="fas fa-check"></i> ${message}`; // Use innerHTML to render HTML
+    
+    // Style the alert (add these styles to your CSS)
+    Object.assign(alertDiv.style, {
+        position: 'fixed',
+        top: '20px',
+        right: '10%',
+        padding: '15px',
+        borderRadius: '5px',
+        color: 'white',
+        zIndex: '1000',
+        animation: 'fadeIn 0.3s ease-in-out'
+    });
+
+    // Different colors for different alert types
+    const colors = {
+        success: '#4CAF50',
+        error: '#F44336',
+        info: '#2196F3',
+        warning: '#FF9800'
+    };
+    alertDiv.style.backgroundColor = colors[type] || colors.info;
+
+    document.body.appendChild(alertDiv);
+
+    // Auto-dismiss after 5 seconds
+    setTimeout(() => {
+        alertDiv.style.animation = 'fadeOut 0.3s ease-in-out';
+        setTimeout(() => {
+            alertDiv.remove();
+            // window.location.href="./employee-management.html";
+        }, 300);
+    }, 3000);
+}
+
+
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', async () => {
+        // Function to populate dropdowns
+        async function populateDropdowns() {
+            try {
+                const response = await fetch('../api/routes/employee.php?lists=true');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    const departments = data.departments;
+                    const designations = data.designations;
+
+                    const deptSelect = document.getElementById('department');
+                    departments.forEach(dept => {
+                        const option = document.createElement('option');
+                        option.value = dept.Department_id;
+                        option.textContent = dept.Department_name;
+                        deptSelect.appendChild(option);
+                    });
+
+                    const desigSelect = document.getElementById('designation');
+                    designations.forEach(desig => {
+                        const option = document.createElement('option');
+                        option.value = desig.Designation_id;
+                        option.textContent = desig.Designation_name;
+                        desigSelect.appendChild(option);
+                    });
+                } else {
+                    showAlert('Failed to load departments and designations.', 'error');
+                }
+            } catch (error) {
+                console.error('Error fetching lists:', error);
+                showAlert('Failed to load departments and designations.', 'error');
+            }
+        }
+
+        // Populate dropdowns on page load
+        await populateDropdowns();
+    })
+</script>
+</body>
+</html>
