@@ -53,17 +53,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 // Update profile data
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
+        // Start session and get user info
         $userId = $_SESSION['user_id'];
         $role = $_SESSION['role'];
         $data = json_decode(file_get_contents('php://input'), true);
+
+        // Validate JSON input
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            throw new Exception("Invalid JSON input");
+        }
 
         switch ($role) {
             case 'admin':
                 if (!isset($data['email']) || !isset($data['password'])) {
                     throw new Exception("Missing required fields");
                 }
+                
+                // Hash the password
+                $hashedPassword = password_hash($data['password'], PASSWORD_BCRYPT, ['cost' => 12]);
+                if ($hashedPassword === false) {
+                    throw new Exception("Failed to hash password");
+                }
+                
                 $stmt = $conn->prepare("UPDATE admin SET Email = ?, Password = ? WHERE Admin_id = ?");
-                $stmt->bind_param("ssi", $data['email'], $data['password'], $userId);
+                $stmt->bind_param("ssi", $data['email'], $hashedPassword, $userId);
                 break;
                 
             case 'member':
@@ -71,16 +84,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     !isset($data['password']) || !isset($data['number'])) {
                     throw new Exception("Missing required fields");
                 }
+                
+                // Hash the password
+                $hashedPassword = password_hash($data['password'], PASSWORD_BCRYPT, ['cost' => 12]);
+                if ($hashedPassword === false) {
+                    throw new Exception("Failed to hash password");
+                }
+                
                 $stmt = $conn->prepare("UPDATE member SET Company_Name = ?, Email = ?, Password = ?, Number = ? WHERE Member_id = ?");
-                $stmt->bind_param("ssssi", $data['company_name'], $data['email'], $data['password'], $data['number'], $userId);
+                $stmt->bind_param("ssssi", $data['company_name'], $data['email'], $hashedPassword, $data['number'], $userId);
                 break;
                 
             case 'employee':
                 if (!isset($data['password']) || !isset($data['number'])) {
                     throw new Exception("Missing required fields");
                 }
+                
+                // Hash the password
+                $hashedPassword = password_hash($data['password'], PASSWORD_BCRYPT, ['cost' => 12]);
+                if ($hashedPassword === false) {
+                    throw new Exception("Failed to hash password");
+                }
+                
                 $stmt = $conn->prepare("UPDATE employee SET Password = ?, Number = ? WHERE employee_id = ?");
-                $stmt->bind_param("ssi", $data['password'], $data['number'], $userId);
+                $stmt->bind_param("ssi", $hashedPassword, $data['number'], $userId);
                 break;
                 
             default:
@@ -95,7 +122,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } catch (Exception $e) {
         http_response_code(500);
         echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+    } finally {
+        if (isset($stmt)) $stmt->close();
+        $conn->close();
     }
+    exit;
 }
 
 $conn->close();

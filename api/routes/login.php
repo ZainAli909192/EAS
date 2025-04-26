@@ -24,9 +24,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['action']) && $_GET['ac
         exit;
     }
 }
-
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+else if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['action'] === 'get_current_user') {
+    session_start();
+    try {
+        $response = [
+            'status' => 'success',
+            'user' => [
+                'id' => $_SESSION['user_id'],
+                'name' => $_SESSION['name'] ?? '',
+                'role' => $_SESSION['role'],
+                'member_id' => $_SESSION['member_id'] ?? null
+            ]
+        ];
+        echo json_encode($response);
+    } catch (Exception $e) {
+        http_response_code(500);
+        echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+    }
+    exit;
+}
+else if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $input = json_decode(file_get_contents('php://input'), true);
     
     // Validate input
@@ -54,8 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 
                 if ($result->num_rows === 1) {
                     $user = $result->fetch_assoc();
-                    if ($password== $user['Password']) {
-                    // if (password_verify($password, $dbuser['Password'])) {
+                    if (password_verify($password, $user['Password'])) {  // SECURE CHECK
                         // Set session variables
                         $_SESSION['user_id'] = $user['employee_id'];
                         $_SESSION['name'] = $user['Name'];
@@ -78,7 +94,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 } else {
                     http_response_code(401);
                     echo json_encode(['status' => 'error', 'message' => 'Invalid credentials']);
-                    $_SESSION['member_id'] = $user['Member_id'];
                 }
                 break;
 
@@ -90,8 +105,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 
                 if ($result->num_rows === 1) {
                     $user = $result->fetch_assoc();
-                    // if (password_verify($password, $user['Password'])) {
-                    if ($password== $user['Password']) {
+                    if (password_verify($password, $user['Password'])) {  // SECURE CHECK
                         // Set session variables
                         $_SESSION['user_id'] = $user['Member_id'];
                         $_SESSION['name'] = $user['Company_Name'];
@@ -125,8 +139,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 
                 if ($result->num_rows === 1) {
                     $user = $result->fetch_assoc();
-                    // if (password_verify($password, $user['Password'])) {
-                    if ($password== $user['Password']) {
+                    if (password_verify($password, $user['Password'])) {  // SECURE CHECK
                         // Set session variables
                         $_SESSION['user_id'] = $user['Admin_id'];
                         $_SESSION['role'] = 'admin';
@@ -158,7 +171,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         http_response_code(500);
         echo json_encode(['status' => 'error', 'message' => 'Server error: ' . $e->getMessage()]);
     }
-} else {
+}
+else {
     http_response_code(405);
     echo json_encode(['status' => 'error', 'message' => 'Method not allowed']);
 }

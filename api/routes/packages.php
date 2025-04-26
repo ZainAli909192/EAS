@@ -15,6 +15,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['id'])) {
         echo json_encode(['status' => 'success', 'package' => $package]);
     }
      }
+else if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    // $package_id = $_GET['id'];
+
+    $stmt = $conn->prepare("SELECT Package_id, Package_name, Price, Number_of_employees FROM package");
+    // $stmt->bind_param("s", $package_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows > 0) {
+        $packages = $result->fetch_all(MYSQLI_ASSOC);
+        echo json_encode(['status' => 'success', 'packages' => $packages]);
+    }
+     }
 elseif ($_SERVER['REQUEST_METHOD'] === 'PUT') {
         // Handle PUT request to update a package
         $data = json_decode(file_get_contents('php://input'), true);

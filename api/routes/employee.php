@@ -14,60 +14,142 @@ if ($conn->connect_error) {
     exit;
 }
 
-// insert query 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $data = json_decode(file_get_contents('php://input'), true);
-
-    // Validate the input data (add more validation as needed)
-    if (empty($data['Name']) || empty($data['Department_id']) || empty($data['Designation_id']) || empty($data['Password']) || empty($data['job_in_time']) || empty($data['job_out_time']) || empty($data['Number']) || empty($data['Member_id'])) {
-        echo json_encode(['status' => 'error', 'message' => 'Missing required fields']);
-        $conn->close();
-        exit;
-    }
-
-    $name = $data['Name'];
-    $department_id = $data['Department_id'];
-    $designation_id = $data['Designation_id'];
-    $password = password_hash($data['Password'], PASSWORD_DEFAULT); // Hash the password!
-    $job_in_time = $data['job_in_time'];
-    $job_out_time = $data['job_out_time'];
-    $number = $data['Number'];
-    $member_id = $data['Member_id'];
-
-    // Get max employee_id and increment
+// Helper function to generate employee ID - MOVED TO TOP
+function generateEmployeeId($conn) {
     $result = $conn->query("SELECT MAX(employee_id) AS max_id FROM employee");
+    
     if ($result && $result->num_rows > 0) {
         $row = $result->fetch_assoc();
         $max_id = $row['max_id'];
+        return ($max_id+1);
+    }
+    
+    // Default starting ID if table is empty or format doesn't match
+    return '1'; // Fixed to return full formatted ID
+}
 
-        // Extract the numeric part of the ID and increment it
-        preg_match('/(\d+)$/', $max_id, $matches);
-        if (isset($matches[1])) {
-            $next_id_num = intval($matches[1]) + 1;
-            $employee_id = preg_replace('/(\d+)$/', sprintf('%03d', $next_id_num), $max_id); // Assuming ID format is EMP-001
-        } else {
-            // Handle cases where the ID format doesn't match the expected pattern
-            $employee_id = '1'; // Or whatever your default ID should be
+// insert query 
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    try {
+        $input = file_get_contents('php://input');
+        $data = json_decode($input, true);
+        
+        // Validate JSON input
+        // if (json_last_error() !== JSON_ERROR_NONE) {
+        //     throw new Exception('Invalid JSON input: ' . json_last_error_msg());
+        // }
+
+        // Log received data for debugging
+
+        // Required fields validation
+        $requiredFields = ['Name', 'Department_id', 'Designation_id', 'Password', 
+                          'job_in_time', 'job_out_time', 'Number'];
+        $missingFields = [];
+        
+        foreach ($requiredFields as $field) {
+            if (empty($data[$field])) {
+                $missingFields[] = $field;
+            }
         }
-    } else {
-        // If the table is empty, start with EMP-001 or your desired starting ID
-        $employee_id = '1';
+        
+        if (!empty($missingFields)) {
+            http_response_code(400);
+            echo json_encode([
+                'status' => 'error', 
+                'message' => 'Please provide all the fields',
+                'missing_fields' => $missingFields,
+                'received_data' => $data // For debugging
+            ]);
+            exit;
+        }
+
+        // Validate password strength
+        if (strlen($data['Password']) < 8) {
+            http_response_code(400);
+            echo json_encode([
+                'status' => 'error',
+                'message' => 'Password must be at least 8 characters long'
+            ]);
+            exit;
+        }
+
+        session_start();
+        
+        // Sanitize inputs
+        $name = htmlspecialchars($data['Name'], ENT_QUOTES, 'UTF-8');
+        $department_id = $data['Department_id'];
+        $designation_id = $data['Designation_id'];
+        $job_in_time = $data['job_in_time'];
+        $job_out_time = $data['job_out_time'];
+        $number = filter_var($data['Number'], FILTER_SANITIZE_STRING);
+        $member_id = $_SESSION['member_id'];
+        $email = htmlspecialchars($data['Email'], ENT_QUOTES, 'UTF-8');
+
+        // Hash the password securely
+        $password = password_hash($data['Password'], PASSWORD_BCRYPT, ['cost' => 12]);
+        
+        if ($password === false) {
+            throw new Exception('Failed to hash password');
+        }
+
+        // Generate employee ID - FIXED CALL
+        $employee_id = generateEmployeeId($conn);
+
+        // Prepare SQL with parameterized query
+        $stmt = $conn->prepare("INSERT INTO employee 
+                              (employee_id, Name, Department_id, Designation_id, 
+                               Password, job_in_time, job_out_time, Number, Member_id, Email) 
+                              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        
+        if (!$stmt) {
+            throw new Exception('Database prepare failed: ' . $conn->error);
+        }
+
+        $stmt->bind_param("ssssssssis", 
+            $employee_id, 
+            $name, 
+            $department_id, 
+            $designation_id, 
+            $password, 
+            $job_in_time, 
+            $job_out_time, 
+            $number, 
+            $member_id,
+            $email
+        );
+
+        if (!$stmt->execute()) {
+            throw new Exception('Database execute failed: ' . $stmt->error);
+        }
+
+        // Success response
+        http_response_code(201);
+        echo json_encode([
+            'status' => 'success', 
+            'message' => 'Employee created successfully',
+            'employee_id' => $employee_id,
+            'debug' => [ // For debugging
+                'name' => $name,
+                'department_id' => $department_id,
+                'designation_id' => $designation_id
+            ]
+        ]);
+
+    } catch (Exception $e) {
+        http_response_code(500);
+        error_log('Error in employee creation: ' . $e->getMessage());
+        echo json_encode([
+            'status' => 'error', 
+            'message' => 'Error: ' . $e->getMessage(),
+            'trace' => $e->getTraceAsString() // Only for development!
+        ]);
+    } finally {
+        if (isset($stmt)) $stmt->close();
+        $conn->close();
     }
-
-    // Prepare and execute the SQL query
-    $stmt = $conn->prepare("INSERT INTO employee (employee_id, Name, Department_id, Designation_id, Password, job_in_time, job_out_time, Number, Member_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
-    $stmt->bind_param("ssssssssi", $employee_id, $name, $department_id, $designation_id, $password, $job_in_time, $job_out_time, $number, $member_id);
-
-    if ($stmt->execute()) {
-        echo json_encode(['status' => 'success', 'message' => 'Employee created successfully']);
-    } else {
-        echo json_encode(['status' => 'error', 'message' => 'Error creating employee: ' . $stmt->error]);
-    }
-
-    $stmt->close();
-    $conn->close();
     exit;
 }
+
 
 // To get only a single record 
 else if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['id'])) {
@@ -236,6 +318,7 @@ else if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $conn->close();
     exit;
 }
+
 else if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
     // Get the raw input data
     $input = file_get_contents('php://input');
@@ -389,7 +472,8 @@ else if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
         header('Content-Type: application/json');
         http_response_code(500);
         echo json_encode([
-            'status' => 'error',
+            'status' => 'error',// Handle GET requests for lists
+            
             'message' => 'Failed to delete employee: ' . $e->getMessage()
         ]);
     }
@@ -397,6 +481,8 @@ else if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
     $conn->close();
     exit;
 }
+
 echo json_encode(['status' => 'error', 'message' => 'Invalid request method']);
+
 
 ?>

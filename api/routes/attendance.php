@@ -10,6 +10,7 @@ if (!isset($_SESSION['user_id'])) {
     exit;
 }
 
+
 if ($conn->connect_error) {
     http_response_code(500);
     echo json_encode(['status' => 'error', 'message' => 'Database connection failed']);
@@ -42,20 +43,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $action = $_POST['action'];
         $employeeId = $_SESSION['user_id'];
+        $memberId = $_SESSION['member_id']; // Get Member_id from session
         $date = $_POST['date'] ?? date('Y-m-d');
         $currentTime = date('H:i:s');
 
         if ($action === 'clock_in') {
-            $stmt = $conn->prepare("INSERT INTO attendance (Employee_id, Date, Time_in, Photo, Attendance_type) 
-                                   VALUES (?, ?, ?, ?, 'Present')");
-            $stmt->bind_param("isss", $employeeId, $date, $currentTime, $photoPath);
+            $stmt = $conn->prepare("INSERT INTO attendance (Employee_id, Member_id, Date, Time_in, Photo, Attendance_type) 
+                                   VALUES (?, ?, ?, ?, ?, 'Present')");
+            $stmt->bind_param("iisss", $employeeId, $memberId, $date, $currentTime, $photoPath);
         } else {
             // Update with clock-out photo
             $stmt = $conn->prepare("UPDATE attendance SET Time_out = ?, Photo_out = IFNULL(?, Photo_out) 
-                                   WHERE Employee_id = ? AND Date = ? AND Time_out IS NULL");
-            $stmt->bind_param("ssis", $currentTime, $photoOutPath, $employeeId, $date);
+                                   WHERE Employee_id = ? AND Member_id = ? AND Date = ? AND Time_out IS NULL");
+            $stmt->bind_param("ssiis", $currentTime, $photoOutPath, $employeeId, $memberId, $date);
         }
-
         if ($stmt->execute()) {
             echo json_encode(['status' => 'success', 'message' => 'Attendance recorded']);
         } else {
@@ -70,11 +71,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 else if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     try {
         $employeeId = $_SESSION['user_id'];
-        $stmt = $conn->prepare("SELECT Attendance_id, Date, Time_in, Time_out, Photo, Photo_out, Attendance_type 
+        $memberId = $_SESSION['member_id']; // Get from session
+        $role = $_SESSION['role']; // Get from session
+        $stmt=null;
+        if($role=="member"){
+
+            $stmt = $conn->prepare("SELECT Attendance_id, Date, Time_in, Time_out, Photo, Photo_out, Attendance_type 
+                                  FROM attendance 
+                                --   WHERE (Employee_id = ? OR Member_id = ?)
+                                  WHERE member_id = ? 
+                                  ORDER BY Date DESC, Time_in DESC
+                                  LIMIT 50"); // Added limit
+            $stmt->bind_param("i", $memberId);
+        }else{
+
+            $stmt = $conn->prepare("SELECT Attendance_id, Date, Time_in, Time_out, Photo, Photo_out, Attendance_type 
                               FROM attendance 
-                              WHERE Employee_id = ?
-                              ORDER BY Date DESC");
+                            --   WHERE (Employee_id = ? OR Member_id = ?)
+                              WHERE Employee_id = ? 
+                              ORDER BY Date DESC, Time_in DESC
+                              LIMIT 50"); // Added limit
+        // $stmt->bind_param("ii", $employeeId, $memberId);
         $stmt->bind_param("i", $employeeId);
+    }
         $stmt->execute();
         $result = $stmt->get_result();
 
@@ -90,58 +109,66 @@ else if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 'attendance_type' => $row['Attendance_type']
             ];
         }
-// Get statistics (add this before the final echo json_encode in the GET handler)
-$stats = [];
-$currentMonth = date('m');
-$currentYear = date('Y');
 
-// 1. Total Working Days
-$stmt = $conn->prepare("SELECT COUNT(*) as total_days FROM attendance 
-                       WHERE Employee_id = ? 
-                       AND MONTH(Date) = ? 
-                       AND YEAR(Date) = ?");
-$stmt->bind_param("iii", $employeeId, $currentMonth, $currentYear);
-$stmt->execute();
-$stats['total_days'] = $stmt->get_result()->fetch_assoc()['total_days'] ?? 0;
+        // Get statistics
+        $stats = [];
+        $currentMonth = date('m');
+        $currentYear = date('Y');
 
-// 2. Average Clock-In Time
-$stmt = $conn->prepare("SELECT SEC_TO_TIME(AVG(TIME_TO_SEC(Time_in))) as avg_clock_in 
-                       FROM attendance 
-                       WHERE Employee_id = ? 
-                       AND MONTH(Date) = ? 
-                       AND YEAR(Date) = ?");
-$stmt->bind_param("iii", $employeeId, $currentMonth, $currentYear);
-$stmt->execute();
-$stats['avg_clock_in'] = $stmt->get_result()->fetch_assoc()['avg_clock_in'] ?? 'N/A';
+        // 1. Total Working Days
+        $stmt = $conn->prepare("SELECT COUNT(*) as total_days FROM attendance 
+                            WHERE Member_id = ? 
+                            AND MONTH(Date) = ? 
+                            AND YEAR(Date) = ?");
+        $stmt->bind_param("iii", $employeeId, $currentMonth, $currentYear);
+        $stmt->execute();
+        $stats['total_days'] = $stmt->get_result()->fetch_assoc()['total_days'] ?? 0;
 
-// 3. Attendance Rate (Present days vs total work days)
-$stmt = $conn->prepare("SELECT 
-                       COUNT(CASE WHEN Attendance_type = 'Present' THEN 1 END) as present_days,
-                       COUNT(*) as total_days
-                       FROM attendance 
-                       WHERE Employee_id = ? 
-                       AND MONTH(Date) = ? 
-                       AND YEAR(Date) = ?");
-$stmt->bind_param("iii", $employeeId, $currentMonth, $currentYear);
-$stmt->execute();
-$result = $stmt->get_result()->fetch_assoc();
-$stats['attendance_rate'] = ($result['total_days'] > 0) ? 
-    round(($result['present_days'] / $result['total_days']) * 100) : 0;
+        // 2. Average Clock-In Time
+        $stmt = $conn->prepare("SELECT SEC_TO_TIME(AVG(TIME_TO_SEC(Time_in))) as avg_clock_in 
+                            FROM attendance 
+                            WHERE member_id = ? 
+                            AND MONTH(Date) = ? 
+                            AND YEAR(Date) = ?");
+        $stmt->bind_param("iii", $employeeId, $currentMonth, $currentYear);
+        $stmt->execute();
+        $stats['avg_clock_in'] = $stmt->get_result()->fetch_assoc()['avg_clock_in'] ?? 'N/A';
 
-// Add stats to the response
-$response = [
-    'status' => 'success',
-    'attendance' => $attendance,
-    'stats' => $stats
-];
+        // 3. Attendance Rate
+        $stmt = $conn->prepare("SELECT 
+                            COUNT(CASE WHEN Attendance_type = 'Present' THEN 1 END) as present_days,
+                            COUNT(*) as total_days
+                            FROM attendance 
+                            WHERE Employee_id = ? 
+                            AND MONTH(Date) = ? 
+                            AND YEAR(Date) = ?");
+        $stmt->bind_param("iii", $employeeId, $currentMonth, $currentYear);
+        $stmt->execute();
+        $result = $stmt->get_result()->fetch_assoc();
+        $stats['attendance_rate'] = ($result['total_days'] > 0) ? 
+            round(($result['present_days'] / $result['total_days']) * 100) : 0;
 
-echo json_encode($response);
-        // echo json_encode(['status' => 'success', 'attendance' => $attendance]);
+        // Get unique status types from database
+        $statusResult = $conn->query("SELECT DISTINCT Attendance_type FROM attendance");
+        $statuses = [];
+        while ($row = $statusResult->fetch_assoc()) {
+            $statuses[] = $row['Attendance_type'];
+        }
+
+        $response = [
+            'status' => 'success',
+            'attendance' => $attendance,
+            'stats' => $stats,
+            'status_options' => $statuses // Add status options to response
+        ];
+
+        echo json_encode($response);
     } catch (Exception $e) {
         http_response_code(500);
         echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
     }
 }
-
 $conn->close();
 ?>
+
+
