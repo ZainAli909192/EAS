@@ -1,0 +1,191 @@
+/* mediquieries.css */
+
+/* Services Section */
+@media (max-width: 992px) {
+    .services-container {
+        margin-top: 20px;
+        display: grid;
+        grid-template-columns: repeat(1, 1fr); /* Two cards per row */
+        gap: 20px; /* Adjust the gap as needed for proper margin */
+    }
+
+    .service-card {
+        max-width: 100%;
+        margin: 0 auto; /* Center the cards */
+    }
+}
+
+@media (max-width: 768px) {
+    .services-container {
+        display: grid;
+        grid-template-columns: repeat(1, 1fr); /* Two cards per row */
+        gap: 10px; /* Adjust the gap as needed for proper margin */
+        margin-top: 20px;
+
+    }
+
+    .service-card {
+        max-width: 100%;
+        margin: 0 auto; /* Center the cards */
+    }
+}
+
+@media (max-width: 576px) {
+    .services-container {
+        display: grid;
+        grid-template-columns: repeat(1, 1fr); /* Two cards per row */
+        gap: 10px; /* Adjust the gap as needed for proper margin */
+        margin-top: 20px;
+    }
+
+    .service-card {
+        max-width: 100%;
+        margin: 0 auto; /* Center the cards */
+    }
+    footer{
+        font-size: 1rem;
+    }
+}
+
+/* Clients Feedback Section */
+@media (max-width: 768px) {
+    .feedback-item {
+        flex: 0 0 100%;
+        max-width: 110%;
+        margin-left: 16px;
+        margin-bottom: 20px;
+        box-shadow: 4px 4px 10px gray;
+        /* background-color: red; */
+    }
+
+    .feedback-item img { 
+        margin-left: 40%;
+    }
+
+    .feedback-content h3,
+    .feedback-content span,
+    .stars {
+        margin-left: 0;
+        text-align: center;
+    }
+
+    .feedback-content p {
+        margin-left: 0;
+        text-align: center;
+    }
+}
+
+/* About Section */
+@media (max-width: 992px) {
+
+    .about {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .about img {
+        width: 50%;
+        height: auto;
+        margin-bottom: 20px;
+    }
+
+    .about .content {
+        width: 100%;
+        padding: 0;
+    }
+}
+
+/* Contact Section */
+@media (max-width: 768px) {
+    .contact-section {
+        flex-direction: column;
+        padding: 20px;
+    }
+    .contact-section .container div{
+        font-size: 14px;
+    }
+    .contact-form,
+    .container iframe {
+        width: 100%;
+        margin: 0;
+    }
+
+    .contact-form {
+        margin-top: 20px;
+    }
+}
+
+/* Footer Section */
+@media (max-width: 768px) {
+    footer {
+        flex-direction: column;
+        font-size: 14px;
+    }
+
+    .social-media-icons {
+        margin-left: 0;
+        margin-top: 20px;
+    }
+
+    .social {
+        flex-direction: column;
+        gap: 1rem;
+    }
+}
+
+/* Additional general styles for small screens */
+@media (max-width: 576px) {
+    .services h1 {
+        font-size: 2em;
+    }
+nav span, sub{
+    font-size: 10px;
+}
+    .services p,
+    .feedback-content p,
+    .about .content p {
+        font-size: 0.9rem;
+    }
+
+    .contact-form h2 {
+        font-size: 1.1rem;
+    }
+
+    .contact-form input,
+    .contact-form textarea {
+        padding: 8px;
+        margin: 5px 0;
+    }
+
+    .contact-form button {
+        padding: 8px;
+        font-size: 0.9rem;
+    }
+   .navbar-button{
+    font-size: 0.7rem;
+    background-color: red;
+    /* margin-left: -1%; */
+
+}
+    footer {
+        font-size: 16px;
+    }
+
+    .services-container {
+        grid-template-columns: repeat(1, 1fr); /* Two cards per row */
+        gap: 20px; /* Adjust the gap as needed for proper margin */
+    }
+
+    .service-card {
+        max-width: 100%;
+        margin: 0 auto; /* Center the cards */
+    }
+}
+
+input[type="text"] , input[type="email"],
+input[type="tel"], textarea
+{ 
+    outline: none;
+    border: none;
+}

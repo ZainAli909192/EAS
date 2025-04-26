@@ -1,0 +1,244 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  
+}
+
+:root{
+  --primary-color:#2c3e50;
+  --secondory-color:#EDE8F5;
+  --secondory-color:#34495e;
+  --secondory-color:hsl(213, 28%, 41%);
+  /* --secondory-color:#7499c2; */
+  --text-color:hsl(80, 50%, 60%); 
+  --secondory-color:hsl(80, 50%, 39%);
+
+}
+::selection{
+  background-color: var(--secondory-color);
+  color: black;
+}
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background-color: var(--primary-color);
+  color: #0b0b0b;
+  position: relative;
+  z-index: 10;
+  
+}
+
+.navbar-logo {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: var(--primary-color);
+  display: inline-block;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+.navbar-logo span {
+  color: rgb(13, 13, 13);
+}
+
+.navbar-links {
+  list-style: none;
+  display: flex;
+  transition: transform 0.3s ease-in-out;
+}
+
+.navbar-links li {
+  margin-left: 2rem;
+}
+
+.navbar-links a {
+  color: #f1eded;
+  text-decoration: none;
+  font-size: 1.1rem;
+  transition: color 0.3s;
+}
+
+.navbar-links a:hover {
+  color: var(--secondory-color);
+  border-bottom: 1px dashed var(--secondory-color);
+}
+
+.navbar-button,
+.banner button {
+  background:var(--secondory-color);
+  color: rgb(13, 13, 13);
+  /* color: rgb(248, 237, 237); */
+  border: none;
+  outline: none;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  cursor: pointer;
+  border-radius: 1.3px;
+  transition: background-color 0.3s;
+}
+
+.navbar-button:hover {
+  background-color: #eee5e5;
+  color: black;
+}
+title {
+  background-color: red;
+}
+
+.navbar-toggle {
+  display: none;
+  flex-direction: column;
+  cursor: pointer;
+  z-index: 11;
+}
+
+.navbar-toggle .bar {
+  width: 25px;
+  height: 3px;
+  background-color: #f1ecec;
+  margin: 4px 0;
+  transition: 0.4s;
+}
+
+@media (max-width: 768px) {
+  .navbar-links {
+    
+    margin-top: 21%;
+    position: fixed;
+    top: 0;
+    left: 0; 
+    width: 60%; /* Width of the sliding menu */
+    height: 70vh;  
+    background-color: var(--primary-color);
+    flex-direction: column;
+    align-items: flex-start; 
+    justify-content: flex-start;
+    padding-top: 30px; /* Adjust if necessary */
+    transform: translateX(-100%);
+    display: flex;
+    z-index: 9;
+    transition: transform 0.3s ease-in-out;
+  }
+
+  .navbar-links.active {
+    transform: translateX(0%);
+    height: 80vh;
+  }
+
+  .navbar-links li {
+    margin-left: 0;
+    margin-top: 15%;
+    width: 70%;
+    /* z-index: 1000; */
+  }
+
+  .navbar-links a {
+    padding: 0.4rem;
+    width: 200%; 
+  }
+
+  .navbar-button {
+    margin: 1rem;
+  }
+
+  .navbar-toggle {
+    display: flex;
+  }
+  .navbar-links a{
+    color: white;
+  }
+  .navbar-links a.active {
+    color: rgb(250, 7, 7);
+  }
+}
+.navbar-links a.active {
+  color: rgb(246, 239, 239);
+  color: var(--secondory-color);
+  border-bottom: 2px dashed var(--secondory-color);
+}
+
+  .navbar {
+    position: relative;
+  }
+  
+  .fixed-nav {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+    transition: all 3s ease-in-out; 
+    background-color: var(--primary-color);
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    animation: slideBottom 0.6s 1 ease-in-out;
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 100% 100%, 48% 98%, 0 100%);
+  }
+  @keyframes slideBottom {
+    from {
+      opacity: 0;
+      transform: translate(0, 100%);
+    }
+    to {
+      opacity: 1;
+      transform: translate(0, 0);
+    }
+  }
+  @media (max-width: 768px) {
+    .fixed-nav {
+      box-shadow: none;
+    }
+  }
+  
+  nav img{
+    height: 60px;
+    width: 70px;
+    border-radius: 30%; 
+  }
+
+  footer{
+    padding: 10px;
+    background-color: var(--primary-color);
+    color: white;
+    padding-left: 1.5rem;
+  }
+  footer a{
+    color: rgb(245, 223, 30);
+    text-decoration: none;
+    font-size: 0.8rem;
+    border-bottom: 1px dashed var(--secondory-color);
+  }
+  
+  .navbar-links li:last-child{
+    position: relative;
+    z-index: 1;
+  }
+
+  
+  .navbar-links li:last-child::before{
+    content: "";
+    z-index: -9;
+    position: absolute;
+    left: -6%;  
+    top: -30%;   
+    width: 100%;
+    height: 100%;
+    padding: 5px;  
+    animation: bordr 1s infinite ease-in-out ;
+  }
+  @keyframes bordr {
+    20%{
+      border-bottom: 2px dashed var(--secondory-color);
+    }
+    40%{
+      border-right: 2px dashed var(--secondory-color);
+    }
+    60%{
+      border-top: 2px dashed var(--secondory-color);
+    }
+    80%{
+      border-left: 2px dashed var(--secondory-color);
+    }
+  }
