@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Track employee attendance with clock-in, clock-out, and real-time updates.">
+  <meta name="keywords" content="attendance tracking, clock-in, clock-out, real-time attendance">
+  <meta name="author" content="Your Company Name">
+  <title>Attendance Tracking - Employee Management System</title>
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="../css/attendance.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <!-- Include Chart.js for graphs -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<script src="../js/script.js" defer></script>
+
+<body>
+  <style>
+    body{
+      overflow-y: auto;
+    }
+    .attendance-summary {
+      overflow-y: auto;
+    }
+    .form-control{
+      padding: 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+
+    }
+    option:hover{
+      background-color: var(--primary-color);
+    }
+    .form-control:hover{
+      cursor: pointer;
+      color: var(--primary-color);
+    }
+    .attendance-left{
+      display: none;;
+    }
+  </style>
+  <div id="loader-placeholder"></div>
+  <div id="sidenav-placeholder"></div>
+
+  <main style="display: block;">
+
+<!-- In your HTML, keep the department filter dropdown as you have it -->
+<div class="attendance-filters">
+  <div class="filter-group">
+    <label for="department-filter">Department:</label>
+    <select id="department-filter" class="form-control">
+      <option value="">All Departments</option>
+      <!-- Departments will be loaded dynamically -->
+    </select>
+    
+  </div>
+  <div class="filter-group">
+       <label for="">Filter by date</label>
+            <input type="date" id="search-attendance" placeholder="Search attendance by date" 
+            style="padding: 10px;"
+      
+       onchange="searchAttendanceOnKeyDown(event)"
+       >
+  </div>
+  <div class="filter-group">
+    <label for="status-filter">Status:</label>
+    <select id="status-filter" onchange="statusFilterChangeHandler()" class="form-control">
+      <option value="">All Status</option>
+      <option value="Present">Present</option>
+      <option value="Absent">Absent</option>
+      <option value="Late">Late</option>
+    </select>
+    
+  </div>
+
+</div>
+
+<script>
+// Simple function to load departments
+async function loadDepartments() {
+  try {
+    const response = await fetch('../api/routes/department.php');
+    const data = await response.json();
+    
+    if (data.status === 'success') {
+      const dropdown = document.getElementById('department-filter');
+      
+      // Add department options
+      data.departments.forEach(dept => {
+        const option = document.createElement('option');
+        option.value = dept.Department_id;
+        option.textContent = dept.Department_name;
+        dropdown.appendChild(option);
+      });
+    }
+  } catch (error) {
+    console.error('Error loading departments:', error);
+  }
+}
+
+// Simple function to load attendance with optional department filter
+async function loadAttendance(departmentId = '', date = null, status = '') {
+  try {
+    let url = '../api/routes/get_attendance.php?';
+    
+    // Add department if specified
+    if (departmentId) {
+      url += `department_id=${departmentId}`;
+    }
+    
+    // Add date if specified
+    if (date) {
+      // If both department and date are specified, we need to add &
+      if (departmentId) {
+        url += '&';
+      }
+      url += `date=${date}`;
+    }
+
+    // Add status if specified
+    if (status) {
+      // If both department and date are specified, we need to add &
+      if (departmentId || date) {
+        url += '&';
+      }
+      url += `status=${status}`;
+    }
+
+    const response = await fetch(url);
+    const data = await response.json();
+
+    if (data.status === 'success') {
+      updateAttendanceTable(data.attendance);
+    }
+  } catch (error) {
+    console.error('Error loading attendance:', error);
+  }
+}
+// Update the attendance table
+function updateAttendanceTable(attendanceData) {
+  const tableBody = document.getElementById('attendance-table-body');
+  tableBody.innerHTML = '';
+  if (attendanceData.length === 0) {
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td colspan="6" style="text-align: center;">No employee record found.</td>
+    `;
+    tableBody.appendChild(row);
+    return ;
+  }
+  let i=1;
+  attendanceData.forEach(record => {
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td>${i}</td>
+      <td>${record.date}</td>
+      <td>${record.time_in || '-'}</td>
+      <td>${record.time_out || '-'}</td>
+      <td>${record.photo_in ? `<img src="../api/attendance_pics/${record.photo_in}" width="50">` : '-'}</td>
+      <td>${record.photo_out ? `<img src="../api/attendance_pics/${record.photo_out}" width="50">` : '-'}</td>
+      <td>${record.attendance_type}</td>
+      <td>${record.location_in}</td>
+      <td>${record.location_out}</td>
+    `;
+    tableBody.appendChild(row);
+    i++;
+  });
+}
+
+// Update statistics
+function updateStatistics(stats) {
+  if (!stats) return;
+  
+  if (stats.total_days !== undefined) {
+    document.querySelector('.stat-item:nth-child(1) strong').textContent = `${stats.total_days} days`;
+  }
+  if (stats.avg_clock_in !== undefined) {
+    document.querySelector('.stat-item:nth-child(2) strong').textContent = stats.avg_clock_in || 'N/A';
+  }
+  if (stats.attendance_rate !== undefined) {
+    document.querySelector('.stat-item:nth-child(3) strong').textContent = `${stats.attendance_rate}%`;
+  }
+}
+
+// Department filter change handler
+document.getElementById('department-filter').addEventListener('change', function() {
+  const departmentId = this.value;
+  loadAttendance(departmentId);
+});
+
+// Initialize page
+document.addEventListener('DOMContentLoaded', function() {
+  loadDepartments();
+  loadAttendance();
+});
+</script>
+
+    <section id="attendance-summary">
+      <div class="attendance-container">
+         <!-- Right Side: Attendance Table -->
+         <div class="attendance-right">
+      
+
+<script>
+function searchAttendanceOnKeyDown(event) {
+  // if (event.key !== 'Enter') return;
+
+  const searchValue = document.getElementById('search-attendance').value.trim();
+  if (!searchValue) {
+    // If search is empty, reload all attendance
+    const departmentId = document.getElementById('department-filter').value;
+    loadAttendance(departmentId);
+    return;
+  }
+
+  // Validate the date format (YYYY-MM-DD)
+  const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+  if (!dateRegex.test(searchValue)) {
+    alert('Please enter date in YYYY-MM-DD format');
+    return;
+  }
+  const departmentId = document.getElementById('department-filter').value;
+  loadAttendance(departmentId, searchValue);
+}
+
+function statusFilterChangeHandler() {
+  loading();
+  const status = document.getElementById('status-filter').value;
+  const departmentId = document.getElementById('department-filter').value;
+  loadAttendance(departmentId, null, status);
+}
+
+</script>
+          <h2>Attendance Summary</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>Sr No</th>
+                <th>Date</th>
+                <th>Check-in</th>
+                <th>Check-out</th>
+                <th>Check-in <i class="fa-solid fa-image"></i></th>
+                <th>Check-out <i class="fa-solid fa-image"></i></th>
+                <th>Status</th>
+                <th>Check-in <i class="fa-solid fa-location-dot"></i></th>
+                <th>Check-out <i class="fa-solid fa-location-dot"></i></th>
+              </tr>
+            </thead>
+            <tbody id="attendance-table-body">
+              <!-- Rows will be populated dynamically -->
+              <tr>
+                <td>2023-10-01</td>
+                <td>09:00 AM</td>
+                <td>05:00 PM</td>
+                <td>
+                  <img id="captured-photo" src="path/to/photo.jpg" alt="Captured Photo" style="width: 50px; height: 50px;">
+                </td>
+                <td>
+                  <img id="captured-photo" src="path/to/photo.jpg" alt="Captured Photo" style="width: 50px; height: 50px;">
+                </td>
+                <td>Present</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <!-- Left Side: Statistics and Calendar -->
+        <div class="attendance-left">
+          <div class="attendance-stats">
+            <h3>Attendance Statistics</h3>
+            <div class="stat-item">
+              <span>Total Working Hours</span>
+              <strong>40 hrs</strong>
+            </div>
+            <div class="stat-item">
+              <span>Average Clock-In Time</span>
+              <strong>09:15 AM</strong>
+            </div>
+            <div class="stat-item">
+              <span>Attendance Rate</span>
+              <strong>95%</strong>
+            </div>
+          </div>
+
+        </div>
+
+       
+      </div>
+    </section>
+
+  </main>
+
+  <!-- <script src="../js/attendance.js"></script> -->
+</body>
+</html>

@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Manage employees in the Employee Management System. Add, update, and deactivate employee records.">
+  <meta name="keywords" content="employee management, add employee, update employee, deactivate employee">
+  <meta name="author" content="Your Company Name">
+  <title>Employee Management - Employee Management System</title>
+  <link rel="stylesheet" href="../css/employee-management.css">
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <script src="../js/script.js" defer></script>
+  <style>
+    /* Popup styles */
+    .popup-active {
+      overflow: hidden;
+    }
+    
+    .popup-active::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(5px);
+      z-index: 998;
+    }
+    
+    .card {
+      width: 300px;
+      background: white;
+      border-radius: 20px;
+      padding: 30px;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0.8);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      z-index: 999;
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    
+    .card.active {
+      transform: translate(-50%, -50%) scale(1);
+      opacity: 1;
+    }
+    
+    .card-content {
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    
+    .card-heading {
+      font-size: 20px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+    
+    .card-description {
+      color: #666;
+    }
+    
+    .card-button-wrapper {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+    }
+    
+    .card-button {
+      width: 100px;
+      height: 35px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    
+    .secondary-btn {
+      background: #4CAF50;
+      color: white;
+    }
+    
+    .secondary-btn:hover {
+      background: #45a049;
+    }
+    
+    .primary-btn {
+      background-color: #f44336;
+      color: white;
+    }
+    
+    .primary-btn:hover {
+      background-color: #d32f2f;
+    }
+    
+    .exit-button {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+    
+    .exit-button svg {
+      width: 20px;
+      height: 20px;
+      fill: #999;
+    }
+    
+    .exit-button:hover svg {
+      fill: #333;
+    }
+  </style>
+</head>
+<body>
+  <div id="loader-placeholder"></div>
+  <div id="sidenav-placeholder"></div>
+  
+  <!-- Success Popup -->
+  <div class="card" id="success-popup">
+    <div class="card-content">
+      <p class="card-heading">Success!</p>
+      <p class="card-description" id="success-message"></p>
+    </div>
+    <div class="card-button-wrapper">
+      <button class="card-button secondary-btn close-btn">Okay</button>
+    </div>
+    <button class="exit-button close-btn">
+      <svg height="20px" viewBox="0 0 384 512">
+        <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"></path>
+      </svg>
+    </button>
+  </div>
+
+  <main>
+    <section id="add-employee">
+      <h2>Add designation</h2>
+
+      <form id="add-employee-form" method="POST">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="name">Department Name:</label>
+            <select name="department_name" id="department_name">
+              <!-- Options will be populated by JavaScript -->
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="id">ID:</label>
+            <input type="text" id="id" name="id" 
+              value="Auto-generated" 
+              readonly 
+              style="background: #f5f5f5; color: #666; cursor: not-allowed;">
+          </div>
+          <div class="form-group">
+            <label for="designation_name">Designation Name:</label>
+            <input type="text" id="designation_name" name="designation_name" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <button type="submit">Add now <i class="fas fa-plus"></i></button>
+          </div>
+          <div class="form-group">
+            <button type="button" onclick="window.location.href = './add-department.html'">Department <i class="fas fa-plus"></i></button>
+          </div>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <script>
+    // Initialize popup functionality
+    document.addEventListener('DOMContentLoaded', () => {
+      setupPopupListeners();
+      loadDepartments();
+    });
+
+    function setupPopupListeners() {
+      // Close buttons
+      document.querySelectorAll('.close-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          hidePopup();
+        });
+      });
+    }
+
+    function showSuccessPopup(message, redirectUrl = null) {
+      const body = document.body;
+      const popup = document.getElementById('success-popup');
+      const messageElement = document.getElementById('success-message');
+      
+      messageElement.textContent = message;
+      
+      // Show the popup with animation
+      body.classList.add('popup-active');
+      popup.style.display = 'block';
+      
+      // Trigger the animation
+      setTimeout(() => {
+        popup.classList.add('active');
+      }, 1000);
+
+      // If redirect URL is provided, redirect after popup is shown
+      if (redirectUrl) {
+        setTimeout(() => {
+          if (popup.classList.contains('active')) {
+            hidePopup();
+          }
+          window.location.href = redirectUrl;
+        }, 2000);
+      } else {
+        // Auto-hide after 3 seconds
+        setTimeout(() => {
+          if (popup.classList.contains('active')) {
+            hidePopup();
+          }
+        }, 3000);
+      }
+    }
+
+    function hidePopup() {
+      const popup = document.getElementById('success-popup');
+      const body = document.body;
+      
+      popup.classList.remove('active');
+      setTimeout(() => {
+        body.classList.remove('popup-active');
+        popup.style.display = 'none';
+      }, 3000);
+    }
+
+    async function loadDepartments() {
+      try {
+        // Fetch departments from your API endpoint
+        const response = await fetch('../api/routes/department.php');
+        const data = await response.json();
+
+        if (data.status === 'success' && data.departments) {
+          const departmentSelect = document.getElementById('department_name');
+          
+          // Clear any existing options
+          departmentSelect.innerHTML = '';
+          
+          // Add each department as an option
+          data.departments.forEach(department => {
+            const option = document.createElement('option');
+            option.value = department.Department_id;
+            option.textContent = department.Department_name;
+            departmentSelect.appendChild(option);
+          });
+        } else {
+          console.error('Error loading departments:', data.message);
+          // Fallback to hardcoded options if API fails
+          const departmentSelect = document.getElementById('department_name');
+          departmentSelect.innerHTML = `
+            <option value="1">HR</option>
+            <option value="2">IT</option>
+          `;
+        }
+      } catch (error) {
+        console.error('Error fetching departments:', error);
+        // Fallback to hardcoded options if fetch fails
+        const departmentSelect = document.getElementById('department_name');
+        departmentSelect.innerHTML = `
+          <option value="1">HR</option>
+          <option value="2">IT</option>
+        `;
+      }
+    }
+
+    document.getElementById('add-employee-form').addEventListener('submit', async function(e) {
+      e.preventDefault();
+
+      const formData = {
+        designation_name: document.getElementById('designation_name').value,
+        department_id: document.getElementById('department_name').value
+      };
+
+      try {
+        const response = await fetch('../api/routes/designations.php', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(formData)
+        });
+
+        const result = await response.json();
+        
+        if (result.status == 'success') {
+          showSuccessPopup(result.message, "./designations-list.html");
+        //   document.getElementById('add-employee-form').reset();
+        } else {
+          showSuccessPopup("Error: " + (result.message || 'Failed to add designation'));
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        showSuccessPopup("An error occurred. Please try again.");
+      }
+    });
+  </script>
+</body>
+</html>

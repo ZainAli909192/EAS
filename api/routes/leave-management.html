@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="shortcut icon" href="../img/logo.jpg" type="image/x-icon">
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Manage employees in the Employee Management System. Add, update, and deactivate employee records.">
+    <meta name="keywords" content="employee management, add employee, update employee, deactivate employee">
+    <meta name="author" content="Your Company Name">
+    <title>Employee Management - Employee Management System</title>
+    
+    <!-- css files link -->
+    
+    <link rel="stylesheet" href="../css/employee-management.css">
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Script files link  -->
+    <script src="../js/script.js" defer></script>
+
+   <style>
+        /* Popup styles */
+        .popup-active {
+            overflow: hidden;
+        }
+
+        .popup-active::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            z-index: 998;
+        }
+
+        .popup-card {
+            width: 350px;
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            z-index: 999;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .popup-card.active {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+        }
+
+        .popup-content {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .popup-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .popup-message {
+            color: #555;
+            margin-bottom: 20px;
+        }
+
+        .popup-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .popup-btn {
+            padding: 8px 20px;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .popup-confirm {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .popup-confirm:hover {
+            background: #45a049;
+        }
+
+        .popup-cancel {
+            background: #f44336;
+            color: white;
+        }
+
+        .popup-cancel:hover {
+            background: #d32f2f;
+        }
+    </style>
+</head>
+<body>
+    <div id="loader-placeholder"></div>
+    <div id="sidenav-placeholder"></div>
+
+    <div class="popup-card" id="confirmation-popup">
+        <div class="popup-content">
+            <h3 class="popup-title">Confirm Action</h3>
+            <p class="popup-message" id="confirmation-message"></p>
+        </div>
+        <div class="popup-buttons">
+            <button class="popup-btn popup-cancel" id="cancel-btn">Cancel</button>
+            <button class="popup-btn popup-confirm" id="confirm-btn">Confirm</button>
+        </div>
+    </div>
+
+    <div class="popup-card" id="alert-popup">
+        <div class="popup-content">
+            <h3 class="popup-title" id="alert-title"></h3>
+            <p class="popup-message" id="alert-message"></p>
+        </div>
+        <div class="popup-buttons">
+            <button class="popup-btn popup-confirm" id="ok-btn">Okay</button>
+        </div>
+    </div>
+
+    <main>
+        <section id="employee-list">
+
+            <style>
+                .filter-row {
+                    display: flex;
+                    gap: 1rem;
+                    flex-wrap: wrap;
+                    justify-content: center;
+                    align-items: center;
+                    margin-bottom: 2rem;
+                }
+
+                .filter-row label {
+                    margin-bottom: 0.5rem;
+                }
+
+                .filter-row select {
+                    width: 100%;
+                    max-width: 300px;
+                }
+
+                .filter-row input[type="date"] {
+                    width: 100%;
+                    max-width: 200px;
+                    padding: 8px;
+                    border-radius: 5px;
+                    border: 1px solid #ccc;
+                }
+
+                @media (max-width: 768px) {
+                    .filter-row {
+                        flex-direction: column;
+                    }
+                }
+            </style>
+            <div class="filter-row">
+                <label for="status-filter">Filters: </label>
+                <select id="status-filter" onchange="filterLeavestatus()">
+                    <option value="">Filter by status</option>
+                    <option value="Approved">Approved</option>
+                    <option value="Pending">Pending</option>
+                    <option value="Rejected">Rejected</option>
+                </select>
+                <label for="date-filter">By date</label>
+                <input type="date" id="date-filter" onchange="filterLeaveRequests()" placeholder="Filter by date">
+            </div>
+
+            <h2>Employees leave requests</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Sr no.</th>
+                        <th>Name</th>
+                        <th>Leave type</th>
+                        <th>Start date</th>
+                        <th>End date</th>
+                        <th>Leave reason</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="employee-table-body">
+                    </tbody>
+            </table>
+        </section>
+    </main>
+
+    <script>
+        let currentLeaveId;
+        let currentAction;
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            setupPopupListeners();
+            fetchLeaveRequests();
+        });
+
+        function setupPopupListeners() {
+            // Confirmation popup buttons
+            document.getElementById('confirm-btn').addEventListener('click', processLeaveAction);
+            document.getElementById('cancel-btn').addEventListener('click', hideConfirmationPopup);
+
+            // Alert popup button
+            document.getElementById('ok-btn').addEventListener('click', hideAlertPopup);
+        }
+
+        function showConfirmationPopup(message, leaveId, action) {
+            currentLeaveId = leaveId;
+            currentAction = action;
+            document.getElementById('confirmation-message').textContent = message;
+            document.body.classList.add('popup-active');
+            const popup = document.getElementById('confirmation-popup');
+            popup.style.display = 'block';
+            setTimeout(() => popup.classList.add('active'), 10);
+        }
+
+        function hideConfirmationPopup() {
+            document.body.classList.remove('popup-active');
+            const popup = document.getElementById('confirmation-popup');
+            popup.classList.remove('active');
+            setTimeout(() => popup.style.display = 'none', 300);
+        }
+
+        function showAlertPopup(title, message) {
+            document.getElementById('alert-title').textContent = title;
+            document.getElementById('alert-message').textContent = message;
+            document.body.classList.add('popup-active');
+            const popup = document.getElementById('alert-popup');
+            popup.style.display = 'block';
+            setTimeout(() => popup.classList.add('active'), 10);
+        }
+
+        function hideAlertPopup() {
+            document.body.classList.remove('popup-active');
+            const popup = document.getElementById('alert-popup');
+            popup.classList.remove('active');
+            setTimeout(() => popup.style.display = 'none', 300);
+        }
+
+        async function processLeaveAction() {
+            if (!currentLeaveId || !currentAction) return;
+
+            try {
+                const response = await fetch('../api/routes/leaves.php', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        leave_id: currentLeaveId,
+                        action: currentAction
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.status === 'success') {
+                    hideConfirmationPopup();
+                    showAlertPopup('Success', `Leave request ${currentAction} successfully!`);
+                    fetchLeaveRequests(); // Refresh the page to show updated status
+                } else {
+                    hideConfirmationPopup();
+                    showAlertPopup('Error', `Failed to ${currentAction} leave request: ${result.message}`);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                hideConfirmationPopup();
+                showAlertPopup('Error', 'An error occurred while processing your request');
+            }
+        }
+
+        async function handleLeaveAction(leaveId, action) {
+            const confirmationMessage = `Are you sure you want to ${action} this leave request?`;
+            showConfirmationPopup(confirmationMessage, leaveId, action);
+        }
+
+        async function fetchLeaveRequests() {
+            try {
+                const response = await fetch('../api/routes/leaves.php');
+                const result = await response.json();
+
+                if (result.status === 'success') {
+                    const tableBody = document.getElementById('employee-table-body');
+                    tableBody.innerHTML = ''; // Clear existing rows
+                    let i = 1;
+                    result.leaves.forEach(leave => {
+                        const row = document.createElement('tr');
+
+                        // Format dates (you can use a library like date-fns for better formatting)
+                        const formatDate = (dateString) => {
+                            const date = new Date(dateString);
+                            return date.toLocaleDateString('en-US', {
+                                year: 'numeric',
+                                month: '2-digit',
+                                day: '2-digit'
+                            }).replace(/\//g, '-');
+                        };
+
+                        row.innerHTML = `
+                            <td>${i}</td>
+                            <td>${leave.name}</td>
+                            <td>${leave.type}</td>
+                            <td>${formatDate(leave.start_date)}</td>
+                            <td>${formatDate(leave.end_date)}</td>
+                            <td>${leave.reason}</td>
+                            <td>${leave.status}</td>
+                            <td style="display: flex; gap: 5px;">
+                                <button ${leave.status === 'approved' ? 'disabled' : ''} onclick="handleLeaveAction(${leave.id}, 'approve')">Approve</button>
+                                <button ${leave.status === 'rejected' ? 'disabled' : ''} onclick="handleLeaveAction(${leave.id}, 'reject')">Reject</button>
+                            </td>
+                        `;
+                        tableBody.appendChild(row);
+                        i++;
+                    });
+                } else {
+                    console.error('Error loading leaves:', result.message);
+                    showAlertPopup('Error', 'Failed to load leave requests');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showAlertPopup('Error', 'An error occurred while loading leave requests');
+            }
+        }
+   
+        function filterLeavestatus() {
+    const statusFilter = document.getElementById('status-filter').value;
+    const dateFilter = document.getElementById('date-filter').value;
+    fetchLeaveRequests(statusFilter, dateFilter);
+}
+
+function filterLeaveRequests() {
+    const statusFilter = document.getElementById('status-filter').value;
+    const dateFilter = document.getElementById('date-filter').value;
+    fetchLeaveRequests(statusFilter, dateFilter);
+}
+
+async function fetchLeaveRequests(statusFilter = null, dateFilter = null) {
+    try {
+        // Build query parameters
+        const params = new URLSearchParams();
+        if (statusFilter) params.append('status', statusFilter);
+        if (dateFilter) params.append('date', dateFilter);
+
+        const response = await fetch('../api/routes/leaves.php?' + params.toString());
+        const result = await response.json();
+
+        if (result.status === 'success') {
+            const tableBody = document.getElementById('employee-table-body');
+            tableBody.innerHTML = ''; // Clear existing rows
+            
+            if (result.leaves.length === 0) {
+                const row = document.createElement('tr');
+                row.innerHTML = `<td colspan="8" style="text-align: center;">No leave requests found</td>`;
+                tableBody.appendChild(row);
+                return;
+            }
+
+            let i = 1;
+            result.leaves.forEach(leave => {
+                const row = document.createElement('tr');
+                
+                // Format dates
+                const formatDate = (dateString) => {
+                    if (!dateString) return '-';
+                    const date = new Date(dateString);
+                    return date.toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: '2-digit',
+                        day: '2-digit'
+                    }).replace(/\//g, '-');
+                };
+
+                row.innerHTML = `
+                    <td>${i}</td>
+                    <td>${leave.name}</td>
+                    <td>${leave.type}</td>
+                    <td>${formatDate(leave.start_date)}</td>
+                    <td>${formatDate(leave.end_date)}</td>
+                    <td>${leave.reason}</td>
+                    <td>${leave.status}</td>
+                    <td style="display: flex; gap: 5px;">
+                        <button ${leave.status.toLowerCase() === 'approved' ? 'disabled' : ''} 
+                                onclick="handleLeaveAction(${leave.id}, 'approve')">Approve</button>
+                        <button ${leave.status.toLowerCase() === 'rejected' ? 'disabled' : ''} 
+                                onclick="handleLeaveAction(${leave.id}, 'reject')">Reject</button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+                i++;
+            });
+        } else {
+            console.error('Error loading leaves:', result.message);
+            showAlertPopup('Error', 'Failed to load leave requests');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        showAlertPopup('Error', 'An error occurred while loading leave requests');
+    }
+}
+   
+   </script>
+</body>
+</html>

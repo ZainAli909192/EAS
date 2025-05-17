@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Management - Employee Management System</title>
+    <link rel="stylesheet" href="../css/employee-management.css">
+    <link rel="stylesheet" href="../css/styles.css">
+    <script src="../js/script.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Popup styles */
+        .popup-active {
+            overflow: hidden;
+        }
+
+        .popup-active::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            z-index: 998;
+        }
+
+        .popup-card {
+            width: 350px;
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            z-index: 999;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .popup-card.active {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+        }
+
+        .popup-content {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .popup-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .popup-message {
+            color: #555;
+            margin-bottom: 20px;
+        }
+
+        .popup-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .popup-btn {
+            padding: 8px 20px;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .popup-confirm {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .popup-confirm:hover {
+            background: #45a049;
+        }
+
+        .popup-cancel {
+            background: #f44336;
+            color: white;
+        }
+
+        .popup-cancel:hover {
+            background: #d32f2f;
+        }
+    </style>
+</head>
+<body>
+    <div id="loader-placeholder"></div>
+    <div id="sidenav-placeholder"></div>
+
+    <div class="popup-card" id="delete-confirm-popup">
+        <div class="popup-content">
+            <h3 class="popup-title">Confirm Delete</h3>
+            <p class="popup-message">Are you sure you want to delete this employee?</p>
+        </div>
+        <div class="popup-buttons">
+            <button class="popup-btn popup-cancel" id="cancel-delete-btn" style="padding: 10px 20px;">Cancel</button>
+            <button class="popup-btn popup-confirm" id="confirm-delete-btn" style="padding: 10px 20px; background: red;">Delete</button>
+        </div>
+    </div>
+
+    <div class="popup-card" id="success-popup">
+        <div class="popup-content">
+            <h3 class="popup-title">Success</h3>
+            <p class="popup-message" id="success-message"></p>
+        </div>
+        <div class="popup-buttons">
+            <button class="popup-btn popup-confirm" id="ok-success-btn">OKay</button>
+        </div>
+    </div>
+
+    <main>
+        <section id="employee-list">
+            <button style="margin-bottom: 1rem;" onclick="window.location.href = './add-employee.html'">
+                Add new Employee <i class="fas fa-plus"></i>
+            </button>
+            <div style="display: flex; width: 50vw; align-items: center; margin-bottom: 1rem;">
+                <input type="search" id="search-employee" placeholder="Search employee by ID, name, department , designations" 
+                style="flex:4; padding: 0.6rem; width: 100px; border-radius: 5px; border: 1px solid #ccc;" 
+                onkeydown="searchEmployeeOnKeyDown(event)">
+             
+             
+             <script>
+                function searchEmployee() {
+    searchEmployeeOnKeyDown({key: 'Enter', preventDefault: () => {}});
+}
+                   async function searchEmployeeOnKeyDown(event) {
+    if (event.key !== 'Enter') return;
+    
+    try {
+        const searchValue = document.getElementById('search-employee').value.trim();
+        if (!searchValue) return;
+
+        const response = await fetch(`../api/routes/employee.php?search=${encodeURIComponent(searchValue)}`);
+        const result = await response.json();
+        // const result = await response.text();
+        // console.warn(result);
+        
+        // Check if response has the expected structure
+        if (!result || !result.employees || !Array.isArray(result.employees)) {
+            throw new Error('Invalid response format from server');
+        }
+
+        if (result.employees.length === 0) {
+            document.getElementById('employee-table-body').innerHTML = '<tr><td colspan="7">No employees found matching your search.</td></tr>';
+            return;
+        }
+
+        // Transform the data to match your displayEmployees format
+        const transformedData = result.employees.map(emp => ({
+            employee_id: emp.employee_id,
+            name: emp.Name || '',
+            department: emp.Department_name || '',
+            designation: emp.Designation_name || '',
+            job_in_time: emp.job_in_time || '',
+            job_out_time: emp.job_out_time || ''
+        }));
+
+        displayEmployees(transformedData);
+        
+    } catch (error) {
+        console.error('Search failed:', error);
+        showSuccessPopup('Failed to search employees: ' + error.message);
+        document.getElementById('employee-table-body').innerHTML = '<tr><td colspan="7">Error loading employee data.</td></tr>';
+    }
+}
+                   </script>
+                <button 
+                style="background: var(--primary-color); color: white; padding: 0.5rem 1rem; border-radius: 5px; border: none; cursor: pointer; margin-left: 0.5rem;" 
+                onclick="searchEmployee()">
+            <i class="fas fa-search"></i>
+            </button>
+            </div>
+
+            <h2>Employees List</h2>
+            <table>
+                <thead style="width: 100%;">
+                    <tr>
+                        <th>Id</th>
+                        <th>Name</th>
+                        <th>Department</th>
+                        <th>Designation</th>
+                        <th>Job in timing</th>
+                        <th>Job out timing</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="employee-table-body">
+                    </tbody>
+            </table>
+        </section>
+    </main>
+
+    <script>
+        let currentEmployeeIdToDelete = null;
+
+        // Initialize popups
+        document.addEventListener('DOMContentLoaded', () => {
+            setupPopupListeners();
+            fetchEmployees();
+        });
+
+        function setupPopupListeners() {
+            // Delete confirmation popup
+            document.getElementById('confirm-delete-btn').addEventListener('click', confirmDelete);
+            document.getElementById('cancel-delete-btn').addEventListener('click', hideDeletePopup);
+
+            // Success popup
+            document.getElementById('ok-success-btn').addEventListener('click', hideSuccessPopup);
+        }
+
+        function showDeletePopup(employeeId) {
+            currentEmployeeIdToDelete = employeeId;
+            document.body.classList.add('popup-active');
+            const popup = document.getElementById('delete-confirm-popup');
+            popup.style.display = 'block';
+            setTimeout(() => popup.classList.add('active'), 10);
+        }
+
+        function hideDeletePopup() {
+            document.body.classList.remove('popup-active');
+            const popup = document.getElementById('delete-confirm-popup');
+            popup.classList.remove('active');
+            setTimeout(() => popup.style.display = 'none', 300);
+        }
+
+        function showSuccessPopup(message) {
+            document.getElementById('success-message').textContent = message;
+            document.body.classList.add('popup-active');
+            const popup = document.getElementById('success-popup');
+            popup.style.display = 'block';
+            setTimeout(() => popup.classList.add('active'), 10);
+
+            // Auto-hide after 3 seconds
+            setTimeout(() => {
+                if (popup.classList.contains('active')) {
+                    hideSuccessPopup();
+                }
+            }, 3000);
+        }
+
+        function hideSuccessPopup() {
+            document.body.classList.remove('popup-active');
+            const popup = document.getElementById('success-popup');
+            popup.classList.remove('active');
+            setTimeout(() => popup.style.display = 'none', 300);
+        }
+
+        async function confirmDelete() {
+            if (!currentEmployeeIdToDelete) return;
+
+            try {
+                const response = await fetch('../api/routes/employee.php', {
+                    method: 'DELETE',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ employee_id: currentEmployeeIdToDelete })
+                });
+
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    hideDeletePopup();
+                    showSuccessPopup("Employee deleted successfully");
+                    fetchEmployees(); // Refresh the table
+                } else {
+                    showSuccessPopup("Failed to delete employee: " + (data.message || 'Unknown error'));
+                }
+            } catch (error) {
+                console.error("Error deleting employee:", error);
+                showSuccessPopup("An error occurred while deleting the employee");
+            }
+        }
+
+        function deleteEmployee(employeeId) {
+            currentEmployeeIdToDelete = employeeId;
+            showDeletePopup(employeeId);
+        }
+
+        // Rest of your existing fetchEmployees and displayEmployees functions
+        async function fetchEmployees() {
+            try {
+                const response = await fetch('../api/routes/employee.php', {
+                    method: 'GET',
+                    headers: { 'Accept': 'application/json' }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const result = await response.json();
+
+                if (result.status === 'success') {
+                    displayEmployees(result.data);
+                } else {
+                    console.error('Error:', result.message);
+                    showSuccessPopup(result.message);
+                }
+            } catch (error) {
+                console.error('Fetch error:', error);
+                showSuccessPopup('Failed to load employee data');
+            }
+        }
+
+        function displayEmployees(employees) {
+            const tableBody = document.getElementById('employee-table-body');
+            tableBody.innerHTML = '';
+            let counter = 1;
+
+            employees.forEach(employee => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${counter}</td>
+                    <td>${employee.name}</td>
+                    <td>${employee.department}</td>
+                    <td>${employee.designation}</td>
+                    <td>${employee.job_in_time}</td>
+                    <td>${employee.job_out_time}</td>
+                    <td style="display: flex;">
+                        <button onclick="window.location.href = './update-employee.html?id=${employee.employee_id}'">
+                            <i class="fas fa-edit"></i>
+                            </button>
+                        <button onclick="deleteEmployee('${employee.employee_id}')">
+                            <i class="fas fa-trash"></i>
+                            </button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+                counter++;
+            });
+        }
+    </script>
+</body>
+</html>

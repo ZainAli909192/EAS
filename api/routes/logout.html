@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<body>
+    <script>
+        // Function to handle logout
+        function logout() {
+            // Clear client-side storage
+            sessionStorage.clear();
+            localStorage.clear();
+            
+            // Call server-side logout
+            fetch('../api/routes/login.php?action=logout', {
+                method: 'POST',
+                credentials: 'same-origin' // Important for session cookies
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    window.location.href = "./index.html";
+                } else {
+                    console.error('Logout failed:', data.message);
+                    window.location.href = "./index.html"; // Redirect anyway
+                }
+            })
+            .catch(error => {
+                console.error('Error during logout:', error);
+                window.location.href = "./index.html"; // Redirect anyway
+            });
+        }
+        
+        // Call this function when logout is needed
+        logout();
+        </script>
+</body>
+</html>

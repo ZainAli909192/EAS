@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Manage employees in the Employee Management System. Add, update, and deactivate employee records.">
+  <meta name="keywords" content="employee management, add employee, update employee, deactivate employee">
+  <meta name="author" content="Your Company Name">
+  <title>Employee Management - Employee Management System</title>
+  <link rel="stylesheet" href="../css/employee-management.css">
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <script src="../js/script.js" defer></script>
+</head>
+<body>
+
+  <div id="loader-placeholder"></div>
+  <div id="sidenav-placeholder"></div>
+  
+  <main>
+    <section id="add-employee">
+      <h2>Update department</h2>
+      <form id="update-department-form">
+        <div class="form-row">
+            <div class="form-group">
+                <label for="id">ID:</label>
+                <input type="text" id="id" name="id" disabled required>
+            </div>
+            <div class="form-group">
+                <label for="department_name">Department Name:</label>
+                <input type="text" id="department_name" name="department_name" required>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <button type="submit">Update <i class="fas far fa-edit"></i></button>
+            </div>
+            <div class="form-group">
+                <div></div>
+            </div>
+        </div>
+    </form>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const departmentId = urlParams.get('Department_id');
+    
+            if (departmentId) {
+                try {
+                    const response = await fetch(`../api/routes/department.php?id=${departmentId}`);
+                    const data = await response.json();
+    
+                    if (data.status === 'success' && data.department) {
+                        const departmentData = data.department;
+                        document.getElementById('id').value = departmentData.Department_id;
+                        document.getElementById('department_name').value = departmentData.Department_name;
+                    } else {
+                        console.error('Error fetching department data:', data.message);
+                        alert('Department not found or error loading data.');
+                    }
+                } catch (error) {
+                    console.error('Fetch error:', error);
+                    alert('An error occurred while fetching department data.');
+                }
+            } else {
+                alert('Department ID not provided in URL.');
+                window.location.href = "./departments-list.html";
+            }
+    
+            document.getElementById('update-department-form').addEventListener('submit', async function(e) {
+                e.preventDefault();
+    
+                const departmentId = document.getElementById('id').value;
+                const departmentName = document.getElementById('department_name').value;
+    
+                try {
+                    const response = await fetch('../api/routes/department.php', {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            department_id: departmentId,
+                            department_name: departmentName,
+                        }),
+                    });
+    
+                    const result = await response.json();
+                    // const result = await response.text();
+                    // console.warn(result); 
+    
+                    if (result.status === 'success') {
+                        alert('Department updated successfully!');
+                        window.location.href = './departments-list.html';
+                    } else {
+                        alert('Error updating department: ' + result.message);
+                    }
+                } catch (error) {
+                    console.error('Update error:', error);
+                    alert('An error occurred while updating the department.');
+                }
+            });
+        });
+    </script>
+  </section>
+  
+
+  </main>
+
+
+</body>
+</html>

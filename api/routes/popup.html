@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Popup Screen</title>
+    <link rel="stylesheet" href="css/popup.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+
+<body>
+
+    <div class="popup-screen">
+        <div class="popup-box">
+            <!-- <i class="fas fa-times close-btn"></i> -->
+            <img src="img/tick.png" height="40px" alt="">
+         
+            <p>
+                Your data is updated successfully
+            </p>
+            <button class=" btn close-btn">Ok</button>
+            <!-- <a href="#" class="btn close-btn">Ok</a> -->
+        </div>
+    </div>
+    
+    <section class="home">
+        <button  onclick="spot()">popup</button>
+        <div class="image">
+            <!-- <img src="img.jpg" alt=""> -->
+        </div>
+    </section>
+    <script type="text/javascript">
+        const popupScreen = document.querySelector(".popup-screen");
+        const popupBox = document.querySelector(".popup-box");
+        const closeBtn = document.querySelector(".close-btn");
+        const btn = document.querySelector(".btn");
+
+        function spot(){
+
+            
+                setTimeout(() => {
+                    popupScreen.classList.add("active");
+                    
+                }, 50); //Popup the screen in 02 seconds after the page is loaded.
+                
+                
+                closeBtn.addEventListener("click", () => {
+                    popupScreen.classList.remove("active"); //Close the popup screen on click the close button.
+                    
+                    //Create a cookie for a day (to expire within a day) on click the close button.
+                    //     document.cookie = "WebsiteName=testWebsite; max-age=" + 24 * 60 * 60; //1 day = 24 hours = 24*60*60
+                });
+                
+                setTimeout(() => {
+                    popupScreen.classList.remove("active"); //Close the popup screen on click the close button.
+
+                }, 2000); //Popup the screen in 02 seconds after the page is loaded.
+
+                //popupScreen.style.display = "none"; //Hide the popup screen if the cookie is not expired.
+                    
+                
+                
+                //Use the created cookie to hide or show the popup screen.
+                //    const WebsiteCookie = document.cookie.indexOf("WebsiteName=");
+                
+                //    if (WebsiteCookie != -1) {
+                    
+                    //  }
+                    //else {
+                //  popupScreen.style.display = "flex"; //Show the popup screen if the cookie is expired.
+            //}
+        }
+    </script>
+</body>
+
+</html>

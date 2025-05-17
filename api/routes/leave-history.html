@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Manage employees in the Employee Management System. Add, update, and deactivate employee records.">
+  <meta name="keywords" content="employee management, add employee, update employee, deactivate employee">
+  <meta name="author" content="Your Company Name">
+  <title>Employee Management - Employee Management System</title>
+  <!-- <link rel="stylesheet" href="../css/navbar.css"> -->
+  <link rel="stylesheet" href="../css/employee-management.css">
+  <link rel="stylesheet" href="../css/styles.css">
+  <script src="../js/script.js" defer></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<style>
+    input[type="date"]{
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+    }
+</style>
+<body>
+  <div id="loader-placeholder"></div>
+  <div id="sidenav-placeholder"></div>
+
+  <main>
+    <section id="employee-list">
+      <h2>Employees leave requests</h2>
+      <div id="filters" style="display: flex; gap: 1rem;">
+        <select id="leave-type-filter">
+          <option value="">Filter by leave type</option>
+          <option value="Annual">Annual</option>
+          <option value="Sick">Sick</option>
+          <option value="Casual">Casual</option>
+          <option value="Personal">Personal</option>
+          <option value="Paternity">Paternity</option>
+          <option value="Maternity">Maternity</option>
+        </select>
+        <select id="status-filter">
+          <option value="">Filter by status</option>
+          <option value="Approved">Approved</option>
+          <option value="Pending">Pending</option>
+          <option value="Rejected">Rejected</option>
+        </select>
+        <input type="date" id="date-filter" placeholder="Filter by date">
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Sr no.</th>
+            <th>Name</th>
+            <th>Leave type</th>
+            <th>Start date</th>
+            <th>End date</th>
+            <th>Leave reason</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="employee-table-body">
+          <!-- Rows will be populated dynamically -->
+        </tbody>
+      </table>
+    </section>
+  </main>
+
+  <script>
+  document.addEventListener('DOMContentLoaded', async () => {
+      try {
+          const response = await fetch('../api/routes/leaves.php');
+          const data = await response.json();
+        //   const data = await response.text();
+        //   console.warn(data);
+          
+          
+          if (data.status === 'success') {
+              const tableBody = document.getElementById('employee-table-body');
+              tableBody.innerHTML = ''; // Clear existing rows
+              let i=1;
+              data.leaves.forEach(leave => {
+                  const row = document.createElement('tr');
+                  
+                  // Format dates (you can use a library like date-fns for better formatting)
+                  const formatDate = (dateString) => {
+                      const date = new Date(dateString);
+                      return date.toLocaleDateString('en-US', {
+                          year: 'numeric',
+                          month: '2-digit',
+                          day: '2-digit'
+                      }).replace(/\//g, '-');
+                  };
+                  
+                  row.innerHTML = `
+                      <td>${i}</td>
+                      <td>${leave.name}</td>
+                      <td>${leave.type}</td>
+                      <td>${formatDate(leave.start_date)}</td>
+                      <td>${formatDate(leave.end_date)}</td>
+                      <td>${leave.reason}</td>
+                      <td>${leave.status}</td>
+                   
+                  `;
+                  
+                  tableBody.appendChild(row);
+                  i++;
+              });
+          } else {
+              console.error('Error loading leaves:', data.message);
+              // alert('Failed to load leave requests');
+          }
+      } catch (error) {
+          console.error('Error:', error);
+          // alert('An error occurred while loading leave requests');
+      }
+  });
+
+  async function handleLeaveAction(leaveId, action) {
+      if (!confirm(`Are you sure you want to ${action} this leave request?`)) {
+          return;
+      }
+      
+      try {
+          const response = await fetch('../api/routes/leaves.php', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                  leave_id: leaveId,
+                  action: action
+              })
+          });
+          
+          const result = await response.json();
+          
+          if (result.status === 'success') {
+              alert(`Leave request ${action} successfully!`);
+              location.reload(); // Refresh the page to show updated status
+          } else {
+              alert(`Error: ${result.message}`);
+          }
+      } catch (error) {
+          console.error('Error:', error);
+          alert('An error occurred while processing your request');
+      }
+  }
+  document.addEventListener('DOMContentLoaded', () => {
+    // Initial load
+    loadLeaves();
+    
+    // Add event listeners for filters
+    document.getElementById('leave-type-filter').addEventListener('change', loadLeaves);
+    document.getElementById('status-filter').addEventListener('change', loadLeaves);
+    document.getElementById('date-filter').addEventListener('change', loadLeaves);
+});
+
+async function loadLeaves() {
+    try {
+        // Get filter values
+        const leaveType = document.getElementById('leave-type-filter').value;
+        const status = document.getElementById('status-filter').value;
+        const date = document.getElementById('date-filter').value;
+        
+        // Build query string
+        const params = new URLSearchParams();
+        if (leaveType) params.append('leave_type', leaveType);
+        if (status) params.append('status', status);
+        if (date) params.append('date', date);
+        
+        const response = await fetch(`../api/routes/leaves.php?${params.toString()}`);
+        const data = await response.json();
+        
+        if (data.status === 'success') {
+            const tableBody = document.getElementById('employee-table-body');
+            tableBody.innerHTML = ''; // Clear existing rows
+            
+            let i = 1;
+            data.leaves.forEach(leave => {
+                const row = document.createElement('tr');
+                
+                // Format dates
+                const formatDate = (dateString) => {
+                    const date = new Date(dateString);
+                    return date.toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: '2-digit',
+                        day: '2-digit'
+                    }).replace(/\//g, '-');
+                };
+                
+                row.innerHTML = `
+                    <td>${i}</td>
+                    <td>${leave.name}</td>
+                    <td>${leave.type}</td>
+                    <td>${formatDate(leave.start_date)}</td>
+                    <td>${formatDate(leave.end_date)}</td>
+                    <td>${leave.reason}</td>
+                    <td>${leave.status}</td>
+                `;
+                
+                tableBody.appendChild(row);
+                i++;
+            });
+        } else {
+            console.error('Error loading leaves:', data.message);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+    }
+}
+
+// Your existing handleLeaveAction function remains the same
+async function handleLeaveAction(leaveId, action) {
+    if (!confirm(`Are you sure you want to ${action} this leave request?`)) {
+        return;
+    }
+    
+    try {
+        const response = await fetch('../api/routes/leaves.php', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                leave_id: leaveId,
+                action: action
+            })
+        });
+        
+        const result = await response.json();
+        
+        if (result.status === 'success') {
+            alert(`Leave request ${action} successfully!`);
+            loadLeaves(); // Refresh the table instead of reloading the page
+        } else {
+            alert(`Error: ${result.message}`);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('An error occurred while processing your request');
+    }
+}
+  </script>
+</body>
+
+</html>
+

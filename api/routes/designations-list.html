@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Manage employees in the Employee Management System. Add, update, and deactivate employee records.">
+  <meta name="keywords" content="employee management, add employee, update employee, deactivate employee">
+  <meta name="author" content="Your Company Name">
+  <title>Employee Management - Employee Management System</title>
+  <link rel="stylesheet" href="../css/employee-management.css">
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <script src="../js/script.js" defer></script>
+  <style>
+    /* Popup styles - same as in departments page */
+    .popup-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.7);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+    
+    .popup-screen.active {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    .popup-box {
+      background-color: white;
+      padding: 30px;
+      border-radius: 10px;
+      text-align: center;
+      max-width: 400px;
+      width: 90%;
+      transform: scale(0.8);
+      transition: all 0.3s ease;
+    }
+    
+    .popup-screen.active .popup-box {
+      transform: scale(1);
+    }
+    
+    .popup-box img {
+      margin-bottom: 15px;
+    }
+    
+    .popup-box p {
+      margin-bottom: 20px;
+      font-size: 18px;
+    }
+    
+    .popup-box .btn {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    
+    .popup-box .btn:hover {
+      background-color: #45a049;
+    }
+    
+    .confirmation-popup .buttons {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 20px;
+    }
+    
+    .confirmation-popup .confirm-btn {
+      background-color: #f44336;
+    }
+    
+    .confirmation-popup .confirm-btn:hover {
+      background-color: #d32f2f;
+    }
+  </style>
+</head>
+<body>
+  <div id="loader-placeholder"></div>
+  <div id="sidenav-placeholder"></div>
+
+  <!-- Delete Confirmation Popup -->
+  <div class="popup-screen" id="delete-confirmation-popup">
+    <div class="popup-box confirmation-popup">
+      <img src="../img/warning.png" height="40px" alt="Warning">
+      <p>Are you sure you want to delete this designation?</p>
+      <div class="buttons">
+        <button class="btn close-btn">Cancel</button>
+        <button class="btn confirm-btn" id="confirm-delete-btn">Delete</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Success Popup -->
+  <div class="popup-screen" id="success-popup">
+    <div class="popup-box">
+      <img src="../img/tick.png" height="40px" alt="Success">
+      <p>Designation deleted successfully</p>
+      <button class="btn close-btn">Ok</button>
+    </div>
+  </div>
+
+  <main>
+    <section id="employee-list">
+      <button style="margin-bottom: 1rem;" onclick="window.location.href = './add-designation.html'">
+        Add Designations <i class="fas fa-plus"></i> 
+      </button>
+     
+      <h2>Designations List</h2>
+      <table style="width: 60vw;">
+        <thead style="width: 50px; background: red;">
+            <tr>
+                <th>Id</th>
+                <th>Department</th>
+                <th>DesignationName</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="employee-table-body">
+        </tbody>
+      </table>
+    </section>
+  </main>
+
+  <script>
+    let currentDesignationIdToDelete = null;
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      try {
+        const response = await fetch('../api/routes/designations.php');
+        const data = await response.json();
+    
+        if (data.status === 'success') {
+          const designations = data.designations;
+          const tableBody = document.getElementById('employee-table-body');
+          tableBody.innerHTML = '';
+    
+          let i=1;
+          designations.forEach(designation => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+              <td>${i}</td>
+              <td>${designation.department_name}</td>
+              <td>${designation.Designation_name}</td>
+              <td style="display: flex; gap: 5px;">
+                <button onclick="window.location.href = './update-designation.html?Designation_id=${designation.Designation_id}'">
+                  <i class="fas fa-edit"></i>
+                  </button>
+                <button onclick="showDeleteConfirmation('${designation.Designation_id}')">
+                  <i class="fas fa-trash"></i>
+                  </button>
+              </td>
+            `;
+            tableBody.appendChild(row);
+            i++;
+          });
+        } else {
+          console.error('Error fetching designations:', data.message);
+        }
+        
+        // Setup event listeners for popups
+        setupPopupListeners();
+      } catch (error) {
+        console.error('Fetch error:', error);
+      }
+    });
+    
+    function setupPopupListeners() {
+      // Close buttons
+      document.querySelectorAll('.close-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.popup-screen').forEach(popup => {
+            popup.classList.remove('active');
+          });
+        });
+      });
+      
+      // Confirm delete button
+      document.getElementById('confirm-delete-btn').addEventListener('click', async () => {
+        if (currentDesignationIdToDelete) {
+          try {
+            const response = await fetch(`../api/routes/designations.php?id=${currentDesignationIdToDelete}`, {
+              method: 'DELETE',
+            });
+            const result = await response.json();
+            
+            if (result.status === 'success') {
+              document.getElementById('delete-confirmation-popup').classList.remove('active');
+              showSuccessPopup();
+              setTimeout(() => {
+                location.reload();
+              }, 2000);
+            } else {
+              throw new Error(result.message || 'Unknown error occurred');
+            }
+          } catch (error) {
+            console.error('Delete error:', error);
+            document.getElementById('delete-confirmation-popup').classList.remove('active');
+            alert('Failed to delete designation: ' + error.message);
+          }
+        }
+      });
+    }
+    
+    function showDeleteConfirmation(designationId) {
+      currentDesignationIdToDelete = designationId;
+      document.getElementById('delete-confirmation-popup').classList.add('active');
+    }
+    
+    function showSuccessPopup() {
+      document.getElementById('success-popup').classList.add('active');
+      setTimeout(() => {
+        document.getElementById('success-popup').classList.remove('active');
+      }, 2000);
+    }
+  </script>
+</body>
+</html>

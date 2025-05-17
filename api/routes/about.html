@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About us</title>
+  <link rel="stylesheet" href="../css/contact.css">
+  <link rel="stylesheet" href="../css/index.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+  <div id="loader-placeholder"></div>
+  <div id="navbar-placeholder"></div>
+
+  <div class="popup-overlay">
+    <div class="popup-form">
+      <button class="close-popup-btn"><i class="fas fa-times"></i></button>
+      <h2>Contact Us</h2>
+      <form id="contact-form">
+        <div class="form-group">
+          <label for="name">Name</label>
+          <input type="text" id="name" name="name" required>
+        </div>
+        <div class="form-group">
+          <label for="number">Phone Number</label>
+          <input type="tel" id="number" name="number" required>
+        </div>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" required>
+        </div>
+        <div class="form-group">
+          <label for="message">Message</label>
+          <textarea id="message" name="message" rows="4" required></textarea>
+        </div>
+        <button type="submit" class="btn-primary">Send Message</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Hero Section -->
+  <section class="hero mainhero">
+    <div class="random-dot"></div> <!-- Add this element -->
+
+    <div class="hero-content">
+        <h1>About Our Employee Attendance Management System</h1>
+
+        <p>
+          Our mission is to make employee attendance tracking effortless and efficient for businesses of all sizes. We provide a user-friendly platform that simplifies time tracking, automates leave management, and provides insightful reports to help you optimize your workforce.
+        </p>
+        
+        <p>
+          Learn more about how our system can improve accuracy, reduce errors, and save you valuable time and resources.
+        </p> <div class="hero-buttons">
+        <a href="./register.html" class="btn-primary">Get Started</a>
+        <a href="#features" class="btn-primary">Learn More</a>
+      </div>
+    </div>   
+    <div class="hero-image">
+      <img src="https://img.freepik.com/premium-photo/businessman-black-suit-present-financial-data-laptop-camera-entity_31965-166021.jpg?ga=GA1.1.572590152.1728395548" alt="Membership Management">
+    </div>
+    <!-- Curvy Background SVG -->
+  
+  </section>
+  
+  <!-- Hero Section 2 -->
+  <section class="hero hero2 hero3" id="hero2">
+    <div class="hero-image">
+      <img src="https://img.freepik.com/free-photo/young-businessman-going-through-paperwork-using-laptop-while-working-home_637285-5991.jpg?ga=GA1.1.572590152.1728395548" alt="Membership Management">
+    </div>
+
+    <div class="hero-content">
+        <h2>Tired of outdated attendance systems?</h2>
+        <p>We understand the frustration of managing employee attendance with clunky spreadsheets or unreliable manual processes. Our system is designed to automate those tedious tasks, freeing up your time and resources so you can focus on what truly matters – your employees and your business.</p>   </div>   
+ 
+  </section>
+  <footer>
+    <div class="footer-container">
+        <!-- Features Section -->
+        <div class="footer-column">
+            <img  src="../img/logo.jpg" alt="">
+            <ul>
+
+           <li>
+
+             <a href="./">&copy; All rights reserved</a>
+           </li>
+            </ul>
+        </div>
+        <div class="footer-column">
+            <h3>Features</h3>
+            <ul>
+                <li><a href="#">Attendance Tracking</a></li>
+                <li><a href="#">Leave Management</a></li>
+                <li><a href="#">Employee Management</a></li>
+                <li><a href="#">Reporting</a></li>
+            </ul>
+        </div>
+
+        <!-- Quick Links Section -->
+        <div class="footer-column">
+            <h3>Quick Links</h3>
+            <ul>
+                <li><a href="./">Home</a></li>
+                <li><a href="./about.html">About Us</a></li>
+                <li><a href="./package-show.html">Packages</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+        </div>
+
+        <!-- Contact Form -->
+        <div class="footer-column">
+            <h3>Contact Us</h3>
+            <form>
+                <input type="text" placeholder="Your Name" required>
+                <input type="number" placeholder="Your number" required>
+                <input type="email" placeholder="Your Email" required> 
+                <textarea placeholder="Your Message" required></textarea>
+                <button type="submit">Send</button>
+            </form>
+        </div>
+    </div>
+</footer>
+
+<!-- Success Popup -->
+<div class="card-main" id="success-popup">
+<div class="card-content">
+  <p class="card-heading">Success!</p>
+  <img src="../img/tick.png" alt="Okay">
+  <p class="card-description" id="success-message"></p>
+</div>
+<div class="card-button-wrapper">
+  <button class="card-button secondary-btn close-btn" style="display: none;">Okay</button>
+</div>
+<button class="exit-button close-btn">
+  <svg height="20px" viewBox="0 0 384 512">
+    <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"></path>
+  </svg>
+</button>
+</div>
+
+<!-- email sending  -->
+<script>
+// Initialize popup functionality
+document.addEventListener('DOMContentLoaded', () => {
+setupPopupListeners();
+});
+
+function setupPopupListeners() {
+// Close buttons
+document.querySelectorAll('.close-btn').forEach(btn => {
+btn.addEventListener('click', () => {
+  hidePopup();
+});
+});
+}
+
+function showSuccessPopup(message) {
+const body = document.body;
+const popup = document.getElementById('success-popup');
+const messageElement = document.getElementById('success-message');
+
+messageElement.textContent = message;
+
+// Show the popup with animation
+body.classList.add('popup-active');
+popup.style.display = 'block';
+
+// Trigger the animation
+setTimeout(() => {
+popup.classList.add('active');
+}, 10);
+
+// Auto-hide after 3 seconds
+setTimeout(() => {
+if (popup.classList.contains('active')) {
+  hidePopup();
+}
+}, 3000);
+}
+
+function hidePopup() {
+const popup = document.getElementById('success-popup');
+const body = document.body;
+
+popup.classList.remove('active');
+setTimeout(() => {
+body.classList.remove('popup-active');
+popup.style.display = 'none';
+}, 300);
+}
+// Footer contact form
+document.querySelector('.footer-column form').addEventListener('submit', async function(e) {
+e.preventDefault();
+
+const form = e.target;
+const formData = {
+name: form.querySelector('input[type="text"]').value.trim(),
+email: form.querySelector('input[type="email"]').value.trim(),
+message: form.querySelector('textarea').value.trim(),
+number: form.querySelector('input[type="number"]').value.trim()
+};
+
+// Validate required fields
+if (!formData.message) {
+showSuccessPopup('Message cannot be empty');
+return;
+}
+
+const submitBtn = form.querySelector('button[type="submit"]');
+submitBtn.disabled = true;
+submitBtn.textContent = 'Sending...';
+
+try {
+const response = await fetch('../api/routes/login.php?action=contact', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify(formData)
+});
+
+const result = await response.json();
+
+if (result.status === 'success') {
+  showSuccessPopup(result.message || 'Message sent successfully!');
+  form.reset();
+} else {
+  showSuccessPopup(result.message || 'Failed to send message');
+}
+} catch (error) {
+console.error('Error:', error);
+showSuccessPopup('An error occurred. Please try again.');
+} finally {
+submitBtn.disabled = false;
+submitBtn.textContent = 'Send';
+}
+});
+
+// Popup contact form
+document.querySelector('#contact-form').addEventListener('submit', async function(e) {
+e.preventDefault();
+
+const form = e.target;
+const formData = {
+name: form.querySelector('#name').value.trim(),
+email: form.querySelector('#email').value.trim(),
+message: form.querySelector('#message').value.trim(),
+number: form.querySelector('#number').value.trim()
+};
+
+// Validate required fields
+if (!formData.message) {
+showSuccessPopup('Message cannot be empty');
+return;
+}
+
+const submitBtn = form.querySelector('.send-btn');
+submitBtn.disabled = true;
+submitBtn.textContent = 'Sending...';
+
+try {
+const response = await fetch('../api/routes/login.php?action=contact', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify(formData)
+});
+
+const result = await response.json();
+
+if (result.status === 'success') {
+  showSuccessPopup(result.message || 'Message sent successfully!');
+  form.reset();
+  // Close the contact popup if it exists
+  const contactPopup = document.querySelector('.popup-overlay');
+  if (contactPopup) {
+    contactPopup.style.display = 'none';
+  }
+} else {
+  showSuccessPopup(result.message || 'Failed to send message');
+}
+} catch (error) {
+console.error('Error:', error);
+showSuccessPopup('An error occurred. Please try again.');
+} finally {
+submitBtn.disabled = false;
+submitBtn.textContent = 'Send Message';
+}
+});
+</script>
+
+<script src="../js/script.js" defer></script>
+
+</body>
+</html>

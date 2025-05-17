@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Manage departments in the Employee Management System">
+  <meta name="keywords" content="department management">
+  <meta name="author" content="Your Company Name">
+  <title>Department Management - Employee Management System</title>
+  <link rel="stylesheet" href="../css/employee-management.css">
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <script src="../js/script.js" defer></script>
+ 
+</head>
+<body>
+  <div id="loader-placeholder"></div>
+  <div id="sidenav-placeholder"></div>
+  
+  <!-- Delete Confirmation Popup -->
+  <div class="popup-screen" id="delete-confirmation-popup">
+    <div class="popup-box confirmation-popup">
+      <img src="../img/warning.png" height="40px" alt="Warning">
+      <p>Are you sure you want to delete this department?<br><br>Employees in this department will also be deleted.</p>
+      <div class="buttons">
+        <button class="btn close-btn">Cancel</button>
+        <button class="btn confirm-btn" id="confirm-delete-btn">Delete</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Success Popup -->
+  <div class="popup-screen" id="success-popup">
+    <div class="popup-box">
+      <img src="../img/tick.png" height="40px" alt="Success">
+      <p>Department deleted successfully</p>
+      <button class="btn close-btn">Ok</button>
+    </div>
+  </div>
+
+  <main>
+    <section id="employee-list">
+      <button style="margin-bottom: 1rem;" onclick="window.location.href = './add-department.html'">
+        Add Department <i class="fas fa-plus"></i>
+      </button>
+     
+      <h2>Departments List</h2>
+      <table style="width: 60vw;">
+        <thead style="width: 50px; background: red;">
+          <tr>
+            <th>SR no</th>
+            <th>Department Name</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="employee-table-body">
+        </tbody>
+      </table>
+    </section>
+  </main>
+
+  <script>
+    let currentDepartmentIdToDelete = null;
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      try {
+        const response = await fetch('../api/routes/department.php');
+        const data = await response.json();
+        
+        if (data.status === 'success' && data.departments) {
+          const tableBody = document.getElementById('employee-table-body');
+          tableBody.innerHTML = '';
+          
+          data.departments.forEach((department, index) => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+              <td>${index + 1}</td>
+              <td>${department.Department_name}</td>
+              <td style="display: flex; gap: 10px;">
+                <button onclick="window.location.href = './update-department.html?Department_id=${department.Department_id}'">Edit</button>
+                <button onclick="showDeleteConfirmation('${department.Department_id}')">Delete</button>
+              </td>
+            `;
+            tableBody.appendChild(row);
+          });
+        } else {
+          console.error('Error fetching departments:', data.message);
+        }
+      } catch (error) {
+        console.error('Fetch error:', error);
+      }
+      
+      // Setup event listeners for popups
+      setupPopupListeners();
+    });
+    
+    function setupPopupListeners() {
+      // Close buttons
+      document.querySelectorAll('.close-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.popup-screen').forEach(popup => {
+            popup.classList.remove('active');
+          });
+        });
+      });
+      
+      // Confirm delete button
+      document.getElementById('confirm-delete-btn').addEventListener('click', async () => {
+    if (currentDepartmentIdToDelete) {
+        try {
+            const response = await fetch(`../api/routes/department.php?id=${currentDepartmentIdToDelete}`, {
+                method: 'DELETE',
+            });
+            console.warn(response);
+            
+            // First check if response is OK
+            // if (!response.ok) {
+            //     throw new Error(`HTTP error! status: ${response.status}`);
+            // }
+            
+            // Then try to parse as JSON
+            const result = await response.json();
+            console.log('Delete result:', result);
+            
+            if (result.status === 'success') {
+                document.getElementById('delete-confirmation-popup').classList.remove('active');
+                showSuccessPopup(result.message || 'Department deleted successfully');
+                setTimeout(() => {
+                    location.reload();
+                }, 2000);
+            } else {
+                throw new Error(result.message || 'Unknown error occurred');
+            }
+        } catch (error) {
+            console.error('Delete error:', error);
+            document.getElementById('delete-confirmation-popup').classList.remove('active');
+            alert('Failed to delete department: ' + error.message);
+        }
+    }
+})
+    }
+    
+    function showDeleteConfirmation(departmentId) {
+      currentDepartmentIdToDelete = departmentId;
+      document.getElementById('delete-confirmation-popup').classList.add('active');
+    }
+    
+    function showSuccessPopup() {
+      document.getElementById('success-popup').classList.add('active');
+      setTimeout(() => {
+        document.getElementById('success-popup').classList.remove('active');
+      }, 2000);
+    }
+  </script>
+</body>
+</html>

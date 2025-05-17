@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - Employee Management System</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/profile.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Popup styles */
+        .popup-active {
+            overflow: hidden;
+        }
+
+        .popup-active::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            z-index: 998;
+        }
+
+        .card {
+            width: 300px;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.8);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            z-index: 999;
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .card.active {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+        }
+
+        .card-content {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .card-heading {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .card-description {
+            color: #666;
+        }
+
+        .card-button-wrapper {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .card-button {
+            width: 100px;
+            height: 35px;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .secondary-btn {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .secondary-btn:hover {
+            background: #45a049;
+        }
+
+        .primary-btn {
+            background-color: #f44336;
+            color: white;
+        }
+
+        .primary-btn:hover {
+            background-color: #d32f2f;
+        }
+
+        .exit-button {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        .exit-button svg {
+            width: 20px;
+            height: 20px;
+            fill: #999;
+        }
+
+        .exit-button:hover svg {
+            fill: #333;
+        }
+        #save-changes-btn {
+            width: fit-content;
+        }
+    </style>
+    <script src="../js/script.js" defer></script>
+</head>
+<body>
+    <div id="loader-placeholder"></div>
+    <div id="sidenav-placeholder"></div>
+
+    <div class="card" id="success-popup">
+        <div class="card-content">
+            <p class="card-heading">Success!</p>
+            <p class="card-description" id="success-message"></p>
+        </div>
+        <div class="card-button-wrapper">
+            <button class="card-button secondary-btn close-btn">Okay</button>
+        </div>
+        <button class="exit-button close-btn">
+            <svg height="20px" viewBox="0 0 384 512">
+                <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"></path>
+            </svg>
+        </button>
+    </div>
+
+    <main>
+        <section id="update-profile">
+            <h2>Update Profile</h2>
+            <form id="profile-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="id">ID: <i class="fas fa-key"></i></label>
+                        <input type="text" id="id" name="id" readonly>
+                    </div>
+                </div>
+
+                <div id="dynamic-fields"></div>
+
+                <button type="submit" id="save-changes-btn">Save Changes</button>
+            </form>
+        </section>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load profile data
+            fetchProfileData();
+
+            // Form submission handler
+            document.getElementById('profile-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                updateProfile();
+            });
+
+            // Initialize popup functionality
+            setupPopupListeners();
+        });
+
+        function setupPopupListeners() {
+            // Close buttons
+            document.querySelectorAll('.close-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    hidePopup();
+                });
+            });
+        }
+
+        function showSuccessPopup(message) {
+            const body = document.body;
+            const popup = document.getElementById('success-popup');
+            const messageElement = document.getElementById('success-message');
+
+            messageElement.textContent = message;
+
+            // Show the popup with animation
+            body.classList.add('popup-active');
+            popup.style.display = 'block';
+
+            // Trigger the animation
+            setTimeout(() => {
+                popup.classList.add('active');
+            }, 10);
+
+            // Auto-hide after 3 seconds
+            setTimeout(() => {
+                if (popup.classList.contains('active')) {
+                    hidePopup();
+                }
+            }, 3000);
+        }
+
+        function hidePopup() {
+            const popup = document.getElementById('success-popup');
+            const body = document.body;
+
+            popup.classList.remove('active');
+            setTimeout(() => {
+                body.classList.remove('popup-active');
+                popup.style.display = 'none';
+            }, 300);
+        }
+
+        function fetchProfileData() {
+            fetch('../api/routes/profile.php')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        renderProfileForm(data.profile);
+                    } else {
+                        showAlert('Error loading profile: ' + data.message, 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showAlert('Failed to load profile data', 'error');
+                });
+        }
+
+        function renderProfileForm(profile) {
+            // Set common fields
+            document.getElementById('id').value = profile.id || '';
+
+            // Get the dynamic fields container
+            const dynamicFields = document.getElementById('dynamic-fields');
+            dynamicFields.innerHTML = '';
+
+            // Create fields based on user role
+            let fieldsHTML = '';
+
+            switch (profile.role) {
+                case 'admin':
+                    fieldsHTML = `
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="email">Email: <i class="fas fa-envelope"></i></label>
+                                <input type="email" id="email" name="email" value="${profile.Email || ''}" >
+                            </div>
+                        </div>
+                      
+                <div class="form-row">
+                     <div class="form-group">
+                                <label for="password">Password: <i class="fas fa-lock"></i></label>
+                                <input type="password" id="password" name="password"  Title="Required password">
+                            </div>
+                            <div class="form-group">
+                                <label for="password">Confirm passowrd: <i class="fas fa-lock"></i></label>
+                                <input type="password" id="confirm-password" name="confirm-password"  Title="Required password">
+                            </div>
+                        </div>
+                    `;
+                    break;
+
+                case 'member':
+                    fieldsHTML = `
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="company_name">Company Name: <i class="fas fa-building"></i></label>
+                                <input type="text" id="company_name" name="company_name" value="${profile.Name || ''}" >
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="email" style="margin-top: 10px;">Email: <i class="fas fa-envelope"></i></label>
+                                <input type="email" id="email" name="email" value="${profile.Email || ''}" >
+                            </div>
+                            <div class="form-group">
+                                <label for="number" style="margin-top: 10px;">Contact Number: <i class="fas fa-phone"></i></label>
+                                <input type="text" id="number" name="number" value="${profile.Number || ''}" >
+                            </div>
+                        </div>
+                     
+                <div class="form-row">
+                     <div class="form-group">
+                                <label for="password">Password: <i class="fas fa-lock"></i></label>
+                                <input type="password" id="password" name="password"  Title="Required password">
+                            </div>
+                            <div class="form-group">
+                                <label for="password">Confirm passowrd: <i class="fas fa-lock"></i></label>
+                                <input type="password" id="confirm-password" name="confirm-password"  Title="Required password">
+                            </div>
+                        </div>
+                    `;
+                    break;
+
+                case 'employee':
+                    fieldsHTML = `
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="name">Name: <i class="fas fa-user"></i></label>
+                                <input type="text" id="name" name="name" value="${profile.Name || ''}" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label for="number">Contact Number: <i class="fas fa-phone"></i></label>
+                                <input type="text" id="number" name="number" value="${profile.Number || ''}" required >
+                            </div>
+                        </div>
+                        <div class="form-row">
+                    <div class="form-group">
+                        <label for="number">Job in time: <i class="fas fa-clock"></i></label>
+                        <input type="time" id="email" name="Job in time" value="${profile.job_in_time || ''}" readonly >
+                    </div>
+                    <div class="form-group">
+                        <label for="job_in_timing">Job out time: <i class="fas fa-clock"></i></label>
+                        <input type="time" id="job_in_timing" name="job_in_timing" value="${profile.job_out_time || ''}" readonly >
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="job_out_timing">Email: <i class="fas fa-email"></i></label>
+                        <input type="email" id="email" name="email" value="${profile.email || ''}"
+                    
+                        
+                        
+                        >
+                    </div>
+                          
+                        </div>
+                <div class="form-row">
+                     <div class="form-group">
+                                <label for="password">Password: <i class="fas fa-lock"></i></label>
+                                <input type="password" id="password" name="password"  Title="Required password">
+                            </div>
+                            <div class="form-group">
+                                <label for="password">Confirm passowrd: <i class="fas fa-lock"></i></label>
+                                <input type="password" id="confirm-password" name="confirm-password"  Title="Required password">
+                            </div>
+                        </div>
+                    `;
+                    break;
+            }
+
+            dynamicFields.innerHTML = fieldsHTML;
+        }
+
+        async function updateProfile() {
+            const role = document.getElementById('profile-form').getAttribute('data-role');
+            const formData = {};
+            const formElements = document.getElementById('profile-form').elements;
+
+            // Collect form data based on role
+            for (let element of formElements) {
+                if (element.name && element.type !== 'submit') {
+                    formData[element.name] = element.value;
+                }
+            }
+if(formData.password && formData.password !== formData.confirm-password){
+    showAlert('Password and confirm password do not match', 'error');
+    return;
+}
+            try {
+                const response = await fetch('../api/routes/profile.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    showSuccessPopup('Profile updated successfully');
+                    await fetchProfileData(); // Refresh data
+                } else {
+                    showAlert('Error updating profile: ' + data.message, 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showAlert('Failed to update profile'+error, 'error');
+            }
+        }
+
+        // Helper function to show alerts (you can customize this)
+        function showAlert(message, type = 'info') {
+            const alertContainer = document.createElement('div');
+            alertContainer.style.position = 'absolute';
+            alertContainer.style.left = '50%';
+            alertContainer.style.bottom = '10%';
+            alertContainer.style.backgroundColor = type === 'error' ? '#f44336' : '#2196F3';
+            alertContainer.style.color = 'white';
+            alertContainer.style.padding = '15px';
+            alertContainer.style.borderRadius = '5px';
+            alertContainer.style.zIndex = '1000';
+            alertContainer.textContent = message;
+            document.body.appendChild(alertContainer);
+            setTimeout(() => {
+                alertContainer.remove();
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

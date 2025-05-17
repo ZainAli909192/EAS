@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Manage employees in the Employee Management System. Add, update, and deactivate employee records.">
+  <meta name="keywords" content="employee management, add employee, update employee, deactivate employee">
+  <meta name="author" content="Your Company Name">
+  <title>Employee Management - Employee Management System</title>
+  <link rel="stylesheet" href="../css/employee-management.css">
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <script src="../js/script.js" defer></script>
+
+  <style>
+    /* Popup styles */
+    .popup-active {
+      overflow: hidden;
+    }
+    
+    .popup-active::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(5px);
+      z-index: 998;
+    }
+    
+    .card {
+      width: 300px;
+      background: white;
+      border-radius: 20px;
+      padding: 30px;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0.8);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      z-index: 999;
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    
+    .card.active {
+      transform: translate(-50%, -50%) scale(1);
+      opacity: 1;
+    }
+    
+    .card-content {
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    
+    .card-heading {
+      font-size: 20px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+    
+    .card-description {
+      color: #666;
+    }
+    
+    .card-button-wrapper {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+    }
+    
+    .card-button {
+      width: 100px;
+      height: 35px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    
+    .secondary-btn {
+      background: #4CAF50;
+      color: white;
+    }
+    
+    .secondary-btn:hover {
+      background: #45a049;
+    }
+    
+    .primary-btn {
+      background-color: #f44336;
+      color: white;
+    }
+    
+    .primary-btn:hover {
+      background-color: #d32f2f;
+    }
+    
+    .exit-button {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+    
+    .exit-button svg {
+      width: 20px;
+      height: 20px;
+      fill: #999;
+    }
+    
+    .exit-button:hover svg {
+      fill: #333;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="loader-placeholder"></div>
+  <div id="sidenav-placeholder"></div>
+  
+  <!-- Success Popup -->
+  <div class="card" id="success-popup">
+    <div class="card-content">
+      <p class="card-heading">Success!</p>
+      <p class="card-description" id="success-message"></p>
+    </div>
+    <div class="card-button-wrapper">
+      <button class="card-button secondary-btn close-btn">Okay</button>
+    </div>
+    <button class="exit-button close-btn">
+      <svg height="20px" viewBox="0 0 384 512">
+        <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"></path>
+      </svg>
+    </button>
+  </div>
+  
+  <!-- Error Popup -->
+  <div class="card" id="error-popup">
+    <div class="card-content">
+      <p class="card-heading">Error!</p>
+      <p class="card-description" id="error-message"></p>
+    </div>
+    <div class="card-button-wrapper">
+      <button class="card-button primary-btn close-btn">Okay</button>
+    </div>
+    <button class="exit-button close-btn">
+      <svg height="20px" viewBox="0 0 384 512">
+        <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"></path>
+      </svg>
+    </button>
+  </div>
+  <main>
+    <section id="add-employee">
+        <h2>Update Membership</h2>
+        <form id="add-employee-form" method="POST">
+          <div class="form-row">
+              <div class="form-group">
+                  <label for="id">ID:</label>
+                  <input type="text" id="id" name="id" disabled required>
+              </div>
+              <div class="form-group">
+                  <label for="company_name">Company Name:</label>
+                  <input type="text" id="company_name" name="company_name" required>
+              </div>
+          </div>
+          <div class="form-row">
+              <div class="form-group">
+                  <label for="email">Email:</label>
+                  <input type="email" id="email" name="email" required>
+              </div>
+              <div class="form-group">
+                  <label for="password">Password:</label>
+                  <input type="password" id="password" name="password" >
+              </div>
+          </div>
+          <div class="form-row">
+              <div class="form-group">
+                  <label for="number">Phone Number:</label>
+                  <input type="tel" id="number" name="number" required>
+              </div>
+              <div class="form-group">
+                  <label for="package_id">Package:</label>
+                  <select name="package_id" id="package_id">
+                      <option value="">Select Package</option>
+                  </select>
+              </div>
+          </div>
+          <div class="form-row">
+              <div class="form-group">
+                  <label for="membership_start_date">Membership Start Date:</label>
+                  <input type="date" id="membership_start_date" name="membership_start_date"  required>
+              </div>
+              <div class="form-group">
+                  <label for="membership_end_date">Membership End Date:</label>
+                  <input type="date" id="membership_end_date" name="membership_end_date"  required>
+              </div>
+          </div>
+          <div class="form-row">
+              <div class="form-group">
+                  <button type="submit"> <i class="fas fa-edit"></i>     Update</button>
+              </div>
+              <div class="form-group">
+                  <div></div>
+              </div>
+          </div>
+      </form>
+      
+      <script>
+          document.addEventListener('DOMContentLoaded', async () => {
+              const urlParams = new URLSearchParams(window.location.search);
+              const memberId = urlParams.get('Member_id');
+      
+              if (memberId) {
+                  try {
+                      const response = await fetch(`../api/routes/members.php?Member_id=${memberId}`);
+                      const data = await response.json();
+      
+                      if (data.status === 'success' && data.member) {
+                          const memberData = data.member;
+                          document.getElementById('id').value = memberData.Member_id;
+                          document.getElementById('company_name').value = memberData.Company_Name;
+                          document.getElementById('email').value = memberData.Email;
+                        //   document.getElementById('password').value = memberData.Password;
+                          document.getElementById('number').value = memberData.Number;
+                          document.getElementById('membership_start_date').value = memberData.Membership_start_date;
+                          document.getElementById('membership_end_date').value = memberData.Membership_end_date;
+      
+                          await populatePackages(memberData.Package_id);
+      
+                      } else {
+                          console.error('Error fetching member data:', data.message);
+                          alert('Member not found or error loading data.');
+                      }
+                  } catch (error) {
+                      console.error('Fetch error:', error);
+                      alert('An error occurred while fetching member data.');
+                  }
+              } else {
+                  alert('Member ID not provided in URL.');
+              }
+      
+              async function populatePackages(selectedPackageId) {
+                  const packageSelect = document.getElementById('package_id');
+                  try {
+                      const response = await fetch('../api/routes/packages.php');
+                      const data = await response.json();
+      
+                      if (data.status === 'success' && data.packages) {
+                          data.packages.forEach(package => {
+                              const option = document.createElement('option');
+                              option.value = package.Package_id;
+                              option.textContent = package.Package_name;
+                              if (package.Package_id == selectedPackageId) {
+                                  option.selected = true;
+                              }
+                              packageSelect.appendChild(option);
+                          });
+                      } else {
+                          console.error('Error fetching packages:', data.message);
+                      }
+                  } catch (error) {
+                      console.error('Error fetching packages:', error);
+                  }
+              }
+              function setupPopupListeners() {
+      // Close buttons
+      document.querySelectorAll('.close-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          hidePopup();
+        });
+      });
+    }
+
+    function showSuccessPopup(message, redirectUrl = null) {
+      const body = document.body;
+      const popup = document.getElementById('success-popup');
+      const messageElement = document.getElementById('success-message');
+      
+      messageElement.textContent = message;
+      
+      // Show the popup with animation
+      body.classList.add('popup-active');
+      popup.style.display = 'block';
+      
+      // Trigger the animation
+      setTimeout(() => {
+        popup.classList.add('active');
+      }, 10);
+
+      // If redirectUrl is provided, redirect after showing the popup
+      if (redirectUrl) {
+        setTimeout(() => {
+          if (popup.classList.contains('active')) {
+            hidePopup();
+            window.location.href = redirectUrl;
+          }
+        }, 3000);
+      }
+    }
+
+    function showErrorPopup(message) {
+      const body = document.body;
+      const popup = document.getElementById('error-popup');
+      const messageElement = document.getElementById('error-message');
+      
+      messageElement.textContent = message;
+      
+      // Show the popup with animation
+      body.classList.add('popup-active');
+      popup.style.display = 'block';
+      
+      // Trigger the animation
+      setTimeout(() => {
+        popup.classList.add('active');
+      }, 10);
+
+      // Auto-hide after 3 seconds
+      setTimeout(() => {
+        if (popup.classList.contains('active')) {
+          hidePopup();
+        }
+      }, 3000);
+    }
+              document.getElementById('add-employee-form').addEventListener('submit', async function(e) {
+                  e.preventDefault();
+      
+                  const memberId = document.getElementById('id').value;
+                  const companyName = document.getElementById('company_name').value;
+                  const email = document.getElementById('email').value;
+                  const password = document.getElementById('password').value;
+                  const number = document.getElementById('number').value;
+                  const packageId = document.getElementById('package_id').value;
+                  const membershipStartDate = document.getElementById('membership_start_date').value;
+                  const membershipEndDate = document.getElementById('membership_end_date').value;
+      
+                  try {
+                      const response = await fetch('../api/routes/members.php', {
+                          method: 'PUT',
+                          headers: {
+                              'Content-Type': 'application/json',
+                          },
+                          body: JSON.stringify({
+                              Member_id: memberId,
+                              Company_Name: companyName,
+                              Email: email,
+                              Password: password,
+                              Number: number,
+                              Package_id: packageId,
+                              Membership_start_date: membershipStartDate,
+                              Membership_end_date: membershipEndDate,
+                          }),
+                      });
+      
+                      const result = await response.json();
+      
+                      if (result.status === 'success') {
+
+showSuccessPopup('Member updated successfully!', './membership.html');
+                      } else {
+                          showErrorPopup('Error updating member: ' + result.message);
+                      }
+                  } catch (error) {
+                      console.error('Update error:', error);
+                      showErrorPopup('An error occurred while updating the member.');
+                  }
+              });
+          });
+
+          
+    function hidePopup() {
+      const successPopup = document.getElementById('success-popup');
+      const errorPopup = document.getElementById('error-popup');
+      const body = document.body;
+      
+      successPopup.classList.remove('active');
+      errorPopup.classList.remove('active');
+      setTimeout(() => {
+        body.classList.remove('popup-active');
+        successPopup.style.display = 'none';
+        errorPopup.style.display = 'none';
+      }, 300);
+    }
+      </script>
+      </section>
+
+  </main>
+
+
+</body>
+</html>

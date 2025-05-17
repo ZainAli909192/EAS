@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign Up</title>
+  <link rel="stylesheet" href="../css/login.css"> <!-- Link to the same CSS file as the login page -->
+<script src="../js/script.js" defer></script>
+</head>
+<body>
+  <div id="loader-placeholder"></div>
+  <div class="login-container">
+    <div class="login-box">
+      <div class="login-header">
+        <h2>Create an Account</h2>
+      </div>
+      <form id="signup-form">
+        <!-- Row 1: Name and Phone Number -->
+        <div class="form-row">
+          <div class="input-group">
+            <label for="name">Full Name</label>
+            <input type="text" id="name" name="name"  required>
+          </div>
+          <div class="input-group">
+            <label for="phone">Phone Number</label>
+            <input type="tel" id="phone" name="phone"required>
+          </div>
+        </div>
+
+        <!-- Row 2: Address and Email -->
+        <div class="form-row">
+          <div class="input-group">
+            <label for="address">Address</label>
+            <input type="text" id="address" name="address"  required>
+          </div>
+          <div class="input-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email"  required>
+          </div>
+        </div>
+
+        <!-- Row 3: Password and Confirm Password -->
+        <div class="form-row">
+          <div class="input-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password"  required>
+          </div>
+          <div class="input-group">
+            <label for="confirm-password">Confirm Password</label>
+            <input type="password" id="confirm-password" name="confirm-password"  required>
+          </div>
+        </div>
+
+        <!-- Row 4: Signup Button -->
+        <div class="form-row">
+          <button type="submit" class="login-button">Sign Up</button>
+        </div>
+
+        <!-- Row 5: Login Option -->
+        <div class="login-footer">
+          <p>Already have an account? <a href="login.html">Log In</a></p>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

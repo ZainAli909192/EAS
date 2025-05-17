@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Track employee attendance with clock-in, clock-out, and real-time updates.">
+  <meta name="keywords" content="attendance tracking, clock-in, clock-out, real-time attendance">
+  <meta name="author" content="Your Company Name">
+  <title>Attendance Tracking - Employee Management System</title>
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="../css/attendance.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <!-- Include Chart.js for graphs -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<script src="../js/script.js" defer></script>
+<body>
+  <style>
+    body{
+      overflow-y: auto;
+    }
+    .attendance-summary {
+      overflow-y: auto;
+    }
+    .attendance-left{
+      display: none;
+    }
+  </style>
+     <style>
+      /* Popup styles */
+      .popup-active {
+          overflow: hidden;
+      }
+
+      .popup-active::before {
+          content: "";
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: rgba(0, 0, 0, 0.5);
+          backdrop-filter: blur(5px);
+          z-index: 998;
+      }
+
+      .popup-card {
+          width: 350px;
+          background: white;
+          border-radius: 10px;
+          padding: 25px;
+          position: fixed;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%) scale(0.9);
+          box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+          z-index: 999;
+          opacity: 0;
+          transition: all 0.3s ease;
+      }
+
+      .popup-card.active {
+          transform: translate(-50%, -50%) scale(1);
+          opacity: 1;
+      }
+
+      .popup-content {
+          text-align: center;
+          margin-bottom: 20px;
+      }
+
+      .popup-title {
+          font-size: 20px;
+          font-weight: bold;
+          margin-bottom: 10px;
+      }
+
+      .popup-message {
+          color: #555;
+          margin-bottom: 20px;
+      }
+
+      .popup-buttons {
+          display: flex;
+          justify-content: center;
+          gap: 15px;
+      }
+
+      .popup-btn {
+          padding: 8px 20px;
+          border-radius: 5px;
+          border: none;
+          cursor: pointer;
+          font-weight: 600;
+      }
+
+      .popup-confirm {
+          background: #4CAF50;
+          color: white;
+      }
+
+      .popup-confirm:hover {
+          background: #45a049;
+      }
+
+      .popup-cancel {
+          background: #f44336;
+          color: white;
+      }
+
+      .popup-cancel:hover {
+          background: #d32f2f;
+      }
+  </style>
+
+  <div id="loader-placeholder"></div>
+  <div id="sidenav-placeholder"></div>
+
+  
+  <div class="popup-card" id="confirmation-popup">
+    <div class="popup-content">
+        <h3 class="popup-title">Confirm Action</h3>
+        <p class="popup-message" id="confirmation-message"></p>
+    </div>
+    <div class="popup-buttons">
+        <button class="popup-btn popup-cancel" id="cancel-btn">Cancel</button>
+        <button class="popup-btn popup-confirm" id="confirm-btn">Confirm</button>
+    </div>
+</div>
+
+<div class="popup-card" id="alert-popup">
+    <div class="popup-content">
+        <h3 class="popup-title" id="alert-title"></h3>
+        <p class="popup-message" id="alert-message"></p>
+    </div>
+    <div class="popup-buttons">
+        <button class="popup-btn popup-confirm" id="ok-btn">Okay</button>
+    </div>
+</div>
+
+  <main style="display: block;">
+    <section id="clock-in-out">
+      <h2>Mark Attendance Check-In/Check-Out</h2>
+      <button id="clock-in-btn">Check In</button>
+      <button id="clock-out-btn">Check Out</button>
+      <button id="capture-btn" style="display: none;">Take picture</button>
+
+      <div id="camera-preview">
+        <video id="camera-feed" autoplay></video>
+        <canvas id="camera-canvas" style="display: none;"></canvas>
+      </div>
+    </section>
+
+    <section id="attendance-summary">
+      <div class="attendance-container">
+         <!-- Right Side: Attendance Table -->
+         <div class="attendance-right">
+
+          <h2>Attendance Summary</h2>
+          <!-- filters  -->
+          <div class="attendance-filters">
+            <label for="attendance-filter-month">Filter By Month</label>
+            <select id="attendance-filter-month" style="margin-left: 1rem;">
+                <option value="">All Months</option>
+                <option value="1">January</option>
+                <option value="2">February</option>
+                <option value="3">March</option>
+                <option value="4">April</option>
+                <option value="5">May</option>
+                <option value="6">June</option>
+                <option value="7">July</option>
+                <option value="8">August</option>
+                <option value="9">September</option>
+                <option value="10">October</option>
+                <option value="11">November</option>
+                <option value="12">December</option>
+            </select>
+            
+            <label for="attendance-filter-year" style="margin-left: 1rem;">Year</label>
+            
+            
+            <select id="attendance-filter-year" style="margin-left: 1rem;">
+                <script>
+                    const years = document.getElementById('attendance-filter-year');
+                    const date = new Date();
+                    const currentYear = date.getFullYear();
+                    
+                    // Add an empty option first
+                    const emptyOption = document.createElement('option');
+                    emptyOption.value = '';
+                    emptyOption.textContent = 'All Years';
+                    years.appendChild(emptyOption);
+                    
+                    // Add year options
+                    for (let i = currentYear; i >= 2020; i--) {
+                        const option = document.createElement('option');
+                        option.value = i;
+                        option.textContent = i;
+                        years.appendChild(option);
+                    }
+                    
+                    // Set current year as default
+                    years.querySelector(`option[value="${currentYear}"]`).selected = true;
+                </script>
+            </select>
+            <label for="attendance-filter-rows" style="margin-left: 1rem;"># of records</label>
+            <select id="attendance-filter-rows" style="margin-left: 1rem;">
+              <option value="5" selected>5</option>
+              <option value="10" >10</option>
+              <option value="20">20</option>
+              <option value="50">50</option>
+              <option value="100">100</option>
+            </select>
+            <button id="reset-filters" style="margin-left: 1rem;">Reset Filters</button>
+<style>
+  @media (max-width: 768px) {
+    .attendance-filters {
+      flex-direction: column;
+    }
+    
+    .attendance-filters label {
+      margin-bottom: 0.5rem;
+    }
+    
+    .attendance-filters select {
+      width: 100%;
+    }
+    
+    .attendance-filters button {
+      width: 100%;
+      margin-top: 1rem;
+    }
+  }
+</style>
+        </div>
+          
+          <table>
+            
+            <thead>
+              <tr>
+                <th>Sr no</th>
+                <th>Date</th>
+                <th>Check-in</th>
+                <th>Check-out</th>
+                <th>Check-in Pic</th>
+                <th>Check-out Pic</th>
+                <th>Status</th>
+                <th>Check-in location</th>
+                <th>Check-out location</th>
+              </tr>
+            </thead>
+            <tbody id="attendance-table-body">
+              <!-- Rows will be populated dynamically -->
+              <tr>
+                <td>2023-10-01</td>
+                <td>09:00 AM</td>
+                <td>05:00 PM</td>
+                <td>
+                  <img id="captured-photo" src="path/to/photo.jpg" alt="Captured Photo" style="width: 50px; height: 50px;">
+                </td>
+                <td>Present</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <!-- Left Side: Statistics and Calendar -->
+        <div class="attendance-left">
+          <div class="attendance-stats">
+            <h3>Attendance Statistics</h3>
+            <div class="stat-item">
+              <span>Total Working Hours</span>
+              <strong>40 hrs</strong>
+            </div>
+            <div class="stat-item">
+              <span>Average Clock-In Time</span>
+              <strong>09:15 AM</strong>
+            </div>
+            <div class="stat-item">
+              <span>Attendance Rate</span>
+              <strong>95%</strong>
+            </div>
+          </div>
+
+        </div>
+        <div id="location-text"></div>
+       
+      </div>
+    </section>
+  </main>
+  <script src="../js/attendance.js" defer></script>
+</body>
+</html>

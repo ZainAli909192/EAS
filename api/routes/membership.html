@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Manage employees in the Employee Management System. Add, update, and deactivate employee records.">
+  <meta name="keywords" content="employee management, add employee, update employee, deactivate employee">
+  <meta name="author" content="Your Company Name">
+  <title>Employee Management - Employee Management System</title>
+  <link rel="stylesheet" href="../css/employee-management.css">
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <script src="../js/script.js" defer></script>
+</head>
+<body>
+  <div id="loader-placeholder"></div>
+  <div id="sidenav-placeholder"></div>
+
+
+  <main>
+  
+    <section id="employee-list">
+      <button style="margin-bottom: 1rem;"
+          onclick="window.location.href = './add-membership.html'">
+               Add new Membership 
+          <i class="fas fa-plus"></i>
+      </button>
+
+     
+      <h2>Companies List</h2>
+      <div class="filter-container">
+        <div class="filter-item">
+            <label for="company-name-filter" style="margin-right: 1rem;">Company Name:</label>
+            <input type="text" id="company-name-filter" oninput="filterCompaniesName()" placeholder="Filter by Company Name" style="width: 20rem;">
+        </div>
+        <div class="filter-item">
+            <label for="company-id-filter" style="margin-right: 1rem;">Company ID:  </label>
+            <input type="text" id="company-id-filter" oninput="filterCompaniesId()" placeholder="Filter by Company ID" style="width: 20rem;">
+        </div>
+      </div>
+ 
+      <style>
+        .filter-container {
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: center;
+          margin-bottom: 1rem;
+        }
+        .filter-item {
+          margin: 0 1rem;
+        }
+        .filter-item label {
+          display: block;
+        }
+        .filter-item input {
+          width: 20rem;
+          padding: 0.5rem;
+          border-radius: 0.25rem;
+          border: 1px solid #ccc;
+        }
+      </style>
+      <style>
+        .filter-container {
+          display: flex;
+          align-items: center;
+        }
+        .filter-item {
+          display: flex;
+          align-items: center;
+          margin: 0 1rem;
+        }
+        .filter-item input {
+          width: 20rem;
+          padding: 0.5rem;
+          border-radius: 0.25rem;
+          border: 1px solid #ccc;
+          margin-right: 0.5rem;
+        }
+        .filter-item label {
+          margin: 0;
+        }
+      </style>
+
+
+      <table style="width: fit-content;">
+        <thead style="width: 50px; background: red;">
+            <tr>
+                <th>Sr no</th>
+                <th>Company Name</th>
+                <th>Company Phone</th>
+                <th>Company Email</th>
+                <th>Number of employees</th>
+                <th>Company Package</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody id="employee-table-body">
+            </tbody>
+    </table>
+    
+    <script>
+
+async function filterCompaniesName() {
+    const filterValue = document.getElementById('company-name-filter').value;
+    const url = filterValue 
+        ? `../api/routes/members.php?company_name=${encodeURIComponent(filterValue)}`
+        : '../api/routes/members.php';
+    
+    try {
+        const response = await fetch(url);
+        const data = await response.json();
+        
+        if (data.status === 'success' && data.members) {
+            renderMembersTable(data.members);
+        }
+    } catch (error) {
+        console.error('Filter error:', error);
+    }
+}
+
+async function filterCompaniesId() {
+    const filterValue = document.getElementById('company-id-filter').value;
+    if (!filterValue) {
+        // If empty, show all
+        // const response = await fetch('../api/routes/members.php');
+        // const data = await response.json();
+        // if (data.status === 'success' && data.members) {
+        //     renderMembersTable(data.members);
+        // }
+        return;
+    }
+    
+    try {
+        const response = await fetch(`../api/routes/members.php?company_id=${filterValue}`);
+        const data = await response.json();
+        
+        if (data.status === 'success') {
+            console.warn(data);
+            // (data.members);
+            renderMembersTable(data.members || []);
+        }
+    } catch (error) {
+        console.error('Filter error:', error);
+    }
+}
+        
+function renderMembersTable(members) {
+    const tableBody = document.getElementById('employee-table-body');
+    tableBody.innerHTML = ''; // Clear existing table rows
+
+    if (members.length === 0) {
+        const row = document.createElement('tr');
+        row.innerHTML = `<td colspan="7" style="text-align: center;">No companies found matching your criteria</td>`;
+        tableBody.appendChild(row);
+        return;
+    }
+
+    members.forEach((member, index) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${index + 1}</td>
+            <td>${member.Company_Name}</td>
+            <td>${member.Number}</td>
+            <td>${member.Email}</td>
+            <td>${member.Number_of_employees}</td>
+            <td>${member.Package_name}</td>
+            <td style="display: flex;">
+                <button onclick="window.location.href = './update-membership.html?Member_id=${member.Member_id}'">
+                    <i class="fas fa-edit"></i>
+                </button>
+                <button onclick="confirmAndDelete('${member.Member_id}')">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </td>
+        `;
+        tableBody.appendChild(row);
+    });
+}
+
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                const response = await fetch('../api/routes/members.php'); // Assuming your get members endpoint is here
+                const data = await response.json();
+    
+                if (data.status === 'success' && data.members) {
+                    const tableBody = document.getElementById('employee-table-body');
+                    tableBody.innerHTML = ''; // Clear existing table rows
+    
+                    data.members.forEach((member, index) => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${index + 1}</td>
+                            <td>${member.Company_Name}</td>
+                            <td>${member.Number}</td>
+                            <td>${member.Email}</td>
+                            <td>${member.Number_of_employees}</td>
+                            <td>${member.Package_name}</td>
+                            <td style="display: flex;">
+                                <button onclick="window.location.href = './update-membership.html?Member_id=${member.Member_id}'">
+                                    <i class="fas fa-edit"></i>
+                                    </button>
+                                <button onclick="confirmAndDelete('${member.Member_id}')">
+                                    <i class="fas fa-trash"></i>
+                                    </button>
+                            </td>
+                        `;
+                        tableBody.appendChild(row);
+                    });
+                } else {
+                    console.error('Error fetching members:', data.message);
+                    // Optionally, display an error message in the table or elsewhere
+                }
+            } catch (error) {
+                console.error('Fetch error:', error);
+                // Optionally, display an error message
+            }
+        });
+    
+        async function confirmAndDelete(memberId) {
+            if (confirm('Are you sure you want to delete this member?')) {
+                try {
+                  console.warn(memberId);
+                  
+                    const response = await fetch(`../api/routes/members.php?id=${memberId}`, {
+                        method: 'DELETE',
+                    });
+                    const result = await response.json();
+                    // const result = await response.text();
+                    // console.warn(result);
+                    
+                    if (result.status == 'success') {
+                        alert('Member deleted successfully!');
+                        // Reload the page to refresh the table
+                        location.reload();
+                    } else {
+                        // alert('Delete error: ' + result.message);
+                        alert('Delete error: ' + result);
+                        console.error('Delete error:', result.message);
+                    }
+                } catch (error) {
+                    console.error('Delete error:', error);
+                    alert('An error occurred during deletion.',error);
+                }
+            }
+        }
+    
+    </script>
+    </section>
+  
+  </main>
+
+</body>
+</html>
