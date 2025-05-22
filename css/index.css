@@ -1292,3 +1292,116 @@ font-size: 1.4rem;
     flex-direction: column;
   }
 }
+
+
+.popup-active {
+  overflow: hidden;
+}
+
+.popup-active::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(5px);
+  z-index: 998;
+}
+
+.card-main {
+  width: 300px;
+  background: white;
+  border-radius: 20px;
+  padding: 30px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.8);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  z-index: 999;
+  opacity: 0; 
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.card-main.active {
+  transform: translate(-50%, -50%) scale(1);
+  opacity: 1;
+}
+
+.card-main .card-content {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.card-main .card-heading {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.card-main .card-description {
+  color: #666;
+  margin-top: 15px;
+}
+
+.card-main .card-button-wrapper {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.card-main .card-button {
+  width: 100px;
+  height: 35px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.card-main .secondary-btn {
+  background: #4CAF50;
+  color: white;
+}
+
+.card-main .secondary-btn:hover {
+  background: #45a049;
+}
+
+.card-main .primary-btn {
+  background-color: #f44336;
+  color: white;
+}
+
+.card-main .primary-btn:hover {
+  background-color: #d32f2f;
+}
+
+.card-main .exit-button {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.card-main .exit-button svg {
+  width: 20px;
+  height: 20px;
+  fill: #999;
+}
+
+.card-main .exit-button:hover svg {
+  fill: #333;
+}
+
+/* Style for the tick image */
+.card-main img {
+  width: 50px;
+  height: 50px;
+  margin: 0 auto 10px;
+  display: block;
+}

@@ -61,6 +61,7 @@
   #employee-list table {
     width: 100%;
     border-collapse: collapse;
+    margin-left: 0;
   }
   
   #employee-list th,
@@ -327,3 +328,8 @@ transform: scale(1.1);
   width: 100%;
 }
 
+button :disabled{
+  background-color: red;
+  color: white;
+  cursor: not-allowed;
+}
