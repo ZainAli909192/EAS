@@ -19,7 +19,7 @@
   
   <main>
     <section id="add-employee">
-      <h2>Update Packages</h2>
+      <h2>Update Designation</h2>
       <form id="add-employee-form">
           <div class="form-row">
               <div class="form-group">
@@ -27,18 +27,8 @@
                   <input type="text" id="id" name="id" disabled required>
               </div>
               <div class="form-group">
-                  <label for="name">Package Name:</label>
-                  <input type="text" id="package_name" name="package_name" required>
-              </div>
-          </div>
-          <div class="form-row">
-              <div class="form-group">
-                  <label for="price">Price:</label>
-                  <input type="text" id="price" name="price" required>
-              </div>
-              <div class="form-group">
-                  <label for="num_employees">Number of employees:</label>
-                  <input type="text" id="num_employees" name="num_employees" required>
+                  <label for="name">Designation Name:</label>
+                  <input type="text" id="designation_name" name="designation_name" required>
               </div>
           </div>
           <div class="form-row">
@@ -55,51 +45,45 @@
   <script>
       document.addEventListener('DOMContentLoaded', async () => {
           const urlParams = new URLSearchParams(window.location.search);
-          const packageId = urlParams.get('Package_id');
+          const designationId = urlParams.get('Designation_id');
   
-          if (packageId) {
+          if (designationId) {
               try {
-                  const response = await fetch(`../api/routes/packages.php?id=${packageId}`);
+                  const response = await fetch(`../api/routes/designations.php?id=${designationId}`);
                   const data = await response.json();
   
-                  if (data.status === 'success' && data.package) {
-                      const packageData = data.package;
-                      document.getElementById('id').value = packageData.Package_id;
-                      document.getElementById('package_name').value = packageData.Package_name;
-                      document.getElementById('price').value = packageData.Price;
-                      document.getElementById('num_employees').value = packageData.Number_of_employees;
+                  if (data.status === 'success' && data.designation) {
+                      const designationData = data.designation;
+                      document.getElementById('id').value = designationData.Designation_id;
+                      document.getElementById('designation_name').value = designationData.Designation_name;
                   } else {
-                      console.error('Error fetching package data:', data.message);
-                      alert('Package not found or error loading data.');
+                      console.error('Error fetching designation data:', data.message);
+                      alert('Designation not found or error loading data.');
                   }
               } catch (error) {
                   console.error('Fetch error:', error);
-                  alert('An error occurred while fetching package data.');
+                  alert('An error occurred while fetching designation data.');
               }
           } else {
               alert('Package ID not provided in URL.');
-            window.location.href="./packages-list.html"
+            window.location.href="./designations-list.html"
           }
   
           document.getElementById('add-employee-form').addEventListener('submit', async function(e) {
               e.preventDefault();
   
-              const packageId = document.getElementById('id').value;
-              const packageName = document.getElementById('package_name').value;
-              const price = document.getElementById('price').value;
-              const numEmployees = document.getElementById('num_employees').value;
+              const designationId = document.getElementById('id').value;
+              const designationName = document.getElementById('designation_name').value;
   
               try {
-                  const response = await fetch('../api/routes/packages.php', {
+                  const response = await fetch('../api/routes/designations.php', {
                       method: 'PUT',
                       headers: {
                           'Content-Type': 'application/json',
                       },
                       body: JSON.stringify({
-                          package_id: packageId,
-                          package_name: packageName,
-                          price: price,
-                          num_employees: numEmployees,
+                          designation_id: designationId,
+                          designation_name: designationName
                       }),
                   });
   
@@ -107,14 +91,14 @@
                   console.warn(result);
   
                   if (result.status == 'success') {
-                      alert('Package updated successfully!');
-                      window.location.href = './packages-list.html'
+                      alert('Designation updated successfully!');
+                      window.location.href = './designations-list.html'
                   } else {
-                      alert('Error updating package: ' + result.message);
+                      alert('Error updating designation: ' + result.message);
                   }
               } catch (error) {
                   console.error('Update error:', error);
-                  alert('An error occurred while updating the package.');
+                  alert('An error occurred while updating the package.'+error);
               }
           });
       });
