@@ -42,13 +42,13 @@ function renderProfileForm(profile) {
                 <div class="form-row">
                     <div class="form-group">
                         <label for="email">Email: <i class="fas fa-envelope"></i></label>
-                        <input type="email" id="email" name="email" value="${profile.Email || ''}" required>
+                        <input type="email" id="email" name="email" value="${profile.Email || ''}" >
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group">
                         <label for="password">Password: <i class="fas fa-lock"></i></label>
-                        <input type="password" id="password" name="password" required>
+                        <input type="password" id="password" name="password" >
                     </div>
                 </div>
             `;
@@ -59,23 +59,23 @@ function renderProfileForm(profile) {
                 <div class="form-row">
                     <div class="form-group">
                         <label for="company_name">Company Name: <i class="fas fa-building"></i></label>
-                        <input type="text" id="company_name" name="company_name" value="${profile.Name || ''}" required>
+                        <input type="text" id="company_name" name="company_name" value="${profile.Name || ''}" >
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group">
                         <label for="email">Email: <i class="fas fa-envelope"></i></label>
-                        <input type="email" id="email" name="email" value="${profile.Email || ''}" required>
+                        <input type="email" id="email" name="email" value="${profile.Email || ''}" >
                     </div>
                     <div class="form-group">
                         <label for="number">Contact Number: <i class="fas fa-phone"></i></label>
-                        <input type="text" id="number" name="number" value="${profile.Number || ''}" required>
+                        <input type="text" id="number" name="number" value="${profile.Number || ''}" >
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group">
                         <label for="password">Password: <i class="fas fa-lock"></i></label>
-                        <input type="password" id="password" name="password" required>
+                        <input type="password" id="password" name="password" >
                     </div>
                 </div>
             `;
@@ -92,13 +92,31 @@ function renderProfileForm(profile) {
                 <div class="form-row">
                     <div class="form-group">
                         <label for="number">Contact Number: <i class="fas fa-phone"></i></label>
-                        <input type="text" id="number" name="number" value="${profile.Number || ''}" required>
+                        <input type="text" id="number" name="number" value="${profile.Number || ''}" >
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="number">Email: <i class="fas fa-phone"></i></label>
+                        <input type="email" id="email" name="email" value="${profile.email || ''}" >
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="job_in_timing">Job in timing: <i class="fas fa-phone"></i></label>
+                        <input type="email" id="job_in_timing" name="job_in_timing" value="${profile.job_in_timing || ''}" >
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="job_out_timing">Job out timing: <i class="fas fa-phone"></i></label>
+                        <input type="email" id="job_out_timing" name="job_out_timing" value="${profile.job_out_timing || ''}" >
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group">
                         <label for="password">Password: <i class="fas fa-lock"></i></label>
-                        <input type="password" id="password" name="password" required>
+                        <input type="password" id="password" name="password" >
                     </div>
                 </div>
             `;
@@ -108,7 +126,7 @@ function renderProfileForm(profile) {
     dynamicFields.innerHTML = fieldsHTML;
 }
 
-function updateProfile() {
+async function updateProfile() {
     const role = document.getElementById('profile-form').getAttribute('data-role');
     const formData = {};
     const formElements = document.getElementById('profile-form').elements;
@@ -120,24 +138,27 @@ function updateProfile() {
         }
     }
     
-    fetch('../api/routes/profile.php', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData)
-    })
-    .then(response => response.json())
-    .then(data => {
+    try {
+        const response = await fetch('../api/routes/profile.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData)
+        });
+        const data = await response.json();
+        // const data = await response.text();
+        // console.warn(data);
+        
+
         if (data.status === 'success') {
             alert('Profile updated successfully');
-            fetchProfileData(); // Refresh data
+            await fetchProfileData(); // Refresh data
         } else {
             alert('Error updating profile: ' + data.message);
         }
-    })
-    .catch(error => {
+    } catch (error) {
         console.error('Error:', error);
         alert('Failed to update profile');
-    });
+    }
 }

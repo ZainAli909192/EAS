@@ -113,7 +113,7 @@ document.addEventListener('DOMContentLoaded', function() {
   // Wait for 3 seconds, then add the 'loaded' class to the body
   setTimeout(function() { 
     document.body.classList.add('loaded');
-  }, 1500); // 3000 milliseconds = 3 seconds
+  }, 1500); // 1000 milliseconds = 1 second
 });
 // loader file include code 
 const loading=async ()=>{
@@ -321,3 +321,64 @@ if(document.querySelectorAll(".counter")){
     
 },1300);
 }
+
+// conditional view of sidebar 
+document.addEventListener('DOMContentLoaded', async function() {
+  try {
+    const response = await fetch('../api/routes/login.php?action=get_current_user', {
+      credentials: 'include' // Important for session cookies
+    });
+    const data = await response.json();
+    // const data = await response.text();
+// console.warn(data);
+
+    if (data.status === 'success') {
+      const role = data.user.role;
+            // Hide all role-specific elements first
+            document.querySelectorAll('[class^="role-"]').forEach(el => {
+                el.style.display = 'none';
+            });
+            
+            // Show elements for the current role
+            document.querySelectorAll('.role-all').forEach(el => {
+                el.style.display = 'block';
+            });
+            
+            document.querySelectorAll(`.role-${role}`).forEach(el => {
+                el.style.display = 'block';
+            });
+            
+            // Special case: admin can see member items
+            // if (role === 'admin') {
+            //     document.querySelectorAll('.role-member').forEach(el => {
+            //         el.style.display = 'block';
+            //     });
+            // }
+        } else {
+          alert("Failed to get user role "+data);
+            console.error('Failed to get user role:', data.message);
+        }
+    } catch (error) {
+        console.error('Error fetching user role:', error);
+    }
+});
+
+
+// Add favicon link to head tag
+function addFavicon() {
+  // Check if favicon already exists
+  const existingFavicon = document.querySelector('link[rel="shortcut icon"]');
+  if (!existingFavicon) {
+      // Create new link element
+      const link = document.createElement('link');
+      link.rel = 'shortcut icon';
+      link.href = '../img/logo.jpg';
+      link.type = 'image/x-icon';
+      
+      // Add to head
+      document.head.appendChild(link);
+  }
+}
+
+// Run the function when the DOM is loaded
+document.addEventListener('DOMContentLoaded', addFavicon);
