@@ -31,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $stmt = $conn->prepare("SELECT Member_id as id, Company_Name as Name, Email, Number FROM member WHERE Member_id = ?");
                 break;
             case 'employee':
-                $stmt = $conn->prepare("SELECT employee_id as id, Name, Number FROM employee WHERE employee_id = ?");
+                $stmt = $conn->prepare("SELECT employee_id as id, Name, Number , job_in_time, job_out_time ,email FROM employee WHERE employee_id = ?");
                 break;
             default:
                 throw new Exception("Invalid user role");
@@ -70,7 +70,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
                 
                 // Hash the password
-                $hashedPassword = password_hash($data['password'], PASSWORD_BCRYPT, ['cost' => 12]);
+                $hashedPassword = password_hash($data['password'], PASSWORD_BCRYPT);
                 if ($hashedPassword === false) {
                     throw new Exception("Failed to hash password");
                 }
@@ -86,7 +86,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
                 
                 // Hash the password
-                $hashedPassword = password_hash($data['password'], PASSWORD_BCRYPT, ['cost' => 12]);
+                $hashedPassword = password_hash($data['password'], PASSWORD_BCRYPT);
                 if ($hashedPassword === false) {
                     throw new Exception("Failed to hash password");
                 }
@@ -101,13 +101,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
                 
                 // Hash the password
-                $hashedPassword = password_hash($data['password'], PASSWORD_BCRYPT, ['cost' => 12]);
+                $hashedPassword = password_hash($data['password'], PASSWORD_BCRYPT);
                 if ($hashedPassword === false) {
                     throw new Exception("Failed to hash password");
                 }
                 
-                $stmt = $conn->prepare("UPDATE employee SET Password = ?, Number = ? WHERE employee_id = ?");
-                $stmt->bind_param("ssi", $hashedPassword, $data['number'], $userId);
+                $stmt = $conn->prepare("UPDATE employee SET Password = ?, Number = ? , email=? WHERE employee_id = ?");
+                $stmt->bind_param("sssi", $hashedPassword, $data['number'], $data['email'],$userId);
                 break;
                 
             default:

@@ -1,10 +1,11 @@
 <?php
 require_once './config.php';
 
-// Handle POST request for adding a new designation
+// For adding a new designation
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $data = json_decode(file_get_contents('php://input'), true);
     $designationName = isset($data['designation_name']) ? $data['designation_name'] : '';
+    $department_id = isset($data['department_id']) ? $data['department_id'] : '';
     
     $stm1 = $conn->prepare("SELECT MAX(Designation_id) FROM designation");
     $stm1->execute();
@@ -13,8 +14,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $next_designation_id = ($row[0] !== null) ? $row[0] + 1 : 1;
     $stm1->close();
 
-    $stmt = $conn->prepare("INSERT INTO designation (Designation_id, Designation_name) VALUES (?, ?)");
-    $stmt->bind_param("is", $next_designation_id, $designationName);
+    $stmt = $conn->prepare("INSERT INTO designation (Designation_id, Designation_name, Department_id) VALUES (?, ?, ?)");
+    $stmt->bind_param("iss", $next_designation_id, $designationName, $department_id);
 
     if ($stmt->execute()) {
         echo json_encode(['status' => 'success', 'message' => 'Designation added successfully.']);
@@ -29,8 +30,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 
 
-// Handle GET request for retrieving a specific designation
-elseif ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['id'])) {
+// For retrieving a specific designation
+else if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['id'])) {
     $designationId = $_GET['id'];
 
     $stmt = $conn->prepare("SELECT Designation_id, Designation_name FROM designation WHERE Designation_id = ?");
@@ -52,7 +53,7 @@ elseif ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['id'])) {
 // Handle GET request for retrieving all designations
 elseif ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $designations = [];
-    $result = $conn->query("SELECT Designation_id, Designation_name FROM designation");
+    $result = $conn->query("SELECT Designation_id, Designation_name, d.department_name FROM designation join department d on designation.Department_id = d.Department_id");
 
     if ($result && $result->num_rows > 0) {
         while ($row = $result->fetch_assoc()) {

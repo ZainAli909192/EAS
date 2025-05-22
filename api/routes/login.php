@@ -1,6 +1,12 @@
 <?php
 header("Content-Type: application/json");
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
 require_once './config.php';
+require '../vendor/autoload.php'; // For PHPMailer
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['action']) && $_GET['action'] === 'logout') {
     try {
@@ -43,9 +49,84 @@ else if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET
     }
     exit;
 }
+else if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['action']) && $_GET['action'] === 'contact') {
+    try {
+        
+        $input = json_decode(file_get_contents('php://input'), true);
+    echo json_encode(["status" => "debug", "message" => "Input read"]);
+        
+        // Validate input
+        if (empty($input['name']) || empty($input['email']) || empty($input['message'])) {
+            http_response_code(400);
+            echo json_encode(['status' => 'error', 'message' => 'All fields are required']);
+            exit;
+        }
+
+        // Sanitize inputs
+        $name = filter_var($input['name'], FILTER_SANITIZE_STRING);
+        $email = filter_var($input['email'], FILTER_SANITIZE_EMAIL);
+        $message = filter_var($input['message'], FILTER_SANITIZE_STRING);
+        $number = filter_var($input['number'], FILTER_SANITIZE_STRING);
+
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            http_response_code(400);
+            echo json_encode(['status' => 'error', 'message' => 'Invalid email format']);
+            exit;
+        }
+
+        // Load PHPMailer
+        require '../vendor/autoload.php';
+        $mail = new PHPMailer(true);
+
+        // Server settings (configure with your SMTP details)
+        $mail->isSMTP();
+        $mail->Host       = 'smtp.gmail.com'; // Your SMTP server
+        $mail->SMTPAuth   = true;
+        $mail->Username   = 'malikzain909192@gmail.com';
+        $mail->Password   = 'flbb idmt kfet lqxp';
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+        $mail->Port       = 465;
+
+        // Recipients
+        $mail->setFrom($email, $name);
+        $mail->addAddress('malikzain909192@gmail.com', 'Support Team'); // Your contact email
+        // $mail->addAddress('no-reply@gmail.com', 'Support Team'); // Your contact email
+        
+      // Content
+    $mail->isHTML(true);
+    $mail->Subject = 'New Contact Form Submission';
+    $mail->Body = "
+        <h2>New Contact Message</h2>
+        <p><strong>Name:</strong> $name</p>
+        <p><strong>Email:</strong> $email</p>
+        <p><strong>Message:</strong> $message</p>
+        <p><strong>Number:</strong> $number</p>
+        <h2>Thank you! :)</h2>
+    ";
+    $mail->AltBody = "Name: $name\nEmail: $email\nMessage: $message\nNumber: $number";
+
+    $mail->send();
+        
+        echo json_encode([
+            'status' => 'success',
+            'message' => 'Your message has been sent successfully. We will contact you as soon as possible...'
+        ]);
+
+    } catch (Exception $e) {
+        http_response_code(500);
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'Failed to send message. Please try again later.'.$e
+        ]);
+        error_log("Contact form error: " . $e->getMessage());
+    }
+    exit;
+}
+
 else if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $input = json_decode(file_get_contents('php://input'), true);
-    
+    // echo json_encode(["status" => "debug", "message" => "Input read"]);
+    // exit;
     // Validate input
     if (empty($input['id']) || empty($input['password']) || empty($input['role'])) {
         http_response_code(400);
@@ -172,6 +253,7 @@ else if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         echo json_encode(['status' => 'error', 'message' => 'Server error: ' . $e->getMessage()]);
     }
 }
+
 else {
     http_response_code(405);
     echo json_encode(['status' => 'error', 'message' => 'Method not allowed']);

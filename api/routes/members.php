@@ -151,7 +151,53 @@ elseif ($_SERVER['REQUEST_METHOD'] === 'PUT') {
     $conn->close();
     exit;
 }
+else if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['company_name']) || isset($_GET['company_id'])) {
+    // Handle GET request to retrieve members with optional filters
+    $companyNameFilter = isset($_GET['company_name']) ? $_GET['company_name'] : null;
+    $companyIdFilter = isset($_GET['company_id']) ? $_GET['company_id'] : null;
 
+    $query = "SELECT member.Member_id, member.Company_Name, member.Number, member.Email, 
+              package.Number_of_employees, package.Package_name 
+              FROM member 
+              INNER JOIN package ON member.Package_id = package.Package_id 
+              WHERE 1=1";
+    
+    $params = [];
+    $types = '';
+
+    if ($companyNameFilter) {
+        $query .= " AND member.Company_Name LIKE ?";
+        $params[] = '%' . $companyNameFilter . '%';
+        $types .= 's';
+    }
+
+    if ($companyIdFilter) {
+        $query .= " AND member.Member_id = ?";
+        $params[] = $companyIdFilter;
+        $types .= 'i';
+    }
+
+    $stmt = $conn->prepare($query);
+    
+    if (!empty($params)) {
+        $stmt->bind_param($types, ...$params);
+    }
+
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    $members = [];
+    if ($result && $result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            $members[] = $row;
+        }
+    }
+
+    echo json_encode(['status' => 'success', 'members' => $members]);
+    $stmt->close();
+    $conn->close();
+    exit;
+}
 else if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     // Handle GET request to retrieve members
     $members = [];

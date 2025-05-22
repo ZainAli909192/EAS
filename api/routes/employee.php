@@ -34,13 +34,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $input = file_get_contents('php://input');
         $data = json_decode($input, true);
         
-        // Validate JSON input
-        // if (json_last_error() !== JSON_ERROR_NONE) {
-        //     throw new Exception('Invalid JSON input: ' . json_last_error_msg());
-        // }
-
-        // Log received data for debugging
-
         // Required fields validation
         $requiredFields = ['Name', 'Department_id', 'Designation_id', 'Password', 
                           'job_in_time', 'job_out_time', 'Number'];
@@ -57,8 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             echo json_encode([
                 'status' => 'error', 
                 'message' => 'Please provide all the fields',
-                'missing_fields' => $missingFields,
-                'received_data' => $data // For debugging
+                'missing_fields' => $missingFields
             ]);
             exit;
         }
@@ -75,6 +67,57 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         session_start();
         
+        // Get member_id from session
+        $member_id = $_SESSION['member_id'];
+        if (empty($member_id)) {
+            throw new Exception('Member ID not found in session');
+        }
+
+        // 1. Get the member's package info
+        $packageStmt = $conn->prepare("
+            SELECT p.Package_id, p.Number_of_employees 
+            FROM member m
+            JOIN package p ON m.Package_id = p.Package_id
+            WHERE m.Member_id = ?
+        ");
+        $packageStmt->bind_param("i", $member_id);
+        $packageStmt->execute();
+        $packageResult = $packageStmt->get_result();
+        
+        if ($packageResult->num_rows === 0) {
+            throw new Exception('Member package information not found');
+        }
+        
+        $package = $packageResult->fetch_assoc();
+        $packageStmt->close();
+
+        // 2. Count current employees for this member
+        $countStmt = $conn->prepare("
+            SELECT COUNT(*) as employee_count 
+            FROM employee 
+            WHERE Member_id = ?
+        ");
+        $countStmt->bind_param("i", $member_id);
+        $countStmt->execute();
+        $countResult = $countStmt->get_result();
+        $countData = $countResult->fetch_assoc();
+        $countStmt->close();
+
+        // 3. Check if adding another employee would exceed the limit
+        if ($countData['employee_count'] >= $package['Number_of_employees']) {
+            http_response_code(403); // Forbidden
+            echo json_encode([
+                'status' => 'error',
+                'message' => 'Cannot add more employees. You have reached your package limit of ' . 
+                             $package['Number_of_employees'] . ' employees.',
+                'current_count' => $countData['employee_count'],
+                'package_limit' => $package['Number_of_employees']
+            ]);
+            exit;
+        }
+
+        // If we get here, the member is under their limit
+        
         // Sanitize inputs
         $name = htmlspecialchars($data['Name'], ENT_QUOTES, 'UTF-8');
         $department_id = $data['Department_id'];
@@ -82,7 +125,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $job_in_time = $data['job_in_time'];
         $job_out_time = $data['job_out_time'];
         $number = filter_var($data['Number'], FILTER_SANITIZE_STRING);
-        $member_id = $_SESSION['member_id'];
         $email = htmlspecialchars($data['Email'], ENT_QUOTES, 'UTF-8');
 
         // Hash the password securely
@@ -92,7 +134,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             throw new Exception('Failed to hash password');
         }
 
-        // Generate employee ID - FIXED CALL
+        // Generate employee ID
         $employee_id = generateEmployeeId($conn);
 
         // Prepare SQL with parameterized query
@@ -128,11 +170,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'status' => 'success', 
             'message' => 'Employee created successfully',
             'employee_id' => $employee_id,
-            'debug' => [ // For debugging
-                'name' => $name,
-                'department_id' => $department_id,
-                'designation_id' => $designation_id
-            ]
+            'employees_used' => $countData['employee_count'] + 1,
+            'package_limit' => $package['Number_of_employees']
         ]);
 
     } catch (Exception $e) {
@@ -140,15 +179,64 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         error_log('Error in employee creation: ' . $e->getMessage());
         echo json_encode([
             'status' => 'error', 
-            'message' => 'Error: ' . $e->getMessage(),
-            'trace' => $e->getTraceAsString() // Only for development!
+            'message' => 'Error: ' . $e->getMessage()
         ]);
+    } finally {
+        if (isset($stmt)) $stmt->close();
+        if (isset($packageStmt)) $packageStmt->close();
+        if (isset($countStmt)) $countStmt->close();
+        $conn->close();
+    }
+    exit;
+}
+// Search endpoint
+else if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['search'])) {
+    $searchQuery = $_GET['search'];
+    session_start();
+    $memberId = $_SESSION['member_id'];
+    try {
+        $query = "SELECT 
+                    e.employee_id,
+                    e.Name,
+                    e.Number,
+                    d.Department_name,
+                    des.Designation_name,
+                    e.job_in_time,
+                    e.job_out_time,
+                    e.Member_id
+                FROM employee e
+                LEFT JOIN department d ON e.Department_id = d.Department_id
+                LEFT JOIN designation des ON e.Designation_id = des.Designation_id
+              WHERE (e.employee_id LIKE ? OR e.Name LIKE ?  OR d.Department_name LIKE ? OR des.Designation_name LIKE ?) 
+AND e.Member_id = ?";
+
+        $stmt = $conn->prepare($query);
+        
+        // Create variables that can be passed by reference
+        $searchParam = '%' . $searchQuery . '%';
+        $stmt->bind_param("ssssi", $searchParam,$searchParam, $searchParam, $searchParam, $memberId);
+        
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        $employees = [];
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                $employees[] = $row;
+            }
+        }
+
+        echo json_encode(['status' => 'success', 'employees' => $employees]);
+    } catch (Exception $e) {
+        http_response_code(500);
+        echo json_encode(['status' => 'error', 'message' => 'Error: ' . $e->getMessage()]);
     } finally {
         if (isset($stmt)) $stmt->close();
         $conn->close();
     }
     exit;
 }
+        
 
 
 // To get only a single record 

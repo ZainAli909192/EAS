@@ -35,38 +35,64 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     exit;
 }
 
-
-
 elseif ($_SERVER['REQUEST_METHOD'] === 'DELETE' && isset($_GET['id'])) {
     // Handle DELETE request to delete a department
     $department_id = $_GET['id'];
+    
+    try {
+        // Start transaction
+        $conn->begin_transaction();
 
-    // Delete related employees first
-    $delete_employees_stmt = $conn->prepare("DELETE FROM employee WHERE Department_id = ?");
-    $delete_employees_stmt->bind_param("i", $department_id);
+        // 2. Then delete attendance records for employees in this department
+        $delete_attendance_stmt = $conn->prepare("
+            DELETE a FROM attendance a
+            JOIN employee e ON a.Employee_id = e.employee_id
+            WHERE e.Department_id = ?
+        ");
+        $delete_attendance_stmt->bind_param("i", $department_id);
+        $delete_attendance_stmt->execute();
+        $delete_attendance_stmt->close();
+        
+        // 1. First delete leaves records for employees in this department
+        $delete_leaves_stmt = $conn->prepare("
+            DELETE l FROM leaves l
+            JOIN employee e ON l.employee_id = e.employee_id
+            WHERE e.Department_id = ?
+        ");
+        $delete_leaves_stmt->bind_param("i", $department_id);
+        $delete_leaves_stmt->execute();
+        $delete_leaves_stmt->close();
 
-    if ($delete_employees_stmt->execute()) {
-        // Now delete the department
+
+        // 3. Then delete the employees in this department
+        $delete_employees_stmt = $conn->prepare("DELETE FROM employee WHERE Department_id = ?");
+        $delete_employees_stmt->bind_param("i", $department_id);
+        $delete_employees_stmt->execute();
         $delete_employees_stmt->close();
-        $stmt = $conn->prepare("DELETE FROM department WHERE Department_id = ?");
-        $stmt->bind_param("i", $department_id);
 
-        if ($stmt->execute()) {
-            echo json_encode(['status' => 'success', 'message' => 'Department and related employees deleted successfully.']);
+        // 4. Finally delete the department
+        $delete_department_stmt = $conn->prepare("DELETE FROM department WHERE Department_id = ?");
+        $delete_department_stmt->bind_param("i", $department_id);
+        $delete_department_stmt->execute();
+
+        if ($delete_department_stmt->affected_rows > 0) {
+            $conn->commit();
+            echo json_encode(['status' => 'success', 'message' => 'Department and all related data deleted successfully.']);
         } else {
-            echo json_encode(['status' => 'error', 'message' => 'Error deleting department: ' . $stmt->error]);
+            $conn->rollback();
+            echo json_encode(['status' => 'error', 'message' => 'Department not found.']);
         }
-
-        $stmt->close();
-    } else {
-        echo json_encode(['status' => 'error', 'message' => 'Error deleting related employees: ' . $delete_employees_stmt->error]);
-        $delete_employees_stmt->close();
+        
+        $delete_department_stmt->close();
+    } catch (mysqli_sql_exception $e) {
+        $conn->rollback();
+        http_response_code(500);
+        echo json_encode(['status' => 'error', 'message' => 'Error deleting department: ' . $e->getMessage()]);
     }
-
+    
     $conn->close();
     exit;
 }
-
 else if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['id'])) {
     // Handle GET request to retrieve a specific department
     $departmentId = $_GET['id'];
